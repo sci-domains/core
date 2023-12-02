@@ -93,7 +93,7 @@ contract Registry is Context, AccessControl {
         emit DomainRegistered(authorizer, _msgSender(), domain, ttl);
     }
 
-    function isDomainValid(string memory domain) public returns (bool) {
+    function isDomainValid(string memory domain) public view returns (bool) {
         return domainTtl(domain) <= block.timestamp;
     }
 
