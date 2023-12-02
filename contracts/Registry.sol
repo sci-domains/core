@@ -1,25 +1,33 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import "./Authorizers/Authorizer.sol";
-import "./Verifiers/Verifier.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {Context} from "@openzeppelin/contracts/utils/Context.sol";
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
-
+import './Authorizers/Authorizer.sol';
+import './Verifiers/Verifier.sol';
+import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
+import {Context} from '@openzeppelin/contracts/utils/Context.sol';
+import {AccessControl} from '@openzeppelin/contracts/access/AccessControl.sol';
 
 contract Registry is Context, AccessControl {
-
     // ##################################
     // # Access Control
     // ##################################
-    bytes32 public constant ADD_AUTHORIZER_ROLE = keccak256("ADD_AUTHORIZER_ROLE");
+    bytes32 public constant ADD_AUTHORIZER_ROLE =
+        keccak256('ADD_AUTHORIZER_ROLE');
 
     // ##################################
     // # Events
     // ##################################
-    event DomainRegistered(uint256 indexed authorizer, address indexed owner, string domain, uint256 indexed ttl);
-    event VerifierAdded(address indexed owner, string domain, Verifier indexed verifier);
+    event DomainRegistered(
+        uint256 indexed authorizer,
+        address indexed owner,
+        string domain,
+        uint256 indexed ttl
+    );
+    event VerifierAdded(
+        address indexed owner,
+        string domain,
+        Verifier indexed verifier
+    );
 
     // ##################################
     // # Errors
@@ -60,19 +68,22 @@ contract Registry is Context, AccessControl {
     // ##################################
     // # Domain Logic
     // ##################################
-    // TODO: Should we charge?
     // TODO: Should we set a period in which the domain is not valid for security?
     // TODO: Check wildcard implementation
-    function registerDomain(uint256 authorizer, string memory domain, bool isWildcard) public {
+    function registerDomain(
+        uint256 authorizer,
+        string memory domain,
+        bool isWildcard
+    ) public {
         uint256 ttl = authorizers[authorizer].isAuthorize(_msgSender(), domain);
 
-        if(ttl == 0) {
+        if (ttl == 0) {
             revert AccountIsNotAuthorizeToRegisterDomain(_msgSender(), domain);
         }
 
         string memory recordDomain = domain;
 
-        if(isWildcard) {
+        if (isWildcard) {
             recordDomain = string.concat('*.', domain);
         }
 
@@ -82,11 +93,14 @@ contract Registry is Context, AccessControl {
         emit DomainRegistered(authorizer, _msgSender(), domain, ttl);
     }
 
-    function isDomainValid(string memory domain) public returns (bool){
+    function isDomainValid(string memory domain) public returns (bool) {
         return domainTtl(domain) <= block.timestamp;
     }
 
-    function isDomainOwner(string memory domain, address account) public returns (bool){
+    function isDomainOwner(
+        string memory domain,
+        address account
+    ) public returns (bool) {
         return domainOwner(domain) == account;
     }
 
@@ -103,13 +117,17 @@ contract Registry is Context, AccessControl {
         }
     }
 
-    function domainTtl(string memory domain) public view virtual returns (uint256) {
+    function domainTtl(
+        string memory domain
+    ) public view virtual returns (uint256) {
         return domainToRecord[domain].ttl;
     }
 
-    function domainOwner(string memory domain) public virtual returns (address) {
-
-        if(isDomainValid(domain)) return 0x0000000000000000000000000000000000000000;
+    function domainOwner(
+        string memory domain
+    ) public virtual returns (address) {
+        if (isDomainValid(domain))
+            return 0x0000000000000000000000000000000000000000;
 
         return domainToRecord[domain].owner;
     }
@@ -117,7 +135,10 @@ contract Registry is Context, AccessControl {
     // ##################################
     // # Resolvers Logic
     // ##################################
-    function addVerifier(string memory domain, Verifier verifier) public onlyDomainOwner(domain) {
+    function addVerifier(
+        string memory domain,
+        Verifier verifier
+    ) public onlyDomainOwner(domain) {
         domainToRecord[domain].verifier = verifier;
         emit VerifierAdded(_msgSender(), domain, verifier);
     }
@@ -125,29 +146,10 @@ contract Registry is Context, AccessControl {
     // ##################################
     // # Authorizers Logic
     // ##################################
-    function addAuthorizer(uint256 authorizerId, Authorizer authorizer) public onlyRole(ADD_AUTHORIZER_ROLE) {
+    function addAuthorizer(
+        uint256 authorizerId,
+        Authorizer authorizer
+    ) public onlyRole(ADD_AUTHORIZER_ROLE) {
         authorizers[authorizerId] = authorizer;
     }
-
-    // ##################################
-    // # Verification
-    // ##################################
-    // TODO: We should check that is a valid verifier
-    function isVerified(string memory domain, uint256 chainId,  address contractAddress) public returns (bool) {
-        // TODO: Improve gas, we are accessing multiple times to storage
-        if(!isDomainValid(domain)) return false;
-
-        Verifier verifier = domainToRecord[domain].verifier;
-
-        return verifier.isVerified(domain, chainId, contractAddress);
-    }
-
-    function isVerifiedForMultipleDomains(string[] memory domains, uint256 chainId, address contractAddress) public returns (bool[] memory) {
-        bool[] memory domainsVerification;
-        for(uint256 i; i < domains.length; i++) {
-            domainsVerification[i] = this.isVerified(domains[i], chainId, contractAddress);
-        }
-        return domainsVerification;
-    }
-
 }
