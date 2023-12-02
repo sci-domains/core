@@ -14,6 +14,6 @@ contract AlwaysTrueAuthorizer is Authorizer {
         address sender,
         string memory domain
     ) external returns (uint256) {
-        return ttl;
+        return block.timestamp + ttl;
     }
 }

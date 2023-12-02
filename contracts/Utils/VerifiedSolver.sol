@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.20;
 
-import './Verifiers/Verifier.sol';
-import './Registry.sol';
+import '../Verifiers/Verifier.sol';
+import '../Registry.sol';
 
 contract VerifiedSolver {
     Registry registry;

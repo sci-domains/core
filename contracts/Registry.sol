@@ -5,9 +5,10 @@ import './Authorizers/Authorizer.sol';
 import './Verifiers/Verifier.sol';
 import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
-import {AccessControl} from '@openzeppelin/contracts/access/AccessControl.sol';
+import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
+import 'hardhat/console.sol';
 
-contract Registry is Context, AccessControl {
+contract Registry is Context, AccessControlDefaultAdminRules {
     // ##################################
     // # Access Control
     // ##################################
@@ -52,6 +53,8 @@ contract Registry is Context, AccessControl {
     mapping(uint256 => Authorizer) public authorizers;
     mapping(string => Record) public domainToRecord;
 
+    constructor() AccessControlDefaultAdminRules(0, _msgSender()) {}
+
     // ##################################
     // # Modifiers
     // ##################################
@@ -69,7 +72,6 @@ contract Registry is Context, AccessControl {
     // # Domain Logic
     // ##################################
     // TODO: Should we set a period in which the domain is not valid for security?
-    // TODO: Check wildcard implementation
     function registerDomain(
         uint256 authorizer,
         string memory domain,
@@ -87,26 +89,27 @@ contract Registry is Context, AccessControl {
             recordDomain = string.concat('*.', domain);
         }
 
-        domainToRecord[domain].owner = _msgSender();
-        domainToRecord[domain].ttl = ttl;
+        domainToRecord[recordDomain].owner = _msgSender();
+        domainToRecord[recordDomain].ttl = ttl;
 
-        emit DomainRegistered(authorizer, _msgSender(), domain, ttl);
+        emit DomainRegistered(authorizer, _msgSender(), recordDomain, ttl);
     }
 
     function isDomainValid(string memory domain) public view returns (bool) {
-        return domainTtl(domain) <= block.timestamp;
+        uint256 ttl = domainTtl(domain);
+        return ttl != 0 && ttl >= block.timestamp;
     }
 
     function isDomainOwner(
         string memory domain,
         address account
-    ) public returns (bool) {
+    ) public view returns (bool) {
         return domainOwner(domain) == account;
     }
 
     function _checkDomainOwner(string memory domain) internal virtual {
         _checkValidDomain(domain);
-        if (isDomainOwner(domain, _msgSender())) {
+        if (!isDomainOwner(domain, _msgSender())) {
             revert AccountIsNotDomainOwner(_msgSender(), domain);
         }
     }
@@ -123,17 +126,15 @@ contract Registry is Context, AccessControl {
         return domainToRecord[domain].ttl;
     }
 
-    function domainOwner(
-        string memory domain
-    ) public virtual returns (address) {
-        if (isDomainValid(domain))
+    function domainOwner(string memory domain) public view returns (address) {
+        if (!isDomainValid(domain))
             return 0x0000000000000000000000000000000000000000;
 
         return domainToRecord[domain].owner;
     }
 
     // ##################################
-    // # Resolvers Logic
+    // # Verifier Logic
     // ##################################
     function addVerifier(
         string memory domain,
@@ -141,6 +142,12 @@ contract Registry is Context, AccessControl {
     ) public onlyDomainOwner(domain) {
         domainToRecord[domain].verifier = verifier;
         emit VerifierAdded(_msgSender(), domain, verifier);
+    }
+
+    function domainVerifier(
+        string memory domain
+    ) public view virtual returns (Verifier) {
+        return domainToRecord[domain].verifier;
     }
 
     // ##################################
