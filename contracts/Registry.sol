@@ -10,7 +10,6 @@ import './Verifiers/Verifier.sol';
 contract Registry is Context, AccessControlDefaultAdminRules {
     struct Record {
         address owner;
-        // TODO: Why ENS has bytes64?
         uint256 ttl;
         Verifier verifier;
     }
