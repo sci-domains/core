@@ -10,10 +10,7 @@ contract AlwaysTrueAuthorizer is Authorizer {
         ttl = newTtl;
     }
 
-    function isAuthorize(
-        address sender,
-        string memory domain
-    ) external returns (uint256) {
+    function isAuthorize(address sender, string memory domain) external view returns (uint256) {
         return block.timestamp + ttl;
     }
 }

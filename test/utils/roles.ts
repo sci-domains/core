@@ -1,7 +1,5 @@
 import { ethers } from 'hardhat';
 
-export const ADD_AUTHORIZER_ROLE = ethers.keccak256(
-  Buffer.from('ADD_AUTHORIZER_ROLE'),
-);
+export const ADD_AUTHORIZER_ROLE = ethers.keccak256(Buffer.from('ADD_AUTHORIZER_ROLE'));
 export const DEFAULT_ADMIN_ROLE =
   '0x0000000000000000000000000000000000000000000000000000000000000000';

@@ -12,8 +12,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
     // # Variables
     // ##################################
     // TODO: This should be private
-    mapping(string => mapping(address => mapping(uint256 => bool)))
-        public verifiedContracts;
+    mapping(string => mapping(address => mapping(uint256 => bool))) public verifiedContracts;
 
     // ##################################
     // # Constructor

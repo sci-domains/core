@@ -35,11 +35,7 @@ contract VerifiedSolver {
     ) public returns (bool[] memory) {
         bool[] memory domainsVerification;
         for (uint256 i; i < domains.length; i++) {
-            domainsVerification[i] = this.isVerified(
-                domains[i],
-                chainId,
-                contractAddress
-            );
+            domainsVerification[i] = this.isVerified(domains[i], chainId, contractAddress);
         }
         return domainsVerification;
     }
