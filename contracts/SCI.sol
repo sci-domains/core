@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.20;
 
-import '../Verifiers/Verifier.sol';
-import '../Registry.sol';
+import './Verifiers/Verifier.sol';
+import './Registry/Registry.sol';
 
-contract VerifiedSolver {
+contract SCI {
     Registry registry;
 
     constructor(address registryAddress) {
@@ -14,22 +14,18 @@ contract VerifiedSolver {
     // ##################################
     // # Verification
     // ##################################
-    // TODO: We should check that is a valid verifier
     function isVerified(
-        string memory domain,
+        bytes32 domain,
         uint256 chainId,
         address contractAddress
     ) public returns (bool) {
-        // TODO: Improve gas, we are accessing multiple times to storage
-        if (!registry.isDomainValid(domain)) return false;
-
-        (, , Verifier verifier) = registry.domainToRecord(domain);
+        (, Verifier verifier) = registry.domainHashToRecord(domain);
 
         return verifier.isVerified(domain, chainId, contractAddress);
     }
 
     function isVerifiedForMultipleDomains(
-        string[] memory domains,
+        bytes32[] memory domains,
         uint256 chainId,
         address contractAddress
     ) public returns (bool[] memory) {

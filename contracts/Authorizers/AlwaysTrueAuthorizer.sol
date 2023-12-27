@@ -4,13 +4,7 @@ pragma solidity 0.8.20;
 import './Authorizer.sol';
 
 contract AlwaysTrueAuthorizer is Authorizer {
-    uint256 public ttl;
-
-    function setTtl(uint256 newTtl) public {
-        ttl = newTtl;
-    }
-
-    function isAuthorize(address sender, string memory domain) external view returns (uint256) {
-        return block.timestamp + ttl;
+    function isAuthorized(address sender, bytes32 domain) external view returns (bool) {
+        return true;
     }
 }

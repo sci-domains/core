@@ -5,6 +5,10 @@ import '@nomicfoundation/hardhat-network-helpers';
 
 const config: HardhatUserConfig = {
   solidity: '0.8.20',
+  gasReporter: {
+    gasPrice: 32,
+    enabled: true,
+  },
 };
 
 export default config;

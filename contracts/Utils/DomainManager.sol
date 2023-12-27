@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.20;
 
-import '../Registry.sol';
+import '../Registry/Registry.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
 contract DomainManager is Context {
     Registry public registry;
 
-    error AccountIsNotDomainOwner(address account, string domain);
+    error AccountIsNotDomainOwner(address account, bytes32 domain);
 
     // ##################################
     // # Constructor
@@ -20,13 +20,13 @@ contract DomainManager is Context {
     // # Modifiers
     // ##################################
     // TODO: This should be an abstract contract
-    modifier onlyDomainOwner(string memory domain) {
+    modifier onlyDomainOwner(bytes32 domain) {
         _checkDomainOwner(domain);
         _;
     }
 
     // TODO: This should be an abstract contract
-    function _checkDomainOwner(string memory domain) internal {
+    function _checkDomainOwner(bytes32 domain) internal {
         if (registry.domainOwner(domain) != _msgSender()) {
             revert AccountIsNotDomainOwner(_msgSender(), domain);
         }

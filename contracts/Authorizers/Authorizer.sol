@@ -2,6 +2,5 @@
 pragma solidity 0.8.20;
 
 interface Authorizer {
-    // TODO: Add docs
-    function isAuthorize(address sender, string memory domain) external returns (uint256);
+    function isAuthorized(address sender, bytes32 domain) external returns (bool);
 }

@@ -2,7 +2,7 @@
 pragma solidity 0.8.20;
 
 import './Verifier.sol';
-import '../Registry.sol';
+import '../Registry/Registry.sol';
 import '../Utils/DomainManager.sol';
 
 contract PublicListVerifier is Verifier, Context, DomainManager {
@@ -12,7 +12,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
     // # Variables
     // ##################################
     // TODO: This should be private
-    mapping(string => mapping(address => mapping(uint256 => bool))) public verifiedContracts;
+    mapping(bytes32 => mapping(address => mapping(uint256 => bool))) public verifiedContracts;
 
     // ##################################
     // # Constructor
@@ -20,7 +20,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
     constructor(address _registry) DomainManager(_registry) {}
 
     function addAddresses(
-        string memory domain,
+        bytes32 domain,
         uint256 chainId,
         address contractAddress
     ) public onlyDomainOwner(domain) {
@@ -28,7 +28,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
     }
 
     function isVerified(
-        string memory domain,
+        bytes32 domain,
         uint256 chainId,
         address contractAddress
     ) public returns (bool) {
