@@ -4,6 +4,7 @@ pragma solidity 0.8.20;
 import '../Registry/Registry.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
+// TODO: This should be an abstract contract
 contract DomainManager is Context {
     Registry public registry;
 
@@ -19,13 +20,11 @@ contract DomainManager is Context {
     // ##################################
     // # Modifiers
     // ##################################
-    // TODO: This should be an abstract contract
     modifier onlyDomainOwner(bytes32 domainHash) {
         _checkDomainOwner(domainHash);
         _;
     }
 
-    // TODO: This should be an abstract contract
     function _checkDomainOwner(bytes32 domainHash) internal {
         if (registry.domainOwner(domainHash) != _msgSender()) {
             revert AccountIsNotDomainOwner(_msgSender(), domainHash);

@@ -19,13 +19,14 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
         address contractAddress
     ) public onlyDomainOwner(domainHash) {
         verifiedContracts[domainHash][contractAddress][chainId] = true;
+        // TODO: Add Event
     }
 
     function isVerified(
         bytes32 domainHash,
         uint256 chainId,
         address contractAddress
-    ) public returns (bool) {
+    ) public view returns (bool) {
         return
             verifiedContracts[domainHash][contractAddress][chainId] ||
             verifiedContracts[domainHash][contractAddress][MAX_INT];
