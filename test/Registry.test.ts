@@ -7,7 +7,7 @@ import {
 } from '../typechain-types';
 import { expect } from 'chai';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { ADD_AUTHORIZER_ROLE } from './utils/roles';
+import { ADD_AUTHORIZER_ROLE } from '../utils/roles';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ALWAYS_TRUE_AUTHORIZER_ID = 1;
@@ -17,7 +17,7 @@ const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b0
 const DOMAIN_WITH_WILDCARD_HASH =
   '0x1716343d0689cbd485fdf69796462e95bb6ff7a1249660b9fcf2fdd6c6c04f0e';
 
-describe.only('RegistryV1', function () {
+describe('RegistryV1', function () {
   let owner: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
   let registry: RegistryV1;

@@ -15,7 +15,7 @@ contract NameHash {
         return keccak256(abi.encodePacked(namehash(domain, i + len + 1), keccak(domain, i, len)));
     }
 
-    function LabelLength(bytes memory domain, uint i) public pure returns (uint) {
+    function LabelLength(bytes memory domain, uint i) internal pure returns (uint) {
         uint len;
         while (i + len != domain.length && domain[i + len] != 0x2e) {
             len++;
@@ -23,7 +23,7 @@ contract NameHash {
         return len;
     }
 
-    function keccak(bytes memory data, uint offset, uint len) public pure returns (bytes32 ret) {
+    function keccak(bytes memory data, uint offset, uint len) internal pure returns (bytes32 ret) {
         require(offset + len <= data.length);
         assembly {
             ret := keccak256(add(add(data, 32), offset), len)
