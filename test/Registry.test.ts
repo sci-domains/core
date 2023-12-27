@@ -61,10 +61,16 @@ describe.only('RegistryV1', function () {
         .revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
         .withArgs(notOwner.address, ADD_AUTHORIZER_ROLE);
     });
+
+    it('Should emit an event when an authorizer is added', async function () {
+      await expect(registry.addAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer))
+        .to.emit(registry, 'AuthorizerAdded')
+        .withArgs(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer.target, owner.address);
+    });
   });
 
   describe('Registering domains', function () {
-    it('Should throw an event', async function () {
+    it('Should emit an event when a domain is registered', async function () {
       const domainOwner = addresses[0];
       await expect(
         registry
@@ -109,6 +115,42 @@ describe.only('RegistryV1', function () {
     });
   });
 
+  describe('Domain Owner', function () {
+    // Hash name for another.domain.com
+    const ANOTHER_DOMAIN_HASH =
+      '0xd29501b869a19c374b0d1c05685438f2ad1fc613fe2f74032bf20cfb547e8bee';
+    let domainOwner: HardhatEthersSigner;
+    let notDomainOwner: HardhatEthersSigner;
+
+    beforeEach(async () => {
+      domainOwner = addresses[0];
+      notDomainOwner = addresses[1];
+      await registry
+        .connect(domainOwner)
+        .registerDomain(ALWAYS_TRUE_AUTHORIZER_ID, domainOwner, DOMAIN, false);
+    });
+
+    it('Should return false if the domain is not registered', async function () {
+      expect(await registry.isDomainOwner(ANOTHER_DOMAIN_HASH, domainOwner.address)).to.false;
+    });
+
+    it('Should return false if it is not the domain owner', async function () {
+      expect(await registry.isDomainOwner(DOMAIN_HASH, notDomainOwner.address)).to.false;
+    });
+
+    it('Should return true if it is the domain owner', async function () {
+      expect(await registry.isDomainOwner(DOMAIN_HASH, domainOwner.address)).to.true;
+    });
+
+    it('Should return the domain owner if it is a valid domain', async function () {
+      expect(await registry.domainOwner(DOMAIN_HASH)).to.equal(domainOwner.address);
+    });
+
+    it('Should return the zero address if it was not register', async function () {
+      expect(await registry.domainOwner(ANOTHER_DOMAIN_HASH)).to.equal(ZERO_ADDRESS);
+    });
+  });
+
   describe('Add Verifier', function () {
     let domainOwner: HardhatEthersSigner;
     let notDomainOwner: HardhatEthersSigner;
@@ -130,6 +172,14 @@ describe.only('RegistryV1', function () {
       )
         .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
         .withArgs(notDomainOwner.address, DOMAIN_HASH);
+    });
+
+    it('Should emit an event when a verifier is added', async function () {
+      await expect(
+        registry.connect(domainOwner).addVerifier(DOMAIN_HASH, publicListverifier.target),
+      )
+        .to.emit(registry, 'VerifierAdded')
+        .withArgs(domainOwner.address, DOMAIN_HASH, publicListverifier.target);
     });
   });
 });

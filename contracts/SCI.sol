@@ -11,27 +11,28 @@ contract SCI {
         registry = Registry(registryAddress);
     }
 
-    // ##################################
-    // # Verification
-    // ##################################
-    function isVerified(
-        bytes32 domain,
+    function isVerifiedForDomainHash(
+        bytes32 domainHash,
         uint256 chainId,
         address contractAddress
     ) public returns (bool) {
-        (, Verifier verifier) = registry.domainHashToRecord(domain);
+        (, Verifier verifier) = registry.domainHashToRecord(domainHash);
 
-        return verifier.isVerified(domain, chainId, contractAddress);
+        return verifier.isVerified(domainHash, chainId, contractAddress);
     }
 
-    function isVerifiedForMultipleDomains(
-        bytes32[] memory domains,
+    function isVerifiedForMultipleDomainHashes(
+        bytes32[] memory domainsHash,
         uint256 chainId,
         address contractAddress
     ) public returns (bool[] memory) {
         bool[] memory domainsVerification;
-        for (uint256 i; i < domains.length; i++) {
-            domainsVerification[i] = this.isVerified(domains[i], chainId, contractAddress);
+        for (uint256 i; i < domainsHash.length; i++) {
+            domainsVerification[i] = this.isVerifiedForDomainHash(
+                domainsHash[i],
+                chainId,
+                contractAddress
+            );
         }
         return domainsVerification;
     }

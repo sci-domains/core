@@ -7,7 +7,7 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 contract DomainManager is Context {
     Registry public registry;
 
-    error AccountIsNotDomainOwner(address account, bytes32 domain);
+    error AccountIsNotDomainOwner(address account, bytes32 domainHash);
 
     // ##################################
     // # Constructor
@@ -20,15 +20,15 @@ contract DomainManager is Context {
     // # Modifiers
     // ##################################
     // TODO: This should be an abstract contract
-    modifier onlyDomainOwner(bytes32 domain) {
-        _checkDomainOwner(domain);
+    modifier onlyDomainOwner(bytes32 domainHash) {
+        _checkDomainOwner(domainHash);
         _;
     }
 
     // TODO: This should be an abstract contract
-    function _checkDomainOwner(bytes32 domain) internal {
-        if (registry.domainOwner(domain) != _msgSender()) {
-            revert AccountIsNotDomainOwner(_msgSender(), domain);
+    function _checkDomainOwner(bytes32 domainHash) internal {
+        if (registry.domainOwner(domainHash) != _msgSender()) {
+            revert AccountIsNotDomainOwner(_msgSender(), domainHash);
         }
     }
 }

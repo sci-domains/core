@@ -8,7 +8,6 @@ import '../Utils/NameHash.sol';
 import '../Authorizers/Authorizer.sol';
 import '../Verifiers/Verifier.sol';
 import './Registry.sol';
-import '../Utils/NameHash.sol';
 
 contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
     struct Record {
@@ -21,8 +20,8 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
     bytes32 public constant ADD_AUTHORIZER_ROLE = keccak256('ADD_AUTHORIZER_ROLE');
     NameHash public immutable nameHashUtils;
 
-    modifier onlyDomainOwner(bytes32 domain) {
-        _checkDomainOwner(domain);
+    modifier onlyDomainOwner(bytes32 domainHash) {
+        _checkDomainOwner(domainHash);
         _;
     }
 
@@ -57,28 +56,31 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
     }
 
     function isDomainOwner(
-        bytes32 domain,
+        bytes32 domainHash,
         address account
     ) public view virtual override returns (bool) {
-        return domainOwner(domain) == account;
+        return domainOwner(domainHash) == account;
     }
 
-    function domainOwner(bytes32 domain) public view virtual override returns (address) {
-        return domainHashToRecord[domain].owner;
+    function domainOwner(bytes32 domainHash) public view virtual override returns (address) {
+        return domainHashToRecord[domainHash].owner;
     }
 
-    function addVerifier(bytes32 domain, Verifier verifier) external onlyDomainOwner(domain) {
-        domainHashToRecord[domain].verifier = verifier;
-        emit VerifierAdded(_msgSender(), domain, verifier);
+    function addVerifier(
+        bytes32 domainHash,
+        Verifier verifier
+    ) external onlyDomainOwner(domainHash) {
+        domainHashToRecord[domainHash].verifier = verifier;
+        emit VerifierAdded(_msgSender(), domainHash, verifier);
     }
 
-    function domainVerifier(bytes32 domain) external view virtual returns (Verifier) {
-        return domainHashToRecord[domain].verifier;
+    function domainVerifier(bytes32 domainHash) external view virtual returns (Verifier) {
+        return domainHashToRecord[domainHash].verifier;
     }
 
-    function _checkDomainOwner(bytes32 domain) internal virtual {
-        if (!isDomainOwner(domain, _msgSender())) {
-            revert AccountIsNotDomainOwner(_msgSender(), domain);
+    function _checkDomainOwner(bytes32 domainHash) internal virtual {
+        if (!isDomainOwner(domainHash, _msgSender())) {
+            revert AccountIsNotDomainOwner(_msgSender(), domainHash);
         }
     }
 
@@ -87,5 +89,6 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         Authorizer authorizer
     ) external onlyRole(ADD_AUTHORIZER_ROLE) {
         authorizers[authorizerId] = authorizer;
+        emit AuthorizerAdded(authorizerId, authorizer, _msgSender());
     }
 }
