@@ -13,12 +13,21 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
 
     constructor(address _registry) DomainManager(_registry) {}
 
-    function addAddresses(
+    function addAddress(
         bytes32 domainHash,
         uint256 chainId,
         address contractAddress
     ) public onlyDomainOwner(domainHash) {
         verifiedContracts[domainHash][contractAddress][chainId] = true;
+        // TODO: Add Event
+    }
+
+    function removeAddress(
+        bytes32 domainHash,
+        uint256 chainId,
+        address contractAddress
+    ) public onlyDomainOwner(domainHash) {
+        verifiedContracts[domainHash][contractAddress][chainId] = false;
         // TODO: Add Event
     }
 

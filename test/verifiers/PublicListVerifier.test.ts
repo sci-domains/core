@@ -3,10 +3,10 @@ import { ADD_AUTHORIZER_ROLE } from '../../utils/roles';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { AlwaysTrueAuthorizer, PublicListVerifier, RegistryV1 } from '../../typechain-types';
 import { expect } from 'chai';
+import { MaxUint256 } from 'ethers';
 
 const ALWAYS_TRUE_AUTHORIZER_ID = 1;
 const CHAIN_ID = 1;
-const MULTI_CHAIN_ID = (2 ^ 256) - 1;
 const DOMAIN = 'secureci.xyz';
 const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
 const DOMAIN_WITH_WILDCARD_HASH =
@@ -45,22 +45,44 @@ describe.only('Public List Verifier', function () {
       const notOwner = addresses[0];
       const chainId = 1;
       await expect(
-        publicListverifier.connect(notOwner).addAddresses(DOMAIN_HASH, chainId, registry.target),
+        publicListverifier.connect(notOwner).addAddress(DOMAIN_HASH, chainId, registry.target),
       )
         .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
         .withArgs(notOwner.address, DOMAIN_HASH);
 
       await publicListverifier
         .connect(domainOwner)
-        .addAddresses(DOMAIN_HASH, chainId, registry.target);
+        .addAddress(DOMAIN_HASH, chainId, registry.target);
       expect(await publicListverifier.verifiedContracts(DOMAIN_HASH, registry.target, CHAIN_ID)).to
         .be.true;
     });
   });
 
+  describe('Remove Addresses', function () {
+    it('Should let only the owner of the domain remove addresses for the domain', async function () {
+      const notOwner = addresses[0];
+      const chainId = 1;
+      await publicListverifier
+        .connect(domainOwner)
+        .addAddress(DOMAIN_HASH, chainId, registry.target);
+
+      await expect(
+        publicListverifier.connect(notOwner).removeAddress(DOMAIN_HASH, chainId, registry.target),
+      )
+        .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
+        .withArgs(notOwner.address, DOMAIN_HASH);
+
+      await publicListverifier
+        .connect(domainOwner)
+        .removeAddress(DOMAIN_HASH, chainId, registry.target);
+      expect(await publicListverifier.verifiedContracts(DOMAIN_HASH, registry.target, CHAIN_ID)).to
+        .be.false;
+    });
+  });
+
   describe('Verify Address', function () {
     beforeEach(async () => {
-      await publicListverifier.connect(domainOwner).addAddresses(DOMAIN_HASH, 1, registry.target);
+      await publicListverifier.connect(domainOwner).addAddress(DOMAIN_HASH, 1, registry.target);
     });
 
     it('Should return true for a verified address', async function () {
@@ -73,7 +95,7 @@ describe.only('Public List Verifier', function () {
         .false;
       await publicListverifier
         .connect(domainOwner)
-        .addAddresses(DOMAIN_HASH, MULTI_CHAIN_ID, registry.target);
+        .addAddress(DOMAIN_HASH, MaxUint256, registry.target);
       expect(await publicListverifier.isVerified(DOMAIN_HASH, CHAIN_ID + 1, registry.target)).to.be
         .true;
     });
