@@ -7,10 +7,11 @@ import {
 } from '../typechain-types';
 import { expect } from 'chai';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { ADD_AUTHORIZER_ROLE } from '../utils/roles';
+import { ADD_AUTHORIZER_ROLE, ADD_TRUSTED_VERIFIER_ROLE } from '../utils/roles';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ALWAYS_TRUE_AUTHORIZER_ID = 1;
+const PUBLIC_LIST_VERIFIER_ID = 1;
 const ALWAYS_FALSE_AUTHORIZER_ID = 2;
 const DOMAIN = 'secureci.xyz';
 const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
@@ -34,6 +35,7 @@ describe('RegistryV1', function () {
     const RegistryFactory = await ethers.getContractFactory('RegistryV1');
     registry = await RegistryFactory.deploy(await nameHash.getAddress());
     await registry.grantRole(ADD_AUTHORIZER_ROLE, owner.address);
+    await registry.grantRole(ADD_TRUSTED_VERIFIER_ROLE, owner.address);
 
     const AlwaysTrueAuthorizer = await ethers.getContractFactory('AlwaysTrueAuthorizer');
     alwaysTrueAuthorizer = await AlwaysTrueAuthorizer.deploy();
@@ -45,6 +47,7 @@ describe('RegistryV1', function () {
 
     const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
     publicListverifier = await PubicListVerifierFactory.deploy(registry.target);
+    await registry.addTrustedVerifier(PUBLIC_LIST_VERIFIER_ID, publicListverifier.target);
   });
 
   describe('Add authorizer', function () {
@@ -86,6 +89,40 @@ describe('RegistryV1', function () {
       await registry
         .connect(domainOwner)
         .registerDomain(ALWAYS_TRUE_AUTHORIZER_ID, domainOwner, DOMAIN, false);
+      expect(await registry.domainHashToRecord(DOMAIN_HASH)).to.deep.equal([
+        domainOwner.address,
+        ZERO_ADDRESS,
+      ]);
+    });
+
+    it('Should register a domain successfully with a verifier', async function () {
+      const domainOwner = addresses[0];
+      await registry
+        .connect(domainOwner)
+        .registerDomainWithTrustedVerifier(
+          ALWAYS_TRUE_AUTHORIZER_ID,
+          domainOwner,
+          DOMAIN,
+          false,
+          PUBLIC_LIST_VERIFIER_ID,
+        );
+      expect(await registry.domainHashToRecord(DOMAIN_HASH)).to.deep.equal([
+        domainOwner.address,
+        publicListverifier.target,
+      ]);
+    });
+
+    it('Should register a domain successfully with a non existent verifier', async function () {
+      const domainOwner = addresses[0];
+      await registry
+        .connect(domainOwner)
+        .registerDomainWithTrustedVerifier(
+          ALWAYS_TRUE_AUTHORIZER_ID,
+          domainOwner,
+          DOMAIN,
+          false,
+          PUBLIC_LIST_VERIFIER_ID + 1,
+        );
       expect(await registry.domainHashToRecord(DOMAIN_HASH)).to.deep.equal([
         domainOwner.address,
         ZERO_ADDRESS,

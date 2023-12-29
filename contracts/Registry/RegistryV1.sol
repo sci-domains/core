@@ -40,6 +40,7 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
     ) external {
         bytes32 domainHash = nameHashUtils.getDomainHash(domain);
         _registerDomain(authorizer, owner, domainHash, domain, isWildcard);
+        // TODO: Throw error if trusted verifier is 0x0
         domainHashToRecord[domainHash].verifier = trustedVerifiers[trustedVerifier];
     }
 
