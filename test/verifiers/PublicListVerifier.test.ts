@@ -12,7 +12,7 @@ const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b0
 const DOMAIN_WITH_WILDCARD_HASH =
   '0x1716343d0689cbd485fdf69796462e95bb6ff7a1249660b9fcf2fdd6c6c04f0e';
 
-describe.only('Public List Verifier', function () {
+describe('Public List Verifier', function () {
   let owner: HardhatEthersSigner;
   let domainOwner: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
