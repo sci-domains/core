@@ -11,6 +11,10 @@ contract SCI {
         registry = Registry(registryAddress);
     }
 
+    function domainOwner(bytes32 domainHash) public view returns (address) {
+        return registry.domainOwner(domainHash);
+    }
+
     function isVerifiedForDomainHash(
         bytes32 domainHash,
         uint256 chainId,

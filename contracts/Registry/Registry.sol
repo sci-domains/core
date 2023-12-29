@@ -13,6 +13,7 @@ interface Registry {
     );
     event VerifierAdded(address indexed owner, bytes32 domainHash, Verifier indexed verifier);
     event AuthorizerAdded(uint256 indexed authorizerId, Authorizer authorizer, address msgSender);
+    event TrustedVerifierAdded(uint256 indexed verifierId, Verifier verifier, address msgSender);
 
     error AccountIsNotAuthorizeToRegisterDomain(address account, bytes32 domainHash);
     error AccountIsNotDomainOwner(address account, bytes32 domainHash);
@@ -29,13 +30,21 @@ interface Registry {
         bool isWildcard
     ) external;
 
+    function registerDomainWithTrustedVerifier(
+        uint256 authorizer,
+        address owner,
+        string memory domain,
+        bool isWildcard,
+        uint256 trustedVerifier
+    ) external;
+
     function isDomainOwner(bytes32 domainHash, address account) external view returns (bool);
 
     function domainOwner(bytes32 domainHash) external view returns (address);
 
     function addVerifier(bytes32 domainHash, Verifier verifier) external;
 
-    function domainVerifier(bytes32 domainHash) external view virtual returns (Verifier);
+    function domainVerifier(bytes32 domainHash) external view returns (Verifier);
 
     function addAuthorizer(uint256 authorizerId, Authorizer authorizer) external;
 }

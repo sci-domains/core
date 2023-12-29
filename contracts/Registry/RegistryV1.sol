@@ -17,7 +17,9 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
 
     mapping(bytes32 => Record) public domainHashToRecord;
     mapping(uint256 => Authorizer) public authorizers;
+    mapping(uint256 => Verifier) public trustedVerifiers;
     bytes32 public constant ADD_AUTHORIZER_ROLE = keccak256('ADD_AUTHORIZER_ROLE');
+    bytes32 public constant ADD_TRUSTED_VERIFIER_ROLE = keccak256('ADD_TRUSTED_VERIFIER_ROLE');
     NameHash public immutable nameHashUtils;
 
     modifier onlyDomainOwner(bytes32 domainHash) {
@@ -29,6 +31,18 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         nameHashUtils = NameHash(_nameHashAddress);
     }
 
+    function registerDomainWithTrustedVerifier(
+        uint256 authorizer,
+        address owner,
+        string memory domain,
+        bool isWildcard,
+        uint256 trustedVerifier
+    ) external {
+        bytes32 domainHash = nameHashUtils.getDomainHash(domain);
+        _registerDomain(authorizer, owner, domainHash, domain, isWildcard);
+        domainHashToRecord[domainHash].verifier = trustedVerifiers[trustedVerifier];
+    }
+
     function registerDomain(
         uint256 authorizer,
         address owner,
@@ -36,7 +50,16 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         bool isWildcard
     ) external {
         bytes32 domainHash = nameHashUtils.getDomainHash(domain);
+        _registerDomain(authorizer, owner, domainHash, domain, isWildcard);
+    }
 
+    function _registerDomain(
+        uint256 authorizer,
+        address owner,
+        bytes32 domainHash,
+        string memory domain,
+        bool isWildcard
+    ) internal {
         if (!authorizers[authorizer].isAuthorized(owner, domainHash)) {
             revert AccountIsNotAuthorizeToRegisterDomain(owner, domainHash);
         }
@@ -50,8 +73,6 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         }
 
         domainHashToRecord[recordDomain].owner = owner;
-
-        // TODO: Improve
         emit DomainRegistered(authorizer, owner, recordDomain, domain);
     }
 
@@ -66,6 +87,7 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         return domainHashToRecord[domainHash].owner;
     }
 
+    // TODO: This should be setVerifier
     function addVerifier(
         bytes32 domainHash,
         Verifier verifier
@@ -90,5 +112,13 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
     ) external onlyRole(ADD_AUTHORIZER_ROLE) {
         authorizers[authorizerId] = authorizer;
         emit AuthorizerAdded(authorizerId, authorizer, _msgSender());
+    }
+
+    function addTrustedVerifier(
+        uint256 verifierId,
+        Verifier verifier
+    ) external onlyRole(ADD_TRUSTED_VERIFIER_ROLE) {
+        trustedVerifiers[verifierId] = verifier;
+        emit TrustedVerifierAdded(verifierId, verifier, _msgSender());
     }
 }
