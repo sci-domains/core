@@ -18,7 +18,6 @@ contract RegistryV0 is Registry, Context, AccessControlDefaultAdminRules {
     mapping(bytes32 => Record) public domainHashToRecord;
     mapping(uint256 => Authorizer) public authorizers;
     bytes32 public constant ADD_AUTHORIZER_ROLE = keccak256('ADD_AUTHORIZER_ROLE');
-    bytes32 public constant ADD_TRUSTED_VERIFIER_ROLE = keccak256('ADD_TRUSTED_VERIFIER_ROLE');
     NameHash public immutable nameHashUtils;
 
     modifier onlyDomainOwner(bytes32 domainHash) {

@@ -18,10 +18,9 @@ interface Registry {
     error AccountIsNotAuthorizeToRegisterDomain(address account, bytes32 domainHash);
     error AccountIsNotDomainOwner(address account, bytes32 domainHash);
 
-    // TODO Add public variables?
     function domainHashToRecord(
         bytes32 domainHash
-    ) external returns (address owner, Verifier verifier);
+    ) external view returns (address owner, Verifier verifier);
 
     function registerDomain(
         uint256 authorizer,

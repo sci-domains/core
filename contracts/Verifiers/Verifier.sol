@@ -6,5 +6,5 @@ interface Verifier {
         bytes32 domainHash,
         uint256 chainId,
         address contractAddress
-    ) external returns (bool);
+    ) external view returns (bool);
 }

@@ -1,7 +1,7 @@
 import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import '@nomiclabs/hardhat-solhint';
-import '@nomicfoundation/hardhat-network-helpers';
+import '@openzeppelin/hardhat-upgrades';
 import 'dotenv/config';
 
 const config: HardhatUserConfig = {
@@ -16,6 +16,9 @@ const config: HardhatUserConfig = {
       url: process.env.ETHEREUM_GOERLI_PROVIDER_URL!,
       accounts: [process.env.ETHEREUM_GOERLI_PRIVATE_KEY!],
     },
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY!,
   },
 };
 
