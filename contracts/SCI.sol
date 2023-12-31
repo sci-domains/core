@@ -19,22 +19,6 @@ contract SCI is Initializable {
         return registry.domainOwner(domainHash);
     }
 
-    function registerDomainWithTrustedVerifier(
-        uint256 authorizer,
-        address owner,
-        string memory domain,
-        bool isWildcard,
-        uint256 trustedVerifier
-    ) external {
-        registry.registerDomainWithTrustedVerifier(
-            authorizer,
-            owner,
-            domain,
-            isWildcard,
-            trustedVerifier
-        );
-    }
-
     function isVerifiedForDomainHash(
         bytes32 domainHash,
         uint256 chainId,
@@ -83,10 +67,6 @@ contract SCI is Initializable {
         address contractAddress
     ) public returns (bool) {
         return
-            isVerifiedForDomainHash(
-                nameHashUtils.getDomainHash(domains[i]),
-                chainId,
-                contractAddress
-            );
+            isVerifiedForDomainHash(nameHashUtils.getDomainHash(domain), chainId, contractAddress);
     }
 }

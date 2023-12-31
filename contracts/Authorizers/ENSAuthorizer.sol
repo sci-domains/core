@@ -11,6 +11,13 @@ contract ENSAuthorizer is Authorizer {
         ensRegistry = ENS(_ensRegistryAddress);
     }
 
+    /**
+    * @dev Validates if an address is authorized to register a domain.
+        This function returns always false
+     * @param sender The address trying to register the domain.
+     * @param domain The name hash of the domain.
+     * @return false
+     */
     function isAuthorized(address sender, bytes32 domain) external view returns (bool) {
         address owner = ensRegistry.owner(domain);
         return (owner == sender);

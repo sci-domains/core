@@ -37,14 +37,6 @@ interface Registry {
         Verifier verifier
     ) external;
 
-    function registerDomainWithTrustedVerifier(
-        uint256 authorizer,
-        address owner,
-        string memory domain,
-        bool isWildcard,
-        uint256 trustedVerifier
-    ) external;
-
     function isDomainOwner(bytes32 domainHash, address account) external view returns (bool);
 
     function domainOwner(bytes32 domainHash) external view returns (address);

@@ -17,7 +17,6 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
 
     mapping(bytes32 => Record) public domainHashToRecord;
     mapping(uint256 => Authorizer) public authorizers;
-    mapping(uint256 => Verifier) public trustedVerifiers;
     bytes32 public constant ADD_AUTHORIZER_ROLE = keccak256('ADD_AUTHORIZER_ROLE');
     bytes32 public constant ADD_TRUSTED_VERIFIER_ROLE = keccak256('ADD_TRUSTED_VERIFIER_ROLE');
     NameHash public immutable nameHashUtils;
@@ -31,24 +30,13 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         nameHashUtils = NameHash(_nameHashAddress);
     }
 
-    function registerDomainWithTrustedVerifier(
-        uint256 authorizer,
-        address owner,
-        string memory domain,
-        bool isWildcard,
-        uint256 trustedVerifier
-    ) external {
-        bytes32 domainHash = _registerDomain(authorizer, owner, domainHash, domain, isWildcard);
-        domainHashToRecord[domainHash].verifier = trustedVerifiers[trustedVerifier];
-    }
-
     function registerDomain(
         uint256 authorizer,
         address owner,
         string memory domain,
         bool isWildcard
     ) external {
-        _registerDomain(authorizer, owner, domainHash, domain, isWildcard);
+        _registerDomain(authorizer, owner, domain, isWildcard);
     }
 
     function registerDomainWithVerifier(
@@ -57,23 +45,18 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         bool isWildcard,
         Verifier verifier
     ) external {
-        bytes32 domainHash = _registerDomain(
-            authorizer,
-            _msgSender(),
-            domainHash,
-            domain,
-            isWildcard
-        );
+        bytes32 domainHash = _registerDomain(authorizer, _msgSender(), domain, isWildcard);
         domainHashToRecord[domainHash].verifier = verifier;
     }
 
     function _registerDomain(
         uint256 authorizer,
         address owner,
-        bytes32 domainHash,
         string memory domain,
         bool isWildcard
     ) internal returns (bytes32) {
+        bytes32 domainHash = nameHashUtils.getDomainHash(domain);
+
         if (!authorizers[authorizer].isAuthorized(owner, domainHash)) {
             revert AccountIsNotAuthorizeToRegisterDomain(owner, domainHash);
         }
@@ -128,13 +111,5 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
     ) external onlyRole(ADD_AUTHORIZER_ROLE) {
         authorizers[authorizerId] = authorizer;
         emit AuthorizerAdded(authorizerId, authorizer, _msgSender());
-    }
-
-    function addTrustedVerifier(
-        uint256 verifierId,
-        Verifier verifier
-    ) external onlyRole(ADD_TRUSTED_VERIFIER_ROLE) {
-        trustedVerifiers[verifierId] = verifier;
-        emit TrustedVerifierAdded(verifierId, verifier, _msgSender());
     }
 }
