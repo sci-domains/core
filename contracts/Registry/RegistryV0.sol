@@ -9,7 +9,7 @@ import '../Authorizers/Authorizer.sol';
 import '../Verifiers/Verifier.sol';
 import './Registry.sol';
 
-contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
+contract RegistryV0 is Registry, Context, AccessControlDefaultAdminRules {
     struct Record {
         address owner;
         Verifier verifier;

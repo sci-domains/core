@@ -1,7 +1,7 @@
 import { ethers } from 'hardhat';
 import { ADD_AUTHORIZER_ROLE } from '../../utils/roles';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { AlwaysTrueAuthorizer, PublicListVerifier, RegistryV1 } from '../../typechain-types';
+import { AlwaysTrueAuthorizer, PublicListVerifier, RegistryV0 } from '../../typechain-types';
 import { expect } from 'chai';
 import { MaxUint256 } from 'ethers';
 
@@ -16,7 +16,7 @@ describe('Public List Verifier', function () {
   let owner: HardhatEthersSigner;
   let domainOwner: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
-  let registry: RegistryV1;
+  let registry: RegistryV0;
   let alwaysTrueAuthorizer: AlwaysTrueAuthorizer;
   let publicListverifier: PublicListVerifier;
 
@@ -26,7 +26,7 @@ describe('Public List Verifier', function () {
     const NameHashFactory = await ethers.getContractFactory('NameHash');
     const nameHash = await NameHashFactory.deploy();
 
-    const RegistryFactory = await ethers.getContractFactory('RegistryV1');
+    const RegistryFactory = await ethers.getContractFactory('RegistryV0');
     registry = await RegistryFactory.deploy(await nameHash.getAddress());
     await registry.grantRole(ADD_AUTHORIZER_ROLE, owner.address);
 

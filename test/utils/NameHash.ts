@@ -2,7 +2,7 @@ import { ethers } from 'hardhat';
 import { NameHash } from '../../typechain-types';
 import { expect } from 'chai';
 
-describe('RegistryV1', function () {
+describe('RegistryV0', function () {
   let nameHash: NameHash;
 
   beforeEach(async () => {
