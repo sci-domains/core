@@ -6,9 +6,21 @@ import '../Registry/Registry.sol';
 import '../Utils/DomainManager.sol';
 
 contract PublicListVerifier is Verifier, Context, DomainManager {
-    uint256 immutable MAX_INT = 2 ** 256 - 1;
+    uint256 constant MAX_INT = 2 ** 256 - 1;
 
-    // TODO: This should be private
+    event AddressRemoved(
+        bytes32 indexed domainHash,
+        uint256 indexed chainId,
+        address indexed contractAddress,
+        address msgSender
+    );
+    event AddressAdded(
+        bytes32 indexed domainHash,
+        uint256 indexed chainId,
+        address indexed contractAddress,
+        address msgSender
+    );
+
     mapping(bytes32 => mapping(address => mapping(uint256 => bool))) public verifiedContracts;
 
     constructor(address _registry) DomainManager(_registry) {}
@@ -19,7 +31,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
         address contractAddress
     ) public onlyDomainOwner(domainHash) {
         verifiedContracts[domainHash][contractAddress][chainId] = true;
-        // TODO: Add Event
+        emit AddressAdded(domainHash, chainId, contractAddress, _msgSender());
     }
 
     function removeAddress(
@@ -28,7 +40,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
         address contractAddress
     ) public onlyDomainOwner(domainHash) {
         verifiedContracts[domainHash][contractAddress][chainId] = false;
-        // TODO: Add Event
+        emit AddressRemoved(domainHash, chainId, contractAddress, _msgSender());
     }
 
     function isVerified(

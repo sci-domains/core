@@ -5,9 +5,6 @@ import '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
 import './Authorizer.sol';
 
 contract ENSAuthorizer is Authorizer {
-    // 365 days ~= one year
-    uint256 constant ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
-
     ENS public ensRegistry;
 
     constructor(address _ensRegistryAddress) {

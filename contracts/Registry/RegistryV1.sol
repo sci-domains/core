@@ -38,9 +38,7 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         bool isWildcard,
         uint256 trustedVerifier
     ) external {
-        bytes32 domainHash = nameHashUtils.getDomainHash(domain);
-        _registerDomain(authorizer, owner, domainHash, domain, isWildcard);
-        // TODO: Throw error if trusted verifier is 0x0
+        bytes32 domainHash = _registerDomain(authorizer, owner, domainHash, domain, isWildcard);
         domainHashToRecord[domainHash].verifier = trustedVerifiers[trustedVerifier];
     }
 
@@ -50,8 +48,23 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         string memory domain,
         bool isWildcard
     ) external {
-        bytes32 domainHash = nameHashUtils.getDomainHash(domain);
         _registerDomain(authorizer, owner, domainHash, domain, isWildcard);
+    }
+
+    function registerDomainWithVerifier(
+        uint256 authorizer,
+        string memory domain,
+        bool isWildcard,
+        Verifier verifier
+    ) external {
+        bytes32 domainHash = _registerDomain(
+            authorizer,
+            _msgSender(),
+            domainHash,
+            domain,
+            isWildcard
+        );
+        domainHashToRecord[domainHash].verifier = verifier;
     }
 
     function _registerDomain(
@@ -60,7 +73,7 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
         bytes32 domainHash,
         string memory domain,
         bool isWildcard
-    ) internal {
+    ) internal returns (bytes32) {
         if (!authorizers[authorizer].isAuthorized(owner, domainHash)) {
             revert AccountIsNotAuthorizeToRegisterDomain(owner, domainHash);
         }
@@ -75,6 +88,8 @@ contract RegistryV1 is Registry, Context, AccessControlDefaultAdminRules {
 
         domainHashToRecord[recordDomain].owner = owner;
         emit DomainRegistered(authorizer, owner, recordDomain, domain);
+
+        return domainHash;
     }
 
     function isDomainOwner(

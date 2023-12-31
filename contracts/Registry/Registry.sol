@@ -30,6 +30,13 @@ interface Registry {
         bool isWildcard
     ) external;
 
+    function registerDomainWithVerifier(
+        uint256 authorizer,
+        string memory domain,
+        bool isWildcard,
+        Verifier verifier
+    ) external;
+
     function registerDomainWithTrustedVerifier(
         uint256 authorizer,
         address owner,

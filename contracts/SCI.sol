@@ -4,12 +4,13 @@ pragma solidity 0.8.20;
 import './Verifiers/Verifier.sol';
 import './Registry/Registry.sol';
 import './Utils/NameHash.sol';
+import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
-contract SCI {
-    Registry registry;
-    NameHash nameHashUtils;
+contract SCI is Initializable {
+    Registry public registry;
+    NameHash public nameHashUtils;
 
-    constructor(address registryAddress, address nameHashAddress) {
+    function initialize(address registryAddress, address nameHashAddress) public initializer {
         registry = Registry(registryAddress);
         nameHashUtils = NameHash(nameHashAddress);
     }
@@ -74,5 +75,18 @@ contract SCI {
             );
         }
         return domainsVerification;
+    }
+
+    function isVerifiedForDomain(
+        string memory domain,
+        uint256 chainId,
+        address contractAddress
+    ) public returns (bool) {
+        return
+            isVerifiedForDomainHash(
+                nameHashUtils.getDomainHash(domains[i]),
+                chainId,
+                contractAddress
+            );
     }
 }
