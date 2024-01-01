@@ -1,6 +1,6 @@
 import { ethers, upgrades } from 'hardhat';
 
-const SCI_ADDRESS = '0x2e5dc9078562F3De22e5A5D1A74dD79048C8bD5d';
+const SCI_ADDRESS = '0xB015ac4d088B8693f18e16b820937875FB5703f6';
 
 async function main() {
   const SCIFactory = await ethers.getContractFactory('SCI');

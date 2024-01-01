@@ -26,6 +26,10 @@ contract SCI is Initializable {
     ) public view returns (bool) {
         (, Verifier verifier) = registry.domainHashToRecord(domainHash);
 
+        if (address(verifier) == address(0)) {
+            return false;
+        }
+
         return verifier.isVerified(domainHash, chainId, contractAddress);
     }
 
@@ -34,8 +38,8 @@ contract SCI is Initializable {
         uint256 chainId,
         address contractAddress
     ) public view returns (bool[] memory) {
-        bool[] memory domainsVerification;
-        for (uint256 i; i < domainsHash.length; i++) {
+        bool[] memory domainsVerification = new bool[](domainsHash.length);
+        for (uint256 i = 0; i < domainsHash.length; i++) {
             domainsVerification[i] = isVerifiedForDomainHash(
                 domainsHash[i],
                 chainId,
@@ -50,8 +54,8 @@ contract SCI is Initializable {
         uint256 chainId,
         address contractAddress
     ) public view returns (bool[] memory) {
-        bool[] memory domainsVerification;
-        for (uint256 i; i < domains.length; i++) {
+        bool[] memory domainsVerification = new bool[](domains.length);
+        for (uint256 i = 0; i < domains.length; i++) {
             domainsVerification[i] = isVerifiedForDomainHash(
                 nameHashUtils.getDomainHash(domains[i]),
                 chainId,

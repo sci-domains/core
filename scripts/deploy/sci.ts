@@ -5,8 +5,10 @@ const NAME_HASH_ADDRESS = '0x65fc5b21BDd27726510F554b62E60e3cAA9B2C9A';
 
 async function main() {
   const SCIFactory = await ethers.getContractFactory('SCI');
-  const box = await upgrades.deployProxy(SCIFactory, [REGISTRY_ADDRESS, NAME_HASH_ADDRESS]);
-  const sci = await SCIFactory.deploy();
+  const sci = await upgrades.deployProxy(SCIFactory, [REGISTRY_ADDRESS, NAME_HASH_ADDRESS], {
+    initializer: 'initialize',
+  });
+  await sci.deploy();
   console.log(`Deployed SCI to ${sci.target}`);
 }
 
