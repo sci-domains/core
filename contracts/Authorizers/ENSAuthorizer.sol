@@ -4,6 +4,10 @@ pragma solidity >=0.8.0 <0.9.0;
 import '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
 import './Authorizer.sol';
 
+/**
+ * @dev This contract implements the Authorizer interface and validates that the sender is
+ * the owner of the ENS domain using the ENS Registry
+ */
 contract ENSAuthorizer is Authorizer {
     ENS public ensRegistry;
 
@@ -12,11 +16,7 @@ contract ENSAuthorizer is Authorizer {
     }
 
     /**
-    * @dev Validates if an address is authorized to register a domain.
-        This function returns always false
-     * @param sender The address trying to register the domain.
-     * @param domain The name hash of the domain.
-     * @return false
+     * @dev See {Authorizer-version}.
      */
     function isAuthorized(address sender, bytes32 domain) external view returns (bool) {
         address owner = ensRegistry.owner(domain);

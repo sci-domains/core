@@ -1,6 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
+/**
+ * @dev Required interface of an Authorizer compliant contract for the SCI Registry
+ */
 interface Authorizer {
     /**
      * @dev Validates if an address is authorized to register a domain.

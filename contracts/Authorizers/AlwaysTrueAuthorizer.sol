@@ -3,13 +3,13 @@ pragma solidity 0.8.20;
 
 import './Authorizer.sol';
 
+/**
+ * @dev This contract implements the Authorizer interface and always returns true.
+ * This contract is meant to be used for testing purpose
+ */
 contract AlwaysTrueAuthorizer is Authorizer {
     /**
-     * @dev Validates if an address is authorized to register a domain.
-        This function returns always true
-     * @param sender The address trying to register the domain.
-     * @param domain The name hash of the domain.
-     * @return true
+     * @dev See {Authorizer-version}.
      */
     function isAuthorized(address sender, bytes32 domain) external view returns (bool) {
         return true;
