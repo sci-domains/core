@@ -8,8 +8,8 @@ interface Authorizer {
     /**
      * @dev Validates if an address is authorized to register a domain.
      * @param sender The address trying to register the domain.
-     * @param domain The name hash of the domain.
+     * @param domainHash The name hash of the domain.
      * @return a bool indicating if the sender is authorizer or not
      */
-    function isAuthorized(address sender, bytes32 domain) external returns (bool);
+    function isAuthorized(address sender, bytes32 domainHash) external returns (bool);
 }

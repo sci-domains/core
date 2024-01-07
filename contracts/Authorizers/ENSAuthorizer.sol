@@ -18,8 +18,8 @@ contract ENSAuthorizer is Authorizer {
     /**
      * @dev See {Authorizer-version}.
      */
-    function isAuthorized(address sender, bytes32 domain) external view returns (bool) {
-        address owner = ensRegistry.owner(domain);
+    function isAuthorized(address sender, bytes32 domainHash) external view returns (bool) {
+        address owner = ensRegistry.owner(domainHash);
         return (owner == sender);
     }
 }
