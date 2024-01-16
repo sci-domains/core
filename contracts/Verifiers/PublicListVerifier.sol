@@ -5,8 +5,18 @@ import './Verifier.sol';
 import '../Registry/Registry.sol';
 import '../Utils/DomainManager.sol';
 
+/**
+ * @dev This contract implements the Verifier interface.
+ * Domain owners can add or remove addresses that can interact within their domain
+ *
+ * If the owner of the domain sets a contract address with MAX_INT as chain id then it assumes
+ * this contract is verified for all chains for that domain
+ */
 contract PublicListVerifier is Verifier, Context, DomainManager {
     uint256 constant MAX_INT = 2 ** 256 - 1;
+
+    // Domain hash -> contract address -> chain id -> true/false
+    mapping(bytes32 => mapping(address => mapping(uint256 => bool))) public verifiedContracts;
 
     event AddressRemoved(
         bytes32 indexed domainHash,
@@ -21,32 +31,55 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
         address msgSender
     );
 
-    mapping(bytes32 => mapping(address => mapping(uint256 => bool))) public verifiedContracts;
-
     constructor(address _registry) DomainManager(_registry) {}
 
-    function addAddress(
+    /**
+     * @dev
+     *
+     * Requirements:
+     *
+     * - The message sender must be the owner of the domain
+     */
+    function addAddresses(
         bytes32 domainHash,
-        uint256 chainId,
-        address contractAddress
+        address[] calldata contractAddresses,
+        uint256[][] calldata chainIds
     ) public onlyDomainOwner(domainHash) {
-        verifiedContracts[domainHash][contractAddress][chainId] = true;
-        emit AddressAdded(domainHash, chainId, contractAddress, _msgSender());
+        for (uint256 i = 0; i < contractAddresses.length; i++) {
+            for (uint j = 0; j < chainIds[i].length; j++) {
+                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = true;
+                emit AddressAdded(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
+            }
+        }
     }
 
-    function removeAddress(
+    /**
+     * @dev See {IERC1155-balanceOfBatch}.
+     *
+     * Requirements:
+     *
+     * - The message sender must be the owner of the domain
+     */
+    function removeAddresses(
         bytes32 domainHash,
-        uint256 chainId,
-        address contractAddress
+        address[] calldata contractAddresses,
+        uint256[][] calldata chainIds
     ) public onlyDomainOwner(domainHash) {
-        verifiedContracts[domainHash][contractAddress][chainId] = false;
-        emit AddressRemoved(domainHash, chainId, contractAddress, _msgSender());
+        for (uint256 i = 0; i < contractAddresses.length; i++) {
+            for (uint j = 0; j < chainIds[i].length; j++) {
+                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = false;
+                emit AddressRemoved(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
+            }
+        }
     }
 
+    /**
+     * @dev See {Verifier-version}.
+     */
     function isVerified(
         bytes32 domainHash,
-        uint256 chainId,
-        address contractAddress
+        address contractAddress,
+        uint256 chainId
     ) public view returns (bool) {
         return
             verifiedContracts[domainHash][contractAddress][chainId] ||

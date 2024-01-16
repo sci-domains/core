@@ -45,14 +45,16 @@ describe('Public List Verifier', function () {
       const notOwner = addresses[0];
       const chainId = 1;
       await expect(
-        publicListverifier.connect(notOwner).addAddress(DOMAIN_HASH, chainId, registry.target),
+        publicListverifier
+          .connect(notOwner)
+          .addAddresses(DOMAIN_HASH, [registry.target], [[chainId]]),
       )
         .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
         .withArgs(notOwner.address, DOMAIN_HASH);
 
       await publicListverifier
         .connect(domainOwner)
-        .addAddress(DOMAIN_HASH, chainId, registry.target);
+        .addAddresses(DOMAIN_HASH, [registry.target], [[chainId]]);
       expect(await publicListverifier.verifiedContracts(DOMAIN_HASH, registry.target, CHAIN_ID)).to
         .be.true;
     });
@@ -64,17 +66,19 @@ describe('Public List Verifier', function () {
       const chainId = 1;
       await publicListverifier
         .connect(domainOwner)
-        .addAddress(DOMAIN_HASH, chainId, registry.target);
+        .addAddresses(DOMAIN_HASH, [registry.target], [[chainId]]);
 
       await expect(
-        publicListverifier.connect(notOwner).removeAddress(DOMAIN_HASH, chainId, registry.target),
+        publicListverifier
+          .connect(notOwner)
+          .removeAddresses(DOMAIN_HASH, [registry.target], [[chainId]]),
       )
         .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
         .withArgs(notOwner.address, DOMAIN_HASH);
 
       await publicListverifier
         .connect(domainOwner)
-        .removeAddress(DOMAIN_HASH, chainId, registry.target);
+        .removeAddresses(DOMAIN_HASH, [registry.target], [[chainId]]);
       expect(await publicListverifier.verifiedContracts(DOMAIN_HASH, registry.target, CHAIN_ID)).to
         .be.false;
     });
@@ -82,37 +86,39 @@ describe('Public List Verifier', function () {
 
   describe('Verify Address', function () {
     beforeEach(async () => {
-      await publicListverifier.connect(domainOwner).addAddress(DOMAIN_HASH, 1, registry.target);
+      await publicListverifier
+        .connect(domainOwner)
+        .addAddresses(DOMAIN_HASH, [registry.target], [[1]]);
     });
 
     it('Should return true for a verified address', async function () {
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, CHAIN_ID, registry.target)).to.be
+      expect(await publicListverifier.isVerified(DOMAIN_HASH, registry.target, CHAIN_ID)).to.be
         .true;
     });
 
     it('Should return true for any chain if it is with the multi chain id', async function () {
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, CHAIN_ID + 1, registry.target)).to.be
+      expect(await publicListverifier.isVerified(DOMAIN_HASH, registry.target, CHAIN_ID + 1)).to.be
         .false;
       await publicListverifier
         .connect(domainOwner)
-        .addAddress(DOMAIN_HASH, MaxUint256, registry.target);
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, CHAIN_ID + 1, registry.target)).to.be
+        .addAddresses(DOMAIN_HASH, [registry.target], [[MaxUint256]]);
+      expect(await publicListverifier.isVerified(DOMAIN_HASH, registry.target, CHAIN_ID + 1)).to.be
         .true;
     });
 
     it('Should return false for a verified address in a wrong chain', async function () {
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, CHAIN_ID + 1, registry.target)).to.be
+      expect(await publicListverifier.isVerified(DOMAIN_HASH, registry.target, CHAIN_ID + 1)).to.be
         .false;
     });
 
     it('Should return false for an unverified address', async function () {
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, CHAIN_ID, publicListverifier.target))
+      expect(await publicListverifier.isVerified(DOMAIN_HASH, publicListverifier.target, CHAIN_ID))
         .to.be.false;
     });
 
     it('Should return false for an unregistered domain', async function () {
       expect(
-        await publicListverifier.isVerified(DOMAIN_WITH_WILDCARD_HASH, CHAIN_ID, registry.target),
+        await publicListverifier.isVerified(DOMAIN_WITH_WILDCARD_HASH, registry.target, CHAIN_ID),
       ).to.be.false;
     });
   });

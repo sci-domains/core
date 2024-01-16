@@ -21,8 +21,8 @@ contract SCI is Initializable {
 
     function isVerifiedForDomainHash(
         bytes32 domainHash,
-        uint256 chainId,
-        address contractAddress
+        address contractAddress,
+        uint256 chainId
     ) public view returns (bool) {
         (, Verifier verifier) = registry.domainHashToRecord(domainHash);
 
@@ -30,20 +30,20 @@ contract SCI is Initializable {
             return false;
         }
 
-        return verifier.isVerified(domainHash, chainId, contractAddress);
+        return verifier.isVerified(domainHash, contractAddress, chainId);
     }
 
     function isVerifiedForMultipleDomainHashes(
         bytes32[] memory domainsHash,
-        uint256 chainId,
-        address contractAddress
+        address contractAddress,
+        uint256 chainId
     ) public view returns (bool[] memory) {
         bool[] memory domainsVerification = new bool[](domainsHash.length);
         for (uint256 i = 0; i < domainsHash.length; i++) {
             domainsVerification[i] = isVerifiedForDomainHash(
                 domainsHash[i],
-                chainId,
-                contractAddress
+                contractAddress,
+                chainId
             );
         }
         return domainsVerification;
@@ -51,15 +51,15 @@ contract SCI is Initializable {
 
     function isVerifiedForMultipleDomains(
         string[] memory domains,
-        uint256 chainId,
-        address contractAddress
+        address contractAddress,
+        uint256 chainId
     ) public view returns (bool[] memory) {
         bool[] memory domainsVerification = new bool[](domains.length);
         for (uint256 i = 0; i < domains.length; i++) {
             domainsVerification[i] = isVerifiedForDomainHash(
                 nameHashUtils.getDomainHash(domains[i]),
-                chainId,
-                contractAddress
+                contractAddress,
+                chainId
             );
         }
         return domainsVerification;
@@ -67,10 +67,10 @@ contract SCI is Initializable {
 
     function isVerifiedForDomain(
         string memory domain,
-        uint256 chainId,
-        address contractAddress
+        address contractAddress,
+        uint256 chainId
     ) public view returns (bool) {
         return
-            isVerifiedForDomainHash(nameHashUtils.getDomainHash(domain), chainId, contractAddress);
+            isVerifiedForDomainHash(nameHashUtils.getDomainHash(domain), contractAddress, chainId);
     }
 }
