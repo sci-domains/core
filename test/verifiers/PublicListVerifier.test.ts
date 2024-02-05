@@ -32,7 +32,7 @@ describe('Public List Verifier', function () {
 
     const AlwaysTrueAuthorizer = await ethers.getContractFactory('AlwaysTrueAuthorizer');
     alwaysTrueAuthorizer = await AlwaysTrueAuthorizer.deploy();
-    await registry.addAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer);
+    await registry.setAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer);
 
     const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
     publicListverifier = await PubicListVerifierFactory.deploy(registry.target);

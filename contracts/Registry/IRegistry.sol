@@ -7,10 +7,10 @@ import '../Verifiers/Verifier.sol';
 interface IRegistry {
     /**
      * @dev Emitted when a new `domain` with the `domainHash` is
-     * registered by the `owner` using the `authorizer`.
+     * registered by the `owner` using the authorizer with id `authorizerId`.
      */
     event DomainRegistered(
-        uint256 indexed authorizer,
+        uint256 indexed authorizerId,
         address indexed owner,
         bytes32 indexed domainHash,
         string domain
@@ -21,14 +21,14 @@ interface IRegistry {
      *
      * NOTE: This will also be emitted when the verifier is changed.
      */
-    event VerifierAdded(address indexed owner, bytes32 domainHash, Verifier indexed verifier);
+    event VerifierSet(address indexed owner, bytes32 domainHash, Verifier indexed verifier);
 
     /**
      * @dev Emitted when the `msgSender` adds and `authorizer` with id `authorizerId`.
      *
      * NOTE: This will also be emitted when the authorizer is changed for an existing id.
      */
-    event AuthorizerAdded(uint256 indexed authorizerId, Authorizer authorizer, address msgSender);
+    event AuthorizerSet(uint256 indexed authorizerId, Authorizer authorizer, address msgSender);
 
     /**
      * @dev Thrown when the `account` is not authorized to register the domain with namehash `domainHash`.
@@ -45,7 +45,7 @@ interface IRegistry {
     /**
      * @dev Register a domain.
      *
-     * @param authorizer The id of the authorizer being used.
+     * @param authorizerId The id of the authorizer being used.
      * @param owner The owner of the domain.
      * @param domain The domain being registered (example.com).
      * @param isWildcard If you are registering a wildcard to set a verifier for all subdomains.
@@ -59,7 +59,7 @@ interface IRegistry {
      * May emit a {DomainRegistered} event.
      */
     function registerDomain(
-        uint256 authorizer,
+        uint256 authorizerId,
         address owner,
         string memory domain,
         bool isWildcard
@@ -68,7 +68,7 @@ interface IRegistry {
     /**
      * @dev Same as registerDomain but it also adds a verifier.
      *
-     * @param authorizer The id of the authorizer being used.
+     * @param authorizerId The id of the authorizer being used.
      * @param domain The domain being registered (example.com).
      * @param isWildcard if you are registering a wildcard to set a verifier for all subdomains.
      * @param verifier the verifier that is being set for the domain.
@@ -80,7 +80,7 @@ interface IRegistry {
      * May emit a {DomainRegistered} and a {VerifierAdded} events.
      */
     function registerDomainWithVerifier(
-        uint256 authorizer,
+        uint256 authorizerId,
         string memory domain,
         bool isWildcard,
         Verifier verifier
@@ -106,24 +106,28 @@ interface IRegistry {
     function domainVerifier(bytes32 domainHash) external view returns (Verifier);
 
     /**
-     * @dev Adds a verifier to the domain hash.
+     * @dev Sets a verifier to the domain hash.
      *
      * Requirements:
      *
      * - the caller must be the owner of the domain.
      *
      * May emit a {VerifierAdded} event.
+     *
+     * NOTE: If you want to remove a verifier you can set it to the ZERO_ADDRESS
      */
-    function addVerifier(bytes32 domainHash, Verifier verifier) external;
+    function setVerifier(bytes32 domainHash, Verifier verifier) external;
 
     /**
-     * @dev Adds an authorizer with id `authorizerId`.
+     * @dev Sets an authorizer with id `authorizerId`.
      *
      * Requirements:
      *
      * - the caller must have the ADD_AUTHORIZER_ROLE role.
      *
      * May emit a {AuthorizerAdded} event.
+     *
+     * NOTE: If you want to remove an authorizer you can set it to the ZERO_ADDRESS
      */
-    function addAuthorizer(uint256 authorizerId, Authorizer authorizer) external;
+    function setAuthorizer(uint256 authorizerId, Authorizer authorizer) external;
 }

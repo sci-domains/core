@@ -42,24 +42,24 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      * @dev See {IRegistry-version}.
      */
     function registerDomain(
-        uint256 authorizer,
+        uint256 authorizerId,
         address owner,
         string memory domain,
         bool isWildcard
     ) external {
-        _registerDomain(authorizer, owner, domain, isWildcard);
+        _registerDomain(authorizerId, owner, domain, isWildcard);
     }
 
     /**
      * @dev See {IRegistry-version}.
      */
     function registerDomainWithVerifier(
-        uint256 authorizer,
+        uint256 authorizerId,
         string memory domain,
         bool isWildcard,
         Verifier verifier
     ) external {
-        bytes32 domainHash = _registerDomain(authorizer, _msgSender(), domain, isWildcard);
+        bytes32 domainHash = _registerDomain(authorizerId, _msgSender(), domain, isWildcard);
         domainHashToRecord[domainHash].verifier = verifier;
     }
 
@@ -80,16 +80,15 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
         return domainHashToRecord[domainHash].owner;
     }
 
-    // TODO: This should be setVerifier
     /**
      * @dev See {IRegistry-version}.
      */
-    function addVerifier(
+    function setVerifier(
         bytes32 domainHash,
         Verifier verifier
     ) external onlyDomainOwner(domainHash) {
         domainHashToRecord[domainHash].verifier = verifier;
-        emit VerifierAdded(_msgSender(), domainHash, verifier);
+        emit VerifierSet(_msgSender(), domainHash, verifier);
     }
 
     /**
@@ -102,18 +101,18 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     /**
      * @dev See {IRegistry-version}.
      */
-    function addAuthorizer(
+    function setAuthorizer(
         uint256 authorizerId,
         Authorizer authorizer
     ) external onlyRole(ADD_AUTHORIZER_ROLE) {
         authorizers[authorizerId] = authorizer;
-        emit AuthorizerAdded(authorizerId, authorizer, _msgSender());
+        emit AuthorizerSet(authorizerId, authorizer, _msgSender());
     }
 
     /**
      * @dev Base function to register a domain.
      *
-     * @param authorizer The id of the authorizer being used.
+     * @param authorizerId The id of the authorizer being used.
      * @param owner The owner of the domain.
      * @param domain The domain being registered (example.com).
      * @param isWildcard If you are registering a wildcard to set a verifier for all subdomains.
@@ -128,14 +127,14 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      * May emit a {DomainRegistered} event.
      */
     function _registerDomain(
-        uint256 authorizer,
+        uint256 authorizerId,
         address owner,
         string memory domain,
         bool isWildcard
     ) internal returns (bytes32) {
         bytes32 domainHash = nameHashUtils.getDomainHash(domain);
 
-        if (!authorizers[authorizer].isAuthorized(owner, domainHash)) {
+        if (!authorizers[authorizerId].isAuthorized(owner, domainHash)) {
             revert AccountIsNotAuthorizeToRegisterDomain(owner, domainHash);
         }
 
@@ -148,7 +147,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
         }
 
         domainHashToRecord[recordDomain].owner = owner;
-        emit DomainRegistered(authorizer, owner, recordDomain, domain);
+        emit DomainRegistered(authorizerId, owner, recordDomain, domain);
 
         return domainHash;
     }

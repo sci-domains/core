@@ -38,11 +38,11 @@ describe('Registry', function () {
 
     const AlwaysTrueAuthorizer = await ethers.getContractFactory('AlwaysTrueAuthorizer');
     alwaysTrueAuthorizer = await AlwaysTrueAuthorizer.deploy();
-    await registry.addAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer);
+    await registry.setAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer);
 
     const AlwaysFalseAuthorizer = await ethers.getContractFactory('AlwaysFalseAuthorizer');
     alwaysFalseAuthorizer = await AlwaysFalseAuthorizer.deploy();
-    await registry.addAuthorizer(ALWAYS_FALSE_AUTHORIZER_ID, alwaysFalseAuthorizer);
+    await registry.setAuthorizer(ALWAYS_FALSE_AUTHORIZER_ID, alwaysFalseAuthorizer);
 
     const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
     publicListverifier = await PubicListVerifierFactory.deploy(registry.target);
@@ -50,22 +50,22 @@ describe('Registry', function () {
 
   describe('Add authorizer', function () {
     it('Should only let the owner add an authorizer', async function () {
-      await registry.addAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer);
+      await registry.setAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer);
       expect(await registry.authorizers(ALWAYS_TRUE_AUTHORIZER_ID)).to.equal(
         alwaysTrueAuthorizer.target,
       );
 
       const notOwner = addresses[1];
       await expect(
-        registry.connect(notOwner).addAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer),
+        registry.connect(notOwner).setAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer),
       )
         .revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
         .withArgs(notOwner.address, ADD_AUTHORIZER_ROLE);
     });
 
     it('Should emit an event when an authorizer is added', async function () {
-      await expect(registry.addAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer))
-        .to.emit(registry, 'AuthorizerAdded')
+      await expect(registry.setAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer))
+        .to.emit(registry, 'AuthorizerSet')
         .withArgs(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer.target, owner.address);
     });
   });
@@ -165,11 +165,11 @@ describe('Registry', function () {
     });
 
     it('Should only let the owner of the domain add a verifier', async function () {
-      await registry.connect(domainOwner).addVerifier(DOMAIN_HASH, publicListverifier.target);
+      await registry.connect(domainOwner).setVerifier(DOMAIN_HASH, publicListverifier.target);
       expect(await registry.domainVerifier(DOMAIN_HASH)).to.equal(publicListverifier.target);
 
       await expect(
-        registry.connect(notDomainOwner).addVerifier(DOMAIN_HASH, publicListverifier.target),
+        registry.connect(notDomainOwner).setVerifier(DOMAIN_HASH, publicListverifier.target),
       )
         .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
         .withArgs(notDomainOwner.address, DOMAIN_HASH);
@@ -177,9 +177,9 @@ describe('Registry', function () {
 
     it('Should emit an event when a verifier is added', async function () {
       await expect(
-        registry.connect(domainOwner).addVerifier(DOMAIN_HASH, publicListverifier.target),
+        registry.connect(domainOwner).setVerifier(DOMAIN_HASH, publicListverifier.target),
       )
-        .to.emit(registry, 'VerifierAdded')
+        .to.emit(registry, 'VerifierSet')
         .withArgs(domainOwner.address, DOMAIN_HASH, publicListverifier.target);
     });
   });
