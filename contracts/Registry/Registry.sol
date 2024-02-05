@@ -4,7 +4,7 @@ pragma solidity 0.8.20;
 import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
-import '../Utils/NameHash.sol';
+import '../Ens/NameHash.sol';
 import '../Authorizers/Authorizer.sol';
 import '../Verifiers/Verifier.sol';
 import './IRegistry.sol';

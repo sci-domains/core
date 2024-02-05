@@ -3,7 +3,7 @@ pragma solidity 0.8.20;
 
 import './Verifiers/Verifier.sol';
 import './Registry/IRegistry.sol';
-import './Utils/NameHash.sol';
+import './Ens/NameHash.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
 contract SCI is Initializable {
