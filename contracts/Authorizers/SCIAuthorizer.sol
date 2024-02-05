@@ -8,7 +8,7 @@ import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/ext
  * @dev This contract implements the Authorizer interface
  * and validates that the sender has the IS_AUTHORIZED role.
  *
- * This contract is meant to be use in a test chain for testing
+ * This contract is meant to be use in a test chain for testing.
  */
 contract SCIAuthorizer is Authorizer, AccessControlDefaultAdminRules {
     bytes32 public constant IS_AUTHORIZED = keccak256('IS_AUTHORIZED');

@@ -6,7 +6,7 @@ import './Authorizer.sol';
 
 /**
  * @dev This contract implements the Authorizer interface and validates that the sender is
- * the owner of the ENS domain using the ENS IRegistry.sol
+ * the owner of the ENS domain using the ENS IRegistry.sol.
  */
 contract ENSAuthorizer is Authorizer {
     ENS public ensRegistry;

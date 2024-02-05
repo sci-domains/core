@@ -27,8 +27,9 @@ abstract contract DomainManager is Context {
 
     /**
      * @dev Modifier that checks that only the owner of the domain hash is able to call
-     * the function. Reverts with an {AccountIsNotDomainOwner} error
-     * including the account and the domain hash.
+     * the function.
+     * Reverts with an {AccountIsNotDomainOwner} error including the account
+     * and the domain hash.
      */
     modifier onlyDomainOwner(bytes32 domainHash) {
         _checkDomainOwner(domainHash);

@@ -5,7 +5,7 @@ import './Authorizer.sol';
 
 /**
  * @dev This contract implements the Authorizer interface and always returns true.
- * This contract is meant to be used for testing purpose
+ * This contract is meant to be used for testing only.
  */
 contract AlwaysTrueAuthorizer is Authorizer {
     /**

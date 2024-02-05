@@ -20,17 +20,17 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     INameHash public immutable nameHashUtils;
 
     /**
-     * @dev Maps the name hash of a domain to a Record
+     * @dev Maps the name hash of a domain to a Record.
      */
     mapping(bytes32 => Record) public domainHashToRecord;
 
     /**
-     * @dev Maps the id of an authorizer to the Authorizer address
+     * @dev Maps the id of an authorizer to the Authorizer address.
      */
     mapping(uint256 => Authorizer) public authorizers;
 
     /**
-     * @dev Sets the address for {nameHashUtils} and gives the deployer the ADMIN role
+     * @dev Sets the address for {nameHashUtils} and gives the deployer the ADMIN role.
      */
     constructor(
         address _nameHashAddress
@@ -113,13 +113,13 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     /**
      * @dev Base function to register a domain.
      *
-     * @param authorizer The id of the authorizer being used
-     * @param owner The owner of the domain
-     * @param domain The domain being registered (example.com)
-     * @param isWildcard If you are registering a wildcard to set a verifier for all subdomains
-     * @return the name hash of the domain
+     * @param authorizer The id of the authorizer being used.
+     * @param owner The owner of the domain.
+     * @param domain The domain being registered (example.com).
+     * @param isWildcard If you are registering a wildcard to set a verifier for all subdomains.
+     * @return the name hash of the domain.
      *
-     * NOTE: If wildcard is true then it registers the name hash of `*.domain`
+     * NOTE: If wildcard is true then it registers the name hash of `*.domain`.
      *
      * Requirements:
      *

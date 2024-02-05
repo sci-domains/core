@@ -5,7 +5,7 @@ import './INameHash.sol';
 
 /**
  * @dev Implementation of INameHash. For more information about the algorithm you can visit:
- * https://eips.ethereum.org/EIPS/eip-137#namehash-algorithm
+ * https://eips.ethereum.org/EIPS/eip-137#namehash-algorithm.
  */
 contract NameHash is INameHash {
     /**

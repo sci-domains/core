@@ -7,23 +7,30 @@ import '../DomainMangager/DomainManager.sol';
 
 /**
  * @dev This contract implements the Verifier interface.
- * Domain owners can add or remove addresses that can interact within their domain
+ * Domain owners can add or remove addresses that can interact within their domain.
  *
  * If the owner of the domain sets a contract address with MAX_INT as chain id then it assumes
- * this contract is verified for all chains for that domain
+ * this contract is verified for all chains for that domain.
  */
 contract PublicListVerifier is Verifier, Context, DomainManager {
     uint256 constant MAX_INT = 2 ** 256 - 1;
 
-    // Domain hash -> contract address -> chain id -> true/false
+    // Domain hash -> contract address -> chain id -> true/false.
     mapping(bytes32 => mapping(address => mapping(uint256 => bool))) public verifiedContracts;
 
+    /**
+     *  @dev Emitted when the `msgSender` removes an address to a `domainHash` for a `chainId`
+     */
     event AddressRemoved(
         bytes32 indexed domainHash,
         uint256 indexed chainId,
         address indexed contractAddress,
         address msgSender
     );
+
+    /**
+     *  @dev Emitted when the `msgSender` adds an address to a `domainHash` for a `chainId`
+     */
     event AddressAdded(
         bytes32 indexed domainHash,
         uint256 indexed chainId,
@@ -38,7 +45,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
      *
      * Requirements:
      *
-     * - The message sender must be the owner of the domain
+     * - The message sender must be the owner of the domain.
      */
     function addAddresses(
         bytes32 domainHash,
@@ -58,7 +65,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
      *
      * Requirements:
      *
-     * - The message sender must be the owner of the domain
+     * - The message sender must be the owner of the domain.
      */
     function removeAddresses(
         bytes32 domainHash,

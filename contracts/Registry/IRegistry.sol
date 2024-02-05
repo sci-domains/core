@@ -7,7 +7,7 @@ import '../Verifiers/Verifier.sol';
 interface IRegistry {
     /**
      * @dev Emitted when a new `domain` with the `domainHash` is
-     * registered by the `owner` using the `authorizer`
+     * registered by the `owner` using the `authorizer`.
      */
     event DomainRegistered(
         uint256 indexed authorizer,
@@ -17,26 +17,26 @@ interface IRegistry {
     );
 
     /**
-     * @dev Emitted when the `owner` of the `domainHash` add a `verifier`
+     * @dev Emitted when the `owner` of the `domainHash` add a `verifier`.
      *
-     * NOTE: This will also be emitted when the verifier is changed
+     * NOTE: This will also be emitted when the verifier is changed.
      */
     event VerifierAdded(address indexed owner, bytes32 domainHash, Verifier indexed verifier);
 
     /**
-     * @dev Emitted when the `msgSender` adds and `authorizer` with id `authorizerId`
+     * @dev Emitted when the `msgSender` adds and `authorizer` with id `authorizerId`.
      *
-     * NOTE: This will also be emitted when the authorizer is changed for an existing id
+     * NOTE: This will also be emitted when the authorizer is changed for an existing id.
      */
     event AuthorizerAdded(uint256 indexed authorizerId, Authorizer authorizer, address msgSender);
 
     /**
-     * @dev Thrown when the `account` is not authorized to register the domain with namehash `domainHash`
+     * @dev Thrown when the `account` is not authorized to register the domain with namehash `domainHash`.
      */
     error AccountIsNotAuthorizeToRegisterDomain(address account, bytes32 domainHash);
 
     /**
-     * @dev Returns the owner and the verifier for a given domainHash
+     * @dev Returns the owner and the verifier for a given domainHash.
      */
     function domainHashToRecord(
         bytes32 domainHash
@@ -45,12 +45,12 @@ interface IRegistry {
     /**
      * @dev Register a domain.
      *
-     * @param authorizer The id of the authorizer being used
-     * @param owner The owner of the domain
-     * @param domain The domain being registered (example.com)
-     * @param isWildcard If you are registering a wildcard to set a verifier for all subdomains
+     * @param authorizer The id of the authorizer being used.
+     * @param owner The owner of the domain.
+     * @param domain The domain being registered (example.com).
+     * @param isWildcard If you are registering a wildcard to set a verifier for all subdomains.
      *
-     * NOTE: If wildcard is true then it registers the name hash of `*.domain`
+     * NOTE: If wildcard is true then it registers the name hash of `*.domain`.
      *
      * Requirements:
      *
@@ -66,12 +66,12 @@ interface IRegistry {
     ) external;
 
     /**
-     * @dev Same as registerDomain but it also adds a verifier
+     * @dev Same as registerDomain but it also adds a verifier.
      *
-     * @param authorizer The id of the authorizer being used
-     * @param domain The domain being registered (example.com)
-     * @param isWildcard if you are registering a wildcard to set a verifier for all subdomains
-     * @param verifier the verifier that is being set for the domain
+     * @param authorizer The id of the authorizer being used.
+     * @param domain The domain being registered (example.com).
+     * @param isWildcard if you are registering a wildcard to set a verifier for all subdomains.
+     * @param verifier the verifier that is being set for the domain.
      *
      * Requirements:
      *
@@ -94,14 +94,14 @@ interface IRegistry {
     /**
      * @dev Returns the owner of the domainHash.
      *
-     * NOTE: If the domainHash is not registered it returns the ZERO_ADDRESS
+     * NOTE: If the domainHash is not registered it returns the ZERO_ADDRESS.
      */
     function domainOwner(bytes32 domainHash) external view returns (address);
 
     /**
      * @dev Returns the verifier of the domainHash.
      *
-     * NOTE: If the domainHash is not registered it returns the ZERO_ADDRESS
+     * NOTE: If the domainHash is not registered it returns the ZERO_ADDRESS.
      */
     function domainVerifier(bytes32 domainHash) external view returns (Verifier);
 
@@ -110,7 +110,7 @@ interface IRegistry {
      *
      * Requirements:
      *
-     * - the caller must be the owner of the domain
+     * - the caller must be the owner of the domain.
      *
      * May emit a {VerifierAdded} event.
      */
@@ -121,7 +121,7 @@ interface IRegistry {
      *
      * Requirements:
      *
-     * - the caller must have the ADD_AUTHORIZER_ROLE role
+     * - the caller must have the ADD_AUTHORIZER_ROLE role.
      *
      * May emit a {AuthorizerAdded} event.
      */
