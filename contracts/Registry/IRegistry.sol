@@ -37,6 +37,7 @@ interface IRegistry {
 
     /**
      * @dev Returns the owner and the verifier for a given domainHash.
+     * @param domainHash The name hash of the domain
      */
     function domainHashToRecord(
         bytes32 domainHash
@@ -93,20 +94,23 @@ interface IRegistry {
 
     /**
      * @dev Returns the owner of the domainHash.
-     *
-     * NOTE: If the domainHash is not registered it returns the ZERO_ADDRESS.
+     * @param domainHash The name hash of the domain
+     * @return the address of the owner or the ZERO_ADDRESS if the domain is not registered
      */
     function domainOwner(bytes32 domainHash) external view returns (address);
 
     /**
      * @dev Returns the verifier of the domainHash.
-     *
-     * NOTE: If the domainHash is not registered it returns the ZERO_ADDRESS.
+     * @param domainHash The name hash of the domain
+     * @return the address of the verifier or the ZERO_ADDRESS if the domain or
+     * the verifier are not registered
      */
     function domainVerifier(bytes32 domainHash) external view returns (Verifier);
 
     /**
      * @dev Sets a verifier to the domain hash.
+     * @param domainHash The name hash of the domain
+     * @param verifier The address of the verifier contract
      *
      * Requirements:
      *
@@ -120,6 +124,8 @@ interface IRegistry {
 
     /**
      * @dev Sets an authorizer with id `authorizerId`.
+     * @param authorizerId The id of the authorizer
+     * @param authorizer The address of the authorizer contract
      *
      * Requirements:
      *
