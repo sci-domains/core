@@ -2,7 +2,7 @@
 pragma solidity 0.8.20;
 
 import './Verifier.sol';
-import '../Registry/Registry.sol';
+import '../Registry/IRegistry.sol';
 import '../Utils/DomainManager.sol';
 
 /**

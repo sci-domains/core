@@ -4,7 +4,7 @@ import {
   AlwaysFalseAuthorizer,
   AlwaysTrueAuthorizer,
   PublicListVerifier,
-  RegistryV0,
+  Registry,
   SCI,
 } from '../typechain-types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
@@ -17,7 +17,7 @@ describe('SCI', function () {
   let owner: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
   let sci: SCI;
-  let registry: RegistryV0;
+  let registry: Registry;
   let alwaysTrueAuthorizer: AlwaysTrueAuthorizer;
   let alwaysFalseAuthorizer: AlwaysFalseAuthorizer;
   let publicListverifier: PublicListVerifier;
@@ -28,7 +28,7 @@ describe('SCI', function () {
     const NameHashFactory = await ethers.getContractFactory('NameHash');
     const nameHash = await NameHashFactory.deploy();
 
-    const RegistryFactory = await ethers.getContractFactory('RegistryV0');
+    const RegistryFactory = await ethers.getContractFactory('Registry');
     registry = await RegistryFactory.deploy(await nameHash.getAddress());
     await registry.grantRole(ADD_AUTHORIZER_ROLE, owner.address);
     await registry.grantRole(ADD_TRUSTED_VERIFIER_ROLE, owner.address);

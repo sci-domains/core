@@ -1,11 +1,21 @@
 {
-  "name": "core",
+  "name": "sci-core",
+  "description": "Smart contracts for the Secure Contract Interaction protocol",
   "version": "1.0.0",
   "license": "MIT",
+  "files": ["/contracts/**/*.sol"],
   "scripts": {
-    "compile": "yarn hardhat compile",
-    "test": "yarn hardhat test"
+    "compile": "hardhat compile",
+    "test": "hardhat test"
   },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "security",
+    "sci"
+  ],
   "devDependencies": {
     "@ensdomains/ens-contracts": "^0.0.22",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",

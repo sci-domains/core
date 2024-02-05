@@ -2,16 +2,16 @@
 pragma solidity 0.8.20;
 
 import './Verifiers/Verifier.sol';
-import './Registry/Registry.sol';
+import './Registry/IRegistry.sol';
 import './Utils/NameHash.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
 contract SCI is Initializable {
-    Registry public registry;
+    IRegistry public registry;
     NameHash public nameHashUtils;
 
     function initialize(address registryAddress, address nameHashAddress) public initializer {
-        registry = Registry(registryAddress);
+        registry = IRegistry(registryAddress);
         nameHashUtils = NameHash(nameHashAddress);
     }
 

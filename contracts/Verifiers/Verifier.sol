@@ -2,7 +2,7 @@
 pragma solidity 0.8.20;
 
 /**
- * @dev Required interface of a Verifier compliant contract for the SCI Registry
+ * @dev Required interface of a Verifier compliant contract for the SCI IRegistry.sol
  */
 interface Verifier {
     /**
