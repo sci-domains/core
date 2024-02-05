@@ -3,7 +3,7 @@ pragma solidity 0.8.20;
 
 import './Verifier.sol';
 import '../Registry/IRegistry.sol';
-import '../Utils/DomainManager.sol';
+import '../DomainMangager/DomainManager.sol';
 
 /**
  * @dev This contract implements the Verifier interface.
