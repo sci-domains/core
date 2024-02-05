@@ -10,7 +10,7 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
  *
  */
 abstract contract DomainManager is Context {
-    SCI public sci;
+    SCI public immutable sci;
 
     /**
      * @dev The caller account is not the owner of the domain.
