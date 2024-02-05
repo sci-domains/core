@@ -1,7 +1,16 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-contract NameHash {
+import './INameHash.sol';
+
+/**
+ * @dev Implementation of INameHash. For more information about the algorithm you can visit:
+ * https://eips.ethereum.org/EIPS/eip-137#namehash-algorithm
+ */
+contract NameHash is INameHash {
+    /**
+     * @dev See {INameHash-version}.
+     */
     function getDomainHash(string memory domain) public pure returns (bytes32) {
         return namehash(abi.encodePacked(domain), 0);
     }

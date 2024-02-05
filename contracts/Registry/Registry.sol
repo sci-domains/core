@@ -4,7 +4,7 @@ pragma solidity 0.8.20;
 import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
-import '../Ens/NameHash.sol';
+import '../Ens/INameHash.sol';
 import '../Authorizers/Authorizer.sol';
 import '../Verifiers/Verifier.sol';
 import './IRegistry.sol';
@@ -18,7 +18,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules {
     mapping(bytes32 => Record) public domainHashToRecord;
     mapping(uint256 => Authorizer) public authorizers;
     bytes32 public constant ADD_AUTHORIZER_ROLE = keccak256('ADD_AUTHORIZER_ROLE');
-    NameHash public immutable nameHashUtils;
+    INameHash public immutable nameHashUtils;
 
     modifier onlyDomainOwner(bytes32 domainHash) {
         _checkDomainOwner(domainHash);
@@ -26,7 +26,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules {
     }
 
     constructor(address _nameHashAddress) AccessControlDefaultAdminRules(0, _msgSender()) {
-        nameHashUtils = NameHash(_nameHashAddress);
+        nameHashUtils = INameHash(_nameHashAddress);
     }
 
     function registerDomain(
