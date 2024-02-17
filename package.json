@@ -1,13 +1,9 @@
 {
-  "name": "sci-core",
+  "name": "@secure-ci/core",
   "description": "Smart contracts for the Secure Contract Interaction protocol",
-  "version": "1.0.0",
+  "version": "0.0.5",
   "license": "MIT",
-  "files": ["/contracts/**/*.sol"],
-  "scripts": {
-    "compile": "hardhat compile",
-    "test": "hardhat test"
-  },
+  "files": ["/contracts/**/*.sol", "/dist/typechain-types/**/*.ts"],
   "keywords": [
     "solidity",
     "ethereum",
@@ -16,16 +12,26 @@
     "security",
     "sci"
   ],
-  "devDependencies": {
+  "homepage": "https://sci.domains/",
+  "scripts": {
+    "build": "tsc ",
+    "compile": "hardhat compile",
+    "test": "hardhat test"
+  },
+  "dependencies": {
     "@ensdomains/ens-contracts": "^0.0.22",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@openzeppelin/contracts-upgradeable": "^5.0.1",
+    "@openzeppelin/hardhat-upgrades": "^3.0.1",
+    "ethers": "^6.8.1"
+  },
+  "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@nomicfoundation/hardhat-verify": "^2.0.0",
     "@nomiclabs/hardhat-solhint": "^3.0.1",
-    "@openzeppelin/contracts": "^5.0.0",
-    "@openzeppelin/contracts-upgradeable": "^5.0.1",
     "@openzeppelin/hardhat-upgrades": "^3.0.1",
     "@typechain/ethers-v6": "^0.5.0",
     "@typechain/hardhat": "^9.0.0",
@@ -34,7 +40,6 @@
     "@types/node": ">=16.0.0",
     "chai": "^4.2.0",
     "dotenv": "^16.3.1",
-    "ethers": "^6.4.0",
     "hardhat": "^2.19.1",
     "hardhat-gas-reporter": "^1.0.8",
     "prettier": "^3.1.0",
