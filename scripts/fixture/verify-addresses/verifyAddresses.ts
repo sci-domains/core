@@ -2,7 +2,7 @@ import { ethers } from 'hardhat';
 import {
   NameHash__factory,
   PublicListVerifier__factory,
-  RegistryV0__factory,
+  Registry__factory,
   SCIAuthorizer__factory,
 } from '../../../typechain-types';
 import { ADD_AUTHORIZER_ROLE } from '../../../utils/roles';
@@ -17,7 +17,7 @@ async function main() {
   console.log(owner.address);
   const publicListVerifier = PublicListVerifier__factory.connect(VERIFIER_ADDRESS, owner);
   const sciAuthorizer = SCIAuthorizer__factory.connect(SCI_AUTHORIZER_ADDRESS, owner);
-  const registry = RegistryV0__factory.connect(REGISTRY_ADDRESS, owner);
+  const registry = Registry__factory.connect(REGISTRY_ADDRESS, owner);
   const nameHash = NameHash__factory.connect(NAME_HASH_ADDRESS, owner);
 
   // Add the pk as domain owner

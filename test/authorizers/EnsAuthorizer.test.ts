@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
-import { ENSAuthorizer, ENSRegistry } from '../../typechain-types';
+import { ENSAuthorizer } from '../../typechain-types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { keccak256, namehash, toUtf8Bytes } from 'ethers';
 
