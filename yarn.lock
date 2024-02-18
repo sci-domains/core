@@ -110,10 +110,10 @@
   resolved "https://registry.yarnpkg.com/@ensdomains/buffer/-/buffer-0.1.1.tgz#6c275ba7e457e935405b67876f1f0d980c8baa63"
   integrity sha512-92SfSiNS8XorgU7OUBHo/i1ZU7JV7iz/6bKuLPNVsMxV79/eI7fJR6jfJJc40zAHjs3ha+Xo965Idomlq3rqnw==
 
-"@ensdomains/ens-contracts@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@ensdomains/ens-contracts/-/ens-contracts-0.0.22.tgz#a7e9eea3679661a75ddc0a62ab67e6d988cc6769"
-  integrity sha512-kNu7pp68/5KfJ5wkswnUS4NfI9Ek4zGi0nnNSmGf1WXs6BHU9NYRVR6NnoVzb1B+cZ658e1v2srTtvmBYYIYzg==
+"@ensdomains/ens-contracts@1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@ensdomains/ens-contracts/-/ens-contracts-1.1.4.tgz#da3ecb1c204feaa8c349b4f1fb38a3461525486e"
+  integrity sha512-kjdcjaznMtE2lwjAVTX2irs8mgNgJCVuB5hnhFhiMaO8dR/tlHQ5UhtZjhSYRhkZd0hLXYrMkXp6thnwpG+ltg==
   dependencies:
     "@ensdomains/buffer" "^0.1.1"
     "@ensdomains/solsha1" "0.0.3"
@@ -839,10 +839,10 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.9.3.tgz#00d7a8cf35a475b160b3f0293a6403c511099364"
   integrity sha512-He3LieZ1pP2TNt5JbkPA4PNT9WC3gOTOlDcFGJW4Le4QKqwmiNJCRt44APfxMxvq7OugU/cqYuPcSBzOw38DAg==
 
-"@openzeppelin/contracts@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-5.0.0.tgz#ee0e4b4564f101a5c4ee398cd4d73c0bd92b289c"
-  integrity sha512-bv2sdS6LKqVVMLI5+zqnNrNU/CA+6z6CmwFXm/MzmOPBRSO5reEJN7z0Gbzvs0/bv/MZZXNklubpwy3v2+azsw==
+"@openzeppelin/contracts@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-5.0.1.tgz#93da90fc209a0a4ff09c1deb037fbb35e4020890"
+  integrity sha512-yQJaT5HDp9hYOOp4jTYxMsR02gdFZFXhewX5HW9Jo4fsqSVqqyIO/xTHdWDaKX5a3pv1txmf076Lziz+sO7L1w==
 
 "@openzeppelin/defender-admin-client@^1.52.0":
   version "1.54.1"
