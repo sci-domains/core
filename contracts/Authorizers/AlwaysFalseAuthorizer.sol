@@ -11,7 +11,7 @@ contract AlwaysFalseAuthorizer is Authorizer {
     /**
      * @dev See {Authorizer-version}.
      */
-    function isAuthorized(address sender, bytes32 domainHash) external pure returns (bool) {
+    function isAuthorized(address, bytes32) external pure returns (bool) {
         return false;
     }
 }
