@@ -1,19 +1,19 @@
 import { ethers } from 'hardhat';
 import { ADD_AUTHORIZER_ROLE } from '../../utils/roles';
-import { logDeployment, saveDeployment } from './utils';
+import { CONTRACT_NAMES, getDeployedContractAddress, logDeployment, saveDeployment } from './utils';
 
-const NAME_HASH_ADDRESS = '0x65fc5b21BDd27726510F554b62E60e3cAA9B2C9A';
-const SCI_AUTHORIZER = '0xe1da59CB197D6944ABDfC6D37CbDd20FaD567dc7';
-const CONTRACT_NAME = 'Registry';
 async function main() {
-  const RegistryFactory = await ethers.getContractFactory(CONTRACT_NAME);
-  const registry = await RegistryFactory.deploy(NAME_HASH_ADDRESS);
+  const nameHashAddress = await getDeployedContractAddress(CONTRACT_NAMES.NAME_HASH);
 
-  await saveDeployment(registry, CONTRACT_NAME);
-  await logDeployment(registry, CONTRACT_NAME, [NAME_HASH_ADDRESS]);
+  const RegistryFactory = await ethers.getContractFactory(CONTRACT_NAMES.REGISTRY);
+  const registry = await RegistryFactory.deploy(nameHashAddress);
+
+  await saveDeployment(registry, CONTRACT_NAMES.REGISTRY);
+  await logDeployment(registry, CONTRACT_NAMES.REGISTRY, [nameHashAddress]);
 
   await registry.grantRole(ADD_AUTHORIZER_ROLE, await ethers.provider.getSigner());
-  await registry.setAuthorizer(1, SCI_AUTHORIZER);
+  const sciAuthorizer = await getDeployedContractAddress('SciAuthorizer');
+  await registry.setAuthorizer(1, sciAuthorizer);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

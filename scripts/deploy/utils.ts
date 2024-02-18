@@ -2,13 +2,25 @@ import { ethers } from 'hardhat';
 import { BaseContract } from 'ethers';
 import fs from 'fs';
 
-export const DEPLOYMENT_FOLDER = './deployments';
+export enum CONTRACT_NAMES {
+  REGISTRY = 'Registry',
+  NAME_HASH = 'NameHash',
+  PUBLIC_LIST_VERIFIER = 'PublicListVerifier',
+  SCI = 'SCI',
+  SCI_AUTHORIZER = 'SCIAuthorizer',
+}
+
+const DEPLOYMENT_FOLDER = './deployments';
+
+async function generateDeploymentPath(): Promise<string> {
+  const network = await ethers.provider.getNetwork();
+  return `${DEPLOYMENT_FOLDER}/${network.name}`;
+}
 
 export async function saveDeployment(contract: BaseContract, contractName: string) {
-  const network = await ethers.provider.getNetwork();
+  const filePath = await generateDeploymentPath();
 
   // Create the directory if it doesn't exist
-  const filePath = `${DEPLOYMENT_FOLDER}/${network.name}`;
   if (!fs.existsSync(filePath)) {
     fs.mkdirSync(filePath);
   }
@@ -34,4 +46,10 @@ export async function logDeployment(contract: BaseContract, contractName: string
       contract.target
     } ${args.join(' ')}`,
   );
+}
+
+export async function getDeployedContractAddress(contractName: string): Promise<string> {
+  const filePath = await generateDeploymentPath();
+  const deploymentFile = JSON.parse(fs.readFileSync(`${filePath}/${contractName}.json`).toString());
+  return deploymentFile.address;
 }
