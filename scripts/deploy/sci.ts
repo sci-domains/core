@@ -12,7 +12,7 @@ async function main() {
   await sci.waitForDeployment();
 
   await saveDeployment(sci, CONTRACT_NAMES.SCI);
-  await logDeployment(sci, CONTRACT_NAMES.SCI, [registryAddress, nameHashAddress]);
+  await logDeployment(sci, CONTRACT_NAMES.SCI, []);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

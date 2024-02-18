@@ -23,6 +23,9 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY!,
   },
+  sourcify: {
+    enabled: false,
+  },
 };
 
 export default config;

@@ -30,7 +30,6 @@ export async function saveDeployment(contract: BaseContract, contractName: strin
     JSON.stringify(
       {
         address: contract.target,
-        bytecode: await contract.getDeployedCode(),
       },
       null,
       2,

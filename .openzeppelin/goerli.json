@@ -5,6 +5,11 @@
       "address": "0xB015ac4d088B8693f18e16b820937875FB5703f6",
       "txHash": "0x77a4514cf87758e1e0db17d3f2a28d395288878910e5605fdcb336d0dff8deda",
       "kind": "transparent"
+    },
+    {
+      "address": "0x59f13C12d82aD380CB55504bD30eA08226f65978",
+      "txHash": "0xd60f14f81ce0f4919da848d6c324638302adf60af5af9ca0d1324d1f4427ed5a",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -145,6 +150,87 @@
           },
           "t_contract(Registry)415": {
             "label": "contract Registry",
+            "numberOfBytes": "20"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    },
+    "8a4d60d24004b55a29542ff2a651508c025b86389f29025ea884e70b8ed2b723": {
+      "address": "0xaE50B03c367D77a36f695dA5bBF5B85AF84DdE5F",
+      "txHash": "0xd86fdbc7ab098dc85d291d84301d88899acc237bc01f39f71aa50df108d2f4a2",
+      "layout": {
+        "solcVersion": "0.8.20",
+        "storage": [
+          {
+            "label": "registry",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_contract(IRegistry)5510",
+            "contract": "SCI",
+            "src": "contracts/SCI.sol:10"
+          },
+          {
+            "label": "nameHashUtils",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_contract(INameHash)5263",
+            "contract": "SCI",
+            "src": "contracts/SCI.sol:11"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_struct(InitializableStorage)110_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_contract(INameHash)5263": {
+            "label": "contract INameHash",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IRegistry)5510": {
+            "label": "contract IRegistry",
             "numberOfBytes": "20"
           }
         },
