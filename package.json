@@ -3,7 +3,8 @@
   "description": "Smart contracts for the Secure Contract Interaction protocol",
   "version": "0.0.5",
   "license": "MIT",
-  "files": ["/contracts/**/*.sol", "/dist/typechain-types/**/*.ts"],
+  "files": ["/contracts/**/*.sol", "/dist/types/**/*.ts", "/artifacts/**/*.ts", "/types/**/*.ts"],
+  "main": "dist/types/index.js",
   "keywords": [
     "solidity",
     "ethereum",
@@ -14,8 +15,9 @@
   ],
   "homepage": "https://sci.domains/",
   "scripts": {
-    "build": "tsc ",
+    "build": "tsc",
     "compile": "hardhat compile",
+    "clean": "rm -r artifacts cache types dist",
     "test": "hardhat test"
   },
   "dependencies": {

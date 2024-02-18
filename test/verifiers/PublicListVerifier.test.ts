@@ -1,7 +1,7 @@
 import { ethers } from 'hardhat';
 import { ADD_AUTHORIZER_ROLE } from '../../utils/roles';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { AlwaysTrueAuthorizer, PublicListVerifier, Registry } from '../../typechain-types';
+import { AlwaysTrueAuthorizer, PublicListVerifier, Registry } from '../../types';
 import { expect } from 'chai';
 import { MaxUint256 } from 'ethers';
 

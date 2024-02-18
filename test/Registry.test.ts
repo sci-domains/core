@@ -4,7 +4,7 @@ import {
   AlwaysTrueAuthorizer,
   AlwaysFalseAuthorizer,
   PublicListVerifier,
-} from '../typechain-types';
+} from '../types';
 import { expect } from 'chai';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { ADD_AUTHORIZER_ROLE, ADD_TRUSTED_VERIFIER_ROLE } from '../utils/roles';

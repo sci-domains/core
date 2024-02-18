@@ -10,6 +10,9 @@ const config: HardhatUserConfig = {
     gasPrice: 32,
     enabled: true,
   },
+  typechain: {
+    outDir: 'types',
+  },
   networks: {
     goerli: {
       chainId: 5,

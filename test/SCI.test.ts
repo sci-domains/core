@@ -6,7 +6,7 @@ import {
   PublicListVerifier,
   Registry,
   SCI,
-} from '../typechain-types';
+} from '../types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { ADD_AUTHORIZER_ROLE, ADD_TRUSTED_VERIFIER_ROLE } from '../utils/roles';
 

@@ -1,5 +1,5 @@
 import { ethers } from 'hardhat';
-import { NameHash } from '../../typechain-types';
+import { NameHash } from '../../types';
 import { expect } from 'chai';
 
 describe('RegistryV0', function () {

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
-import { ENSAuthorizer } from '../../typechain-types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { keccak256, namehash, toUtf8Bytes } from 'ethers';
+import { ENSAuthorizer } from '../../types';
 
 const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
 const OTHER_DOMAIN_HASH = '0xfcec0ff58c10be0e399a3a51186968513cc3a4c572a51d688ff338b3fbf6a7f9';

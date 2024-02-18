@@ -4,7 +4,7 @@ import {
   PublicListVerifier__factory,
   Registry__factory,
   SCIAuthorizer__factory,
-} from '../../../typechain-types';
+} from '../../../types';
 import { ADD_AUTHORIZER_ROLE } from '../../../utils/roles';
 import { ADDRESS_TO_VERIFY } from './addresses';
 

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
-import { SCIAuthorizer } from '../../typechain-types';
+import { SCIAuthorizer } from '../../types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { IS_AUTHORIZED } from '../../utils/roles';
 
