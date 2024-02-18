@@ -3,7 +3,7 @@
   "description": "Smart contracts for the Secure Contract Interaction protocol",
   "version": "0.0.5",
   "license": "MIT",
-  "files": ["/contracts/**/*.sol", "/dist/types/**/*.ts", "/artifacts/**/*.ts", "/types/**/*.ts"],
+  "files": ["/contracts/**/*.sol", "/dist/types/**/*.ts", "/artifacts/**/*.ts", "/types/**/*.ts", "/deployments/**/*.ts"],
   "main": "dist/types/index.js",
   "keywords": [
     "solidity",

@@ -1,8 +1,13 @@
 import { ethers } from 'hardhat';
+import { logDeployment, saveDeployment } from './utils';
+
+const CONTRACT_NAME = 'NameHash';
 async function main() {
-  const NameHashFactory = await ethers.getContractFactory('NameHash');
+  const NameHashFactory = await ethers.getContractFactory(CONTRACT_NAME);
   const nameHash = await NameHashFactory.deploy();
-  console.log(`Deployed Name Hash to ${nameHash.target}`);
+
+  await saveDeployment(nameHash, CONTRACT_NAME);
+  await logDeployment(nameHash, CONTRACT_NAME, []);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

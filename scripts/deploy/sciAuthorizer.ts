@@ -1,8 +1,14 @@
 import { ethers } from 'hardhat';
+import { logDeployment, saveDeployment } from './utils';
+
+const CONTRACT_NAME = 'SCIAuthorizer';
+
 async function main() {
-  const SCIAuthorizerFactory = await ethers.getContractFactory('SCIAuthorizer');
+  const SCIAuthorizerFactory = await ethers.getContractFactory(CONTRACT_NAME);
   const sciAuthorizer = await SCIAuthorizerFactory.deploy();
-  console.log(`Deployed SCI Authorizer to ${sciAuthorizer.target}`);
+
+  await saveDeployment(sciAuthorizer, CONTRACT_NAME);
+  await logDeployment(sciAuthorizer, CONTRACT_NAME, []);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
