@@ -1,5 +1,10 @@
 import { ethers, upgrades } from 'hardhat';
-import { CONTRACT_NAMES, getDeployedContractAddress, logDeployment, saveDeployment } from './utils';
+import {
+  CONTRACT_NAMES,
+  getDeployedContractAddress,
+  logDeployment,
+  saveDeployment,
+} from '../utils';
 
 async function main() {
   const registryAddress = await getDeployedContractAddress(CONTRACT_NAMES.REGISTRY);

@@ -1,9 +1,9 @@
 {
   "name": "@secure-ci/core",
   "description": "Smart contracts for the Secure Contract Interaction protocol",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "license": "MIT",
-  "files": ["/contracts/**/*.sol", "/dist/types/**/*.ts", "/artifacts/**/*.ts", "/types/**/*.ts", "/deployments/**/*.ts"],
+  "files": ["/contracts/**/*.sol", "/dist/types/**/*", "/artifacts/**/*", "/types/**/*.ts", "/deployments/**/*"],
   "main": "dist/types/index.js",
   "keywords": [
     "solidity",

@@ -1,5 +1,5 @@
 import { ethers } from 'hardhat';
-import { CONTRACT_NAMES, logDeployment, saveDeployment } from './utils';
+import { CONTRACT_NAMES, logDeployment, saveDeployment } from '../utils';
 
 async function main() {
   const NameHashFactory = await ethers.getContractFactory(CONTRACT_NAMES.NAME_HASH);

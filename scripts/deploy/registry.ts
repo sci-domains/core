@@ -1,6 +1,11 @@
 import { ethers } from 'hardhat';
 import { ADD_AUTHORIZER_ROLE } from '../../utils/roles';
-import { CONTRACT_NAMES, getDeployedContractAddress, logDeployment, saveDeployment } from './utils';
+import {
+  CONTRACT_NAMES,
+  getDeployedContractAddress,
+  logDeployment,
+  saveDeployment,
+} from '../utils';
 
 async function main() {
   const nameHashAddress = await getDeployedContractAddress(CONTRACT_NAMES.NAME_HASH);
