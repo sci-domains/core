@@ -1,0 +1,28 @@
+name: Smart Contract Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: 'yarn'
+          node-version-file: '.nvmrc'
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile --immutable
+
+      - name: Run Tests
+        run: yarn test
