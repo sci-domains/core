@@ -28,9 +28,9 @@
   },
   "dependencies": {
     "@ensdomains/ens-contracts": "1.1.4",
-    "@openzeppelin/contracts": "^5.0.1",
+    "@openzeppelin/contracts": "^5.0.2",
     "@openzeppelin/contracts-upgradeable": "^5.0.1",
-    "@openzeppelin/hardhat-upgrades": "^3.0.1",
+    "@openzeppelin/hardhat-upgrades": "^3.1.0",
     "ethers": "^6.8.1"
   },
   "devDependencies": {
