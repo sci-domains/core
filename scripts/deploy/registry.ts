@@ -2,6 +2,7 @@ import { ethers } from 'hardhat';
 import { ADD_AUTHORIZER_ROLE } from '../../utils/roles';
 import {
   CONTRACT_NAMES,
+  deploy,
   getDeployedContractAddress,
   logDeployment,
   saveDeployment,
@@ -11,7 +12,7 @@ async function main() {
   const nameHashAddress = await getDeployedContractAddress(CONTRACT_NAMES.NAME_HASH);
 
   const RegistryFactory = await ethers.getContractFactory(CONTRACT_NAMES.REGISTRY);
-  const registry = await RegistryFactory.deploy(nameHashAddress);
+  const registry = await deploy(RegistryFactory, [nameHashAddress]);
 
   await saveDeployment(registry, CONTRACT_NAMES.REGISTRY);
   await logDeployment(registry, CONTRACT_NAMES.REGISTRY, [nameHashAddress]);

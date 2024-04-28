@@ -1,6 +1,7 @@
 import { ethers } from 'hardhat';
 import {
   CONTRACT_NAMES,
+  deploy,
   getDeployedContractAddress,
   logDeployment,
   saveDeployment,
@@ -12,7 +13,7 @@ async function main() {
   const PublicListVerifierFactory = await ethers.getContractFactory(
     CONTRACT_NAMES.PUBLIC_LIST_VERIFIER,
   );
-  const publicListVerifier = await PublicListVerifierFactory.deploy(registryAddress);
+  const publicListVerifier = await deploy(PublicListVerifierFactory, [registryAddress]);
 
   await saveDeployment(publicListVerifier, CONTRACT_NAMES.PUBLIC_LIST_VERIFIER);
   await logDeployment(publicListVerifier, CONTRACT_NAMES.PUBLIC_LIST_VERIFIER, [registryAddress]);

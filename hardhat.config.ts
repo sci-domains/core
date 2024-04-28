@@ -15,8 +15,13 @@ function getUrl(url: string | undefined): string {
 const config: HardhatUserConfig = {
   solidity: '0.8.20',
   gasReporter: {
-    gasPrice: 32,
+    currency: 'USD',
     enabled: true,
+    coinmarketcap: process.env.COIN_MARKET_CAP_API_KEY,
+  },
+  defender: {
+    apiKey: process.env.DEFENDER_API_KEY!,
+    apiSecret: process.env.DEFENDER_API_SECRET!,
   },
   typechain: {
     outDir: 'types',
@@ -25,6 +30,11 @@ const config: HardhatUserConfig = {
     goerli: {
       chainId: 5,
       url: getUrl(process.env.ETHEREUM_GOERLI_PROVIDER_URL),
+      accounts: getAccounts(process.env.ETHEREUM_GOERLI_PRIVATE_KEY),
+    },
+    mainnet: {
+      chainId: 1,
+      url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL),
       accounts: getAccounts(process.env.ETHEREUM_GOERLI_PRIVATE_KEY),
     },
   },
