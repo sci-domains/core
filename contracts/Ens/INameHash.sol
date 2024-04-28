@@ -3,6 +3,7 @@ pragma solidity 0.8.20;
 
 /**
  * @dev External interface of NameHash declared to support EIP-137 namehash algorithm for domains.
+ * @custom:security-contact security@sci.domains
  */
 interface INameHash {
     /**

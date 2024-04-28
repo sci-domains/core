@@ -10,6 +10,9 @@ import '../Verifiers/Verifier.sol';
 import './IRegistry.sol';
 import '../DomainMangager/DomainManager.sol';
 
+/**
+ * @custom:security-contact security@sci.domains
+ */
 contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainManager {
     struct Record {
         address owner;
@@ -22,12 +25,12 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     /**
      * @dev Maps the name hash of a domain to a Record.
      */
-    mapping(bytes32 => Record) public domainHashToRecord;
+    mapping(bytes32 nameHash => Record domain) public domainHashToRecord;
 
     /**
      * @dev Maps the id of an authorizer to the Authorizer address.
      */
-    mapping(uint256 => Authorizer) public authorizers;
+    mapping(uint256 authorizerId => Authorizer authorizer) public authorizers;
 
     /**
      * @dev Sets the address for {nameHashUtils} and gives the deployer the ADMIN role.
@@ -69,7 +72,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     function isDomainOwner(
         bytes32 domainHash,
         address account
-    ) public view virtual override returns (bool) {
+    ) external view virtual override returns (bool) {
         return domainOwner(domainHash) == account;
     }
 
@@ -131,7 +134,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
         address owner,
         string memory domain,
         bool isWildcard
-    ) internal returns (bytes32) {
+    ) private returns (bytes32) {
         bytes32 domainHash = nameHashUtils.getDomainHash(domain);
 
         if (!authorizers[authorizerId].isAuthorized(owner, domainHash)) {

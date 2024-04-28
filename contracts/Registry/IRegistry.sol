@@ -4,6 +4,9 @@ pragma solidity 0.8.20;
 import '../Authorizers/Authorizer.sol';
 import '../Verifiers/Verifier.sol';
 
+/**
+ * @custom:security-contact security@sci.domains
+ */
 interface IRegistry {
     /**
      * @dev Emitted when a new `domain` with the `domainHash` is

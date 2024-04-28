@@ -2,7 +2,6 @@
 pragma solidity 0.8.20;
 
 import './Verifier.sol';
-import '../Registry/IRegistry.sol';
 import '../DomainMangager/DomainManager.sol';
 
 /**
@@ -11,12 +10,14 @@ import '../DomainMangager/DomainManager.sol';
  *
  * If the owner of the domain sets a contract address with MAX_INT as chain id then it assumes
  * this contract is verified for all chains for that domain.
+ * @custom:security-contact security@sci.domains
  */
 contract PublicListVerifier is Verifier, Context, DomainManager {
-    uint256 constant MAX_INT = 2 ** 256 - 1;
+    uint256 private constant MAX_INT = 2 ** 256 - 1;
 
     // Domain hash -> contract address -> chain id -> true/false.
-    mapping(bytes32 => mapping(address => mapping(uint256 => bool))) public verifiedContracts;
+    mapping(bytes32 domainHash => mapping(address contractAddress => mapping(uint256 chainId => bool exists)))
+        public verifiedContracts;
 
     /**
      *  @dev Emitted when the `msgSender` removes an address to a `domainHash` for a `chainId`
@@ -51,11 +52,18 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
         bytes32 domainHash,
         address[] calldata contractAddresses,
         uint256[][] calldata chainIds
-    ) public onlyDomainOwner(domainHash) {
-        for (uint256 i = 0; i < contractAddresses.length; i++) {
-            for (uint j = 0; j < chainIds[i].length; j++) {
-                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = true;
-                emit AddressAdded(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
+    ) external onlyDomainOwner(domainHash) {
+        unchecked {
+            for (uint256 i; i < contractAddresses.length; ++i) {
+                for (uint256 j; j < chainIds[i].length; ++j) {
+                    verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = true;
+                    emit AddressAdded(
+                        domainHash,
+                        chainIds[i][j],
+                        contractAddresses[i],
+                        _msgSender()
+                    );
+                }
             }
         }
     }
@@ -71,11 +79,18 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
         bytes32 domainHash,
         address[] calldata contractAddresses,
         uint256[][] calldata chainIds
-    ) public onlyDomainOwner(domainHash) {
-        for (uint256 i = 0; i < contractAddresses.length; i++) {
-            for (uint j = 0; j < chainIds[i].length; j++) {
-                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = false;
-                emit AddressRemoved(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
+    ) external onlyDomainOwner(domainHash) {
+        unchecked {
+            for (uint256 i; i < contractAddresses.length; ++i) {
+                for (uint256 j; j < chainIds[i].length; ++j) {
+                    verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = false;
+                    emit AddressRemoved(
+                        domainHash,
+                        chainIds[i][j],
+                        contractAddresses[i],
+                        _msgSender()
+                    );
+                }
             }
         }
     }
@@ -87,7 +102,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
         bytes32 domainHash,
         address contractAddress,
         uint256 chainId
-    ) public view returns (bool) {
+    ) external view returns (bool) {
         return
             verifiedContracts[domainHash][contractAddress][chainId] ||
             verifiedContracts[domainHash][contractAddress][MAX_INT];

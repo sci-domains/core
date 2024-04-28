@@ -7,7 +7,7 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 /**
  * @dev Contract module that allows children to implement access
  * control only to owners of a domain.
- *
+ * @custom:security-contact security@sci.domains
  */
 abstract contract DomainManager is Context {
     SCI public immutable sci;
@@ -41,7 +41,7 @@ abstract contract DomainManager is Context {
      * is not the owner of the domain.
      * Overriding this function changes the behavior of the {onlyDomainOwner} modifier.
      */
-    function _checkDomainOwner(bytes32 domainHash) internal view virtual {
+    function _checkDomainOwner(bytes32 domainHash) private view {
         if (sci.domainOwner(domainHash) != _msgSender()) {
             revert AccountIsNotDomainOwner(_msgSender(), domainHash);
         }

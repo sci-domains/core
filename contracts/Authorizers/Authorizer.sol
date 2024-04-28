@@ -3,6 +3,7 @@ pragma solidity 0.8.20;
 
 /**
  * @dev Required interface of an Authorizer compliant contract for the SCI IRegistry.sol.
+ * @custom:security-contact security@sci.domains
  */
 interface Authorizer {
     /**

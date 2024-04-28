@@ -6,11 +6,14 @@ import './Registry/IRegistry.sol';
 import './Ens/INameHash.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
+/**
+ * @custom:security-contact security@sci.domains
+ */
 contract SCI is Initializable {
     IRegistry public registry;
     INameHash public nameHashUtils;
 
-    function initialize(address registryAddress, address nameHashAddress) public initializer {
+    function initialize(address registryAddress, address nameHashAddress) external initializer {
         registry = IRegistry(registryAddress);
         nameHashUtils = INameHash(nameHashAddress);
     }
@@ -65,14 +68,17 @@ contract SCI is Initializable {
         bytes32[] memory domainHashes,
         address contractAddress,
         uint256 chainId
-    ) public view returns (bool[] memory) {
+    ) external view returns (bool[] memory) {
         bool[] memory domainsVerification = new bool[](domainHashes.length);
-        for (uint256 i = 0; i < domainHashes.length; i++) {
-            domainsVerification[i] = isVerifiedForDomainHash(
-                domainHashes[i],
-                contractAddress,
-                chainId
-            );
+        uint256 domainHashesLength = domainHashes.length;
+        unchecked {
+            for (uint256 i; i < domainHashesLength; ++i) {
+                domainsVerification[i] = isVerifiedForDomainHash(
+                    domainHashes[i],
+                    contractAddress,
+                    chainId
+                );
+            }
         }
         return domainsVerification;
     }
@@ -92,14 +98,17 @@ contract SCI is Initializable {
         string[] memory domains,
         address contractAddress,
         uint256 chainId
-    ) public view returns (bool[] memory) {
+    ) external view returns (bool[] memory) {
         bool[] memory domainsVerification = new bool[](domains.length);
-        for (uint256 i = 0; i < domains.length; i++) {
-            domainsVerification[i] = isVerifiedForDomainHash(
-                nameHashUtils.getDomainHash(domains[i]),
-                contractAddress,
-                chainId
-            );
+        uint256 domainsLength = domains.length;
+        unchecked {
+            for (uint256 i; i < domainsLength; ++i) {
+                domainsVerification[i] = isVerifiedForDomainHash(
+                    nameHashUtils.getDomainHash(domains[i]),
+                    contractAddress,
+                    chainId
+                );
+            }
         }
         return domainsVerification;
     }
