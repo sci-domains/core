@@ -53,17 +53,16 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
         address[] calldata contractAddresses,
         uint256[][] calldata chainIds
     ) external onlyDomainOwner(domainHash) {
-        unchecked {
-            for (uint256 i; i < contractAddresses.length; ++i) {
-                for (uint256 j; j < chainIds[i].length; ++j) {
-                    verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = true;
-                    emit AddressAdded(
-                        domainHash,
-                        chainIds[i][j],
-                        contractAddresses[i],
-                        _msgSender()
-                    );
+        for (uint256 i; i < contractAddresses.length; ) {
+            for (uint256 j; j < chainIds[i].length; ) {
+                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = true;
+                emit AddressAdded(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
+                unchecked {
+                    ++j;
                 }
+            }
+            unchecked {
+                ++i;
             }
         }
     }
@@ -80,17 +79,16 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
         address[] calldata contractAddresses,
         uint256[][] calldata chainIds
     ) external onlyDomainOwner(domainHash) {
-        unchecked {
-            for (uint256 i; i < contractAddresses.length; ++i) {
-                for (uint256 j; j < chainIds[i].length; ++j) {
-                    verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = false;
-                    emit AddressRemoved(
-                        domainHash,
-                        chainIds[i][j],
-                        contractAddresses[i],
-                        _msgSender()
-                    );
+        for (uint256 i; i < contractAddresses.length; ) {
+            for (uint256 j; j < chainIds[i].length; ++j) {
+                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = false;
+                emit AddressRemoved(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
+                unchecked {
+                    ++j;
                 }
+            }
+            unchecked {
+                ++i;
             }
         }
     }

@@ -71,13 +71,14 @@ contract SCI is Initializable {
     ) external view returns (bool[] memory) {
         bool[] memory domainsVerification = new bool[](domainHashes.length);
         uint256 domainHashesLength = domainHashes.length;
-        unchecked {
-            for (uint256 i; i < domainHashesLength; ++i) {
-                domainsVerification[i] = isVerifiedForDomainHash(
-                    domainHashes[i],
-                    contractAddress,
-                    chainId
-                );
+        for (uint256 i; i < domainHashesLength; ) {
+            domainsVerification[i] = isVerifiedForDomainHash(
+                domainHashes[i],
+                contractAddress,
+                chainId
+            );
+            unchecked {
+                ++i;
             }
         }
         return domainsVerification;
@@ -101,13 +102,14 @@ contract SCI is Initializable {
     ) external view returns (bool[] memory) {
         bool[] memory domainsVerification = new bool[](domains.length);
         uint256 domainsLength = domains.length;
-        unchecked {
-            for (uint256 i; i < domainsLength; ++i) {
-                domainsVerification[i] = isVerifiedForDomainHash(
-                    nameHashUtils.getDomainHash(domains[i]),
-                    contractAddress,
-                    chainId
-                );
+        for (uint256 i; i < domainsLength; ) {
+            domainsVerification[i] = isVerifiedForDomainHash(
+                nameHashUtils.getDomainHash(domains[i]),
+                contractAddress,
+                chainId
+            );
+            unchecked {
+                ++i;
             }
         }
         return domainsVerification;
