@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity 0.8.20;
+pragma solidity 0.8.25;
 
 import './INameHash.sol';
 
@@ -25,7 +25,7 @@ contract NameHash is INameHash {
         return keccak256(abi.encodePacked(namehash(domain, i + len + 1), keccak(domain, i, len)));
     }
 
-    function labelLength(bytes memory domain, uint256 i) private pure returns (uint) {
+    function labelLength(bytes memory domain, uint256 i) private pure returns (uint256) {
         uint256 len;
         while (i + len != domain.length && domain[i + len] != 0x2e) {
             ++len;
@@ -38,7 +38,7 @@ contract NameHash is INameHash {
         uint256 offset,
         uint256 len
     ) private pure returns (bytes32 ret) {
-        require(offset + len <= data.length);
+        require(offset + len <= data.length, 'Data is smaller than the offset plus the length');
         assembly {
             ret := keccak256(add(add(data, 32), offset), len)
         }
