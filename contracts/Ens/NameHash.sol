@@ -38,7 +38,9 @@ contract NameHash is INameHash {
         uint256 offset,
         uint256 len
     ) private pure returns (bytes32 ret) {
-        require(offset + len <= data.length, 'Data is smaller than the offset plus the length');
+        if (offset + len > data.length) {
+            revert('Data is smaller than the offset plus the length');
+        }
         assembly {
             ret := keccak256(add(add(data, 32), offset), len)
         }
