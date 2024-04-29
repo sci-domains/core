@@ -4,11 +4,11 @@ pragma solidity 0.8.25;
 import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
-import '../Ens/INameHash.sol';
-import '../Authorizers/Authorizer.sol';
-import '../Verifiers/Verifier.sol';
-import './IRegistry.sol';
-import '../DomainMangager/DomainManager.sol';
+import {INameHash} from '../Ens/INameHash.sol';
+import {Authorizer} from '../Authorizers/Authorizer.sol';
+import {Verifier} from '../Verifiers/Verifier.sol';
+import {IRegistry} from './IRegistry.sol';
+import {DomainManager} from '../DomainMangager/DomainManager.sol';
 
 /**
  * @custom:security-contact security@sci.domains

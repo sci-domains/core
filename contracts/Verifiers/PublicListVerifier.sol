@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.25;
 
-import './Verifier.sol';
-import '../DomainMangager/DomainManager.sol';
+import {Verifier} from './Verifier.sol';
+import {DomainManager} from '../DomainMangager/DomainManager.sol';
+import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
 /**
  * @dev This contract implements the Verifier interface.

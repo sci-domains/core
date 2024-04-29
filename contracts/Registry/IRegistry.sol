@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.25;
 
-import '../Authorizers/Authorizer.sol';
-import '../Verifiers/Verifier.sol';
+import {Authorizer} from '../Authorizers/Authorizer.sol';
+import {Verifier} from '../Verifiers/Verifier.sol';
 
 /**
  * @custom:security-contact security@sci.domains

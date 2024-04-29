@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.25;
 
-import '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
-import './Authorizer.sol';
+import {ENS} from '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
+import {Authorizer} from './Authorizer.sol';
 
 /**
  * @dev This contract implements the Authorizer interface and validates that the sender is

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.25;
 
-import './Authorizer.sol';
+import {Authorizer} from './Authorizer.sol';
 
 /**
  * @dev This contract implements the Authorizer interface and always returns true.

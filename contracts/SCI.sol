@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.25;
 
-import './Verifiers/Verifier.sol';
-import './Registry/IRegistry.sol';
-import './Ens/INameHash.sol';
-import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
+import {Verifier} from './Verifiers/Verifier.sol';
+import {IRegistry} from './Registry/IRegistry.sol';
+import {INameHash} from './Ens/INameHash.sol';
+import {Initializable} from '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
 /**
  * @custom:security-contact security@sci.domains

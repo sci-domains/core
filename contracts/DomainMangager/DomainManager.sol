@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.25;
 
-import '../SCI.sol';
+import {SCI} from '../SCI.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
 /**
