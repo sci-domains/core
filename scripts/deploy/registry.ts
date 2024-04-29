@@ -4,6 +4,7 @@ import {
   CONTRACT_NAMES,
   deploy,
   getDeployedContractAddress,
+  getDeploymentAddress,
   logDeployment,
   saveDeployment,
 } from '../utils';
@@ -17,7 +18,7 @@ async function main() {
   await saveDeployment(registry, CONTRACT_NAMES.REGISTRY);
   await logDeployment(registry, CONTRACT_NAMES.REGISTRY, [nameHashAddress]);
 
-  await registry.grantRole(ADD_AUTHORIZER_ROLE, await ethers.provider.getSigner());
+  await registry.grantRole(ADD_AUTHORIZER_ROLE, await getDeploymentAddress());
   const sciAuthorizer = await getDeployedContractAddress('SciAuthorizer');
   await registry.setAuthorizer(1, sciAuthorizer);
 }
