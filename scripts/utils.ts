@@ -1,5 +1,5 @@
-import { defender, ethers } from 'hardhat';
-import { BaseContract, Contract, ContractFactory } from 'ethers';
+import { ethers } from 'hardhat';
+import { BaseContract } from 'ethers';
 import fs from 'fs';
 
 export enum CONTRACT_NAMES {
@@ -15,23 +15,6 @@ const DEPLOYMENT_FOLDER = './deployments';
 async function generateDeploymentPath(): Promise<string> {
   const network = await ethers.provider.getNetwork();
   return `${DEPLOYMENT_FOLDER}/${network.name}`;
-}
-
-export async function deploy(factory: ContractFactory, args?: unknown[]): Promise<Contract> {
-  return await defender.deployContract(factory, {
-    constructorArgs: args,
-    salt: 'oGxABr7U4iCnq598aK5Ai25jcgXq6kbaAD859BJWJ2ytvJkzpy',
-    verifySourceCode: true,
-    licenseType: 'GNU AGPLv3',
-  });
-}
-
-export async function getDeploymentAddress(): Promise<string> {
-  const deploymentProcess = await defender.getDeployApprovalProcess();
-  const address = deploymentProcess.address;
-  if (!address) throw Error('Deployment Address undefined');
-
-  return address;
 }
 
 export async function saveDeployment(contract: BaseContract, contractName: string) {

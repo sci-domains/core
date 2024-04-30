@@ -1,18 +1,12 @@
 import { ethers } from 'hardhat';
-import {
-  CONTRACT_NAMES,
-  deploy,
-  getDeploymentAddress,
-  logDeployment,
-  saveDeployment,
-} from '../utils';
+import { CONTRACT_NAMES, logDeployment, saveDeployment } from '../utils';
 import { IS_AUTHORIZED } from '../../utils/roles';
 
 async function main() {
   const SCIAuthorizerFactory = await ethers.getContractFactory(CONTRACT_NAMES.SCI_AUTHORIZER);
-  const sciAuthorizer = await deploy(SCIAuthorizerFactory);
+  const sciAuthorizer = await SCIAuthorizerFactory.deploy();
 
-  await sciAuthorizer.grantRole(IS_AUTHORIZED, await getDeploymentAddress());
+  await sciAuthorizer.grantRole(IS_AUTHORIZED, await ethers.provider.getSigner());
 
   await saveDeployment(sciAuthorizer, CONTRACT_NAMES.SCI_AUTHORIZER);
   await logDeployment(sciAuthorizer, CONTRACT_NAMES.SCI_AUTHORIZER, []);

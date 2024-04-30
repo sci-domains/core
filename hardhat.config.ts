@@ -19,10 +19,6 @@ const config: HardhatUserConfig = {
     enabled: true,
     coinmarketcap: process.env.COIN_MARKET_CAP_API_KEY,
   },
-  defender: {
-    apiKey: process.env.DEFENDER_API_KEY!,
-    apiSecret: process.env.DEFENDER_API_SECRET!,
-  },
   typechain: {
     outDir: 'types',
   },
@@ -35,7 +31,7 @@ const config: HardhatUserConfig = {
     mainnet: {
       chainId: 1,
       url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL),
-      accounts: getAccounts(process.env.ETHEREUM_GOERLI_PRIVATE_KEY),
+      accounts: getAccounts(process.env.ETHEREUM_MAINNET_PRIVATE_KEY),
     },
   },
   etherscan: {
