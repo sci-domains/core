@@ -1,0 +1,93 @@
+{
+  "manifestVersion": "3.2",
+  "proxies": [
+    {
+      "address": "0x76FF9FfB76F889f6E60E491D00Dd2aA0a9bFb6bA",
+      "txHash": "0x185a9a873b9a4890a1d4e864a0a3b76186ac49a3e8d325b0c4241a395a3e90de",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "881e094560bb04fb537c3b82a0b704932539f7e53b2cbbb5f97365373b2a3a09": {
+      "address": "0x62aFa8B58364453D35866Ba131Ab8e90EA2711Ab",
+      "txHash": "0x1c389b0d66dd4685328db96da40f70e410a8d6fb7ca6022641357dd4af279f43",
+      "layout": {
+        "solcVersion": "0.8.25",
+        "storage": [
+          {
+            "label": "registry",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_contract(IRegistry)5501",
+            "contract": "SCI",
+            "src": "contracts/SCI.sol:13"
+          },
+          {
+            "label": "nameHashUtils",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_contract(INameHash)5249",
+            "contract": "SCI",
+            "src": "contracts/SCI.sol:14"
+          }
+        ],
+        "types": {
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_struct(InitializableStorage)110_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_contract(INameHash)5249": {
+            "label": "contract INameHash",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IRegistry)5501": {
+            "label": "contract IRegistry",
+            "numberOfBytes": "20"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
