@@ -9,7 +9,6 @@ import {Authorizer} from '../Authorizers/Authorizer.sol';
 import {Verifier} from '../Verifiers/Verifier.sol';
 import {IRegistry} from './IRegistry.sol';
 import {DomainManager} from '../DomainMangager/DomainManager.sol';
-import 'hardhat/console.sol';
 
 /**
  * @custom:security-contact security@sci.domains
@@ -158,13 +157,11 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
             );
         }
 
-        _setDomainOwner(domainHash, owner);
-
-        console.logBytes32(recordDomain);
+        _setDomainOwner(recordDomain, owner);
 
         emit DomainRegistered(authorizerId, owner, recordDomain, domain);
 
-        return domainHash;
+        return recordDomain;
     }
 
     /**
