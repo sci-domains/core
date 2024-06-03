@@ -12,10 +12,10 @@ import { ADD_AUTHORIZER_ROLE, ADD_TRUSTED_VERIFIER_ROLE } from '../utils/roles';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ALWAYS_TRUE_AUTHORIZER_ID = 1;
 const ALWAYS_FALSE_AUTHORIZER_ID = 2;
-const DOMAIN = 'secureci.xyz';
-const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
+const DOMAIN = 'sci.domains';
+const DOMAIN_HASH = '0x46b1531f39389a596f2e173d7e93cd0eaeafaf690c2a196e3f9054ce4cb20843';
 const DOMAIN_WITH_WILDCARD_HASH =
-  '0x1716343d0689cbd485fdf69796462e95bb6ff7a1249660b9fcf2fdd6c6c04f0e';
+  '0xb33e1da180b89d355773c7722ac9fa01c5b52aef3e3b6ceb67b664ccf75b382c';
 
 describe('Registry', function () {
   let owner: HardhatEthersSigner;
@@ -82,25 +82,77 @@ describe('Registry', function () {
         .withArgs(ALWAYS_TRUE_AUTHORIZER_ID, domainOwner.address, DOMAIN_HASH, DOMAIN);
     });
 
+    it('Should emit an event when a domain is set', async function () {
+      const domainOwner = addresses[0];
+      await expect(
+        registry
+          .connect(domainOwner)
+          .registerDomain(ALWAYS_TRUE_AUTHORIZER_ID, domainOwner, DOMAIN, false),
+      )
+        .to.emit(registry, 'OwnerSet')
+        .withArgs(domainOwner.address, DOMAIN_HASH, domainOwner.address);
+    });
+
     it('Should register a domain successfully', async function () {
       const domainOwner = addresses[0];
-      await registry
+      const tx = await registry
         .connect(domainOwner)
         .registerDomain(ALWAYS_TRUE_AUTHORIZER_ID, domainOwner, DOMAIN, false);
+      const block = await tx.getBlock();
+
       expect(await registry.domainHashToRecord(DOMAIN_HASH)).to.deep.equal([
         domainOwner.address,
         ZERO_ADDRESS,
+        BigInt(block?.timestamp!),
+        BigInt(0),
+      ]);
+    });
+
+    it('Should register a domain with verifier successfully', async function () {
+      const domainOwner = addresses[0];
+      const verifierAddress = addresses[1].address;
+      const tx = await registry
+        .connect(domainOwner)
+        .registerDomainWithVerifier(ALWAYS_TRUE_AUTHORIZER_ID, DOMAIN, false, verifierAddress);
+      const block = await tx.getBlock();
+
+      expect(await registry.domainHashToRecord(DOMAIN_HASH)).to.deep.equal([
+        domainOwner.address,
+        verifierAddress,
+        BigInt(block?.timestamp!),
+        BigInt(block?.timestamp!),
+      ]);
+    });
+
+    it('Should register a domain with verifier and wildcard successfully', async function () {
+      const domainOwner = addresses[0];
+      const verifierAddress = addresses[1].address;
+      const tx = await registry
+        .connect(domainOwner)
+        .registerDomainWithVerifier(ALWAYS_TRUE_AUTHORIZER_ID, DOMAIN, true, verifierAddress);
+      const block = await tx.getBlock();
+
+      expect(await registry.domainHashToRecord(DOMAIN_WITH_WILDCARD_HASH)).to.deep.equal([
+        domainOwner.address,
+        verifierAddress,
+        BigInt(block?.timestamp!),
+        BigInt(block?.timestamp!),
       ]);
     });
 
     it('Should register a domain with wildcard successfully', async function () {
       const domainOwner = addresses[0];
-      await registry
+      const tx = await registry
         .connect(domainOwner)
         .registerDomain(ALWAYS_TRUE_AUTHORIZER_ID, domainOwner, DOMAIN, true);
+
+      const block = await tx.getBlock();
+
       expect(await registry.domainHashToRecord(DOMAIN_WITH_WILDCARD_HASH)).to.deep.equal([
         domainOwner.address,
         ZERO_ADDRESS,
+        BigInt(block?.timestamp!),
+        BigInt(0),
       ]);
     });
 
@@ -167,6 +219,20 @@ describe('Registry', function () {
     it('Should only let the owner of the domain add a verifier', async function () {
       await registry.connect(domainOwner).setVerifier(DOMAIN_HASH, publicListverifier.target);
       expect(await registry.domainVerifier(DOMAIN_HASH)).to.equal(publicListverifier.target);
+
+      await expect(
+        registry.connect(notDomainOwner).setVerifier(DOMAIN_HASH, publicListverifier.target),
+      )
+        .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
+        .withArgs(notDomainOwner.address, DOMAIN_HASH);
+    });
+
+    it('Should add the date when a verifier is set', async function () {
+      const tx = await registry
+        .connect(domainOwner)
+        .setVerifier(DOMAIN_HASH, publicListverifier.target);
+      const block = await tx.getBlock();
+      expect(await registry.domainVerifierSetTime(DOMAIN_HASH)).to.equal(block?.timestamp!);
 
       await expect(
         registry.connect(notDomainOwner).setVerifier(DOMAIN_HASH, publicListverifier.target),

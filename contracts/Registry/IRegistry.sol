@@ -20,11 +20,17 @@ interface IRegistry {
     );
 
     /**
-     * @dev Emitted when the `owner` of the `domainHash` add a `verifier`.
+     * @dev Emitted when the `owner` of the `domainHash` adds a `verifier`.
      *
      * NOTE: This will also be emitted when the verifier is changed.
      */
     event VerifierSet(address indexed owner, bytes32 domainHash, Verifier indexed verifier);
+
+    /**
+     * @dev Emitted when the owner of a `domainHash` is set.
+     *
+     */
+    event OwnerSet(address indexed msgSender, bytes32 domainHash, address indexed owner);
 
     /**
      * @dev Emitted when the `msgSender` adds and `authorizer` with id `authorizerId`.
@@ -44,7 +50,15 @@ interface IRegistry {
      */
     function domainHashToRecord(
         bytes32 domainHash
-    ) external view returns (address owner, Verifier verifier);
+    )
+        external
+        view
+        returns (
+            address owner,
+            Verifier verifier,
+            uint256 lastOwnerSetTime,
+            uint256 lastVerifierSetTime
+        );
 
     /**
      * @dev Register a domain.
@@ -109,6 +123,14 @@ interface IRegistry {
      * the verifier are not registered
      */
     function domainVerifier(bytes32 domainHash) external view returns (Verifier);
+
+    /**
+     * @dev Returns the timestamp of the block where the verifier was set.
+     * @param domainHash The name hash of the domain
+     * @return the timestamp of the block where the verifier was set or
+     * 0 if it wasn't
+     */
+    function domainVerifierSetTime(bytes32 domainHash) external view returns (uint256);
 
     /**
      * @dev Sets a verifier to the domain hash.

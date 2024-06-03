@@ -42,7 +42,7 @@ contract SCI is Initializable {
         address contractAddress,
         uint256 chainId
     ) public view returns (bool) {
-        (, Verifier verifier) = registry.domainHashToRecord(domainHash);
+        (, Verifier verifier, , ) = registry.domainHashToRecord(domainHash);
 
         if (address(verifier) == address(0)) {
             return false;

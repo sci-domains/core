@@ -9,6 +9,7 @@ import {Authorizer} from '../Authorizers/Authorizer.sol';
 import {Verifier} from '../Verifiers/Verifier.sol';
 import {IRegistry} from './IRegistry.sol';
 import {DomainManager} from '../DomainMangager/DomainManager.sol';
+import 'hardhat/console.sol';
 
 /**
  * @custom:security-contact security@sci.domains
@@ -17,6 +18,8 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     struct Record {
         address owner;
         Verifier verifier;
+        uint256 ownerSetTime;
+        uint256 verifierSetTime;
     }
 
     bytes32 public constant ADD_AUTHORIZER_ROLE = keccak256('ADD_AUTHORIZER_ROLE');
@@ -63,7 +66,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
         Verifier verifier
     ) external {
         bytes32 domainHash = _registerDomain(authorizerId, _msgSender(), domain, isWildcard);
-        domainHashToRecord[domainHash].verifier = verifier;
+        _setVerifier(domainHash, verifier);
     }
 
     /**
@@ -90,8 +93,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
         bytes32 domainHash,
         Verifier verifier
     ) external onlyDomainOwner(domainHash) {
-        domainHashToRecord[domainHash].verifier = verifier;
-        emit VerifierSet(_msgSender(), domainHash, verifier);
+        _setVerifier(domainHash, verifier);
     }
 
     /**
@@ -99,6 +101,13 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      */
     function domainVerifier(bytes32 domainHash) external view virtual returns (Verifier) {
         return domainHashToRecord[domainHash].verifier;
+    }
+
+    /**
+     * @dev See {IRegistry-version}.
+     */
+    function domainVerifierSetTime(bytes32 domainHash) external view virtual returns (uint256) {
+        return domainHashToRecord[domainHash].verifierSetTime;
     }
 
     /**
@@ -149,9 +158,33 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
             );
         }
 
-        domainHashToRecord[recordDomain].owner = owner;
+        _setDomainOwner(domainHash, owner);
+
+        console.logBytes32(recordDomain);
+
         emit DomainRegistered(authorizerId, owner, recordDomain, domain);
 
         return domainHash;
+    }
+
+    /**
+     * @dev Sets the verifier, updates the verifier timestamp and
+     * emits VerifierSet events.
+     * All updates to a verifier should be through this function
+     */
+    function _setVerifier(bytes32 domainHash, Verifier verifier) private {
+        domainHashToRecord[domainHash].verifier = verifier;
+        domainHashToRecord[domainHash].verifierSetTime = block.timestamp;
+        emit VerifierSet(_msgSender(), domainHash, verifier);
+    }
+
+    /**
+     * @dev Sets the owner of a domain,
+     * All updates to an owner should be through this function
+     */
+    function _setDomainOwner(bytes32 domainHash, address owner) private {
+        domainHashToRecord[domainHash].owner = owner;
+        domainHashToRecord[domainHash].ownerSetTime = block.timestamp;
+        emit OwnerSet(_msgSender(), domainHash, owner);
     }
 }
