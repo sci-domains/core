@@ -3,6 +3,7 @@ import '@nomicfoundation/hardhat-toolbox';
 import '@nomiclabs/hardhat-solhint';
 import '@openzeppelin/hardhat-upgrades';
 import 'dotenv/config';
+import './plugins/walletConnect/index';
 
 function getAccounts(privateKey: string | undefined): string[] {
   return privateKey ? [privateKey] : [];
@@ -31,7 +32,7 @@ const config: HardhatUserConfig = {
     mainnet: {
       chainId: 1,
       url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL),
-      accounts: getAccounts(process.env.ETHEREUM_MAINNET_PRIVATE_KEY),
+      useWalletConnect: true,
     },
   },
   etherscan: {
@@ -39,6 +40,17 @@ const config: HardhatUserConfig = {
   },
   sourcify: {
     enabled: false,
+  },
+  walletConnect: {
+    projectId: '875432145950b919c17ce6516fb514c8',
+    metadata: {
+      name: 'SCI',
+      description: 'SCI Deployer',
+      url: 'https://sci.domains',
+      icons: ['https://www.sci.domains/images/logo/sci_logo.svg'],
+    },
+    showQrModal: false,
+    optionalChains: [1],
   },
 };
 
