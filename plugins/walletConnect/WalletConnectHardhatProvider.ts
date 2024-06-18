@@ -11,12 +11,12 @@ export class WalletConnectHardhatProvider extends ProviderWrapper {
   }
 
   async request(args: RequestArguments) {
-    console.log(args);
     switch (args.method) {
       case 'eth_estimateGas':
       case 'eth_sendTransaction':
       case 'eth_sendRawTransaction':
       case 'eth_accounts':
+      case 'personal_sign':
         return this.wcProvider.request(args);
     }
 
