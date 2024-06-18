@@ -24,10 +24,9 @@ const config: HardhatUserConfig = {
     outDir: 'types',
   },
   networks: {
-    goerli: {
-      chainId: 5,
-      url: getUrl(process.env.ETHEREUM_GOERLI_PROVIDER_URL),
-      accounts: getAccounts(process.env.ETHEREUM_GOERLI_PRIVATE_KEY),
+    sepolia: {
+      chainId: 11155111,
+      url: getUrl(process.env.ETHEREUM_SEPOLIA_PROVIDER_URL),
     },
     mainnet: {
       chainId: 1,
@@ -42,7 +41,7 @@ const config: HardhatUserConfig = {
     enabled: false,
   },
   walletConnect: {
-    projectId: '875432145950b919c17ce6516fb514c8',
+    projectId: process.env.WALLET_CONNECT_PROJECT_ID!,
     metadata: {
       name: 'SCI',
       description: 'SCI Deployer',

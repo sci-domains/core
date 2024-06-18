@@ -11,5 +11,6 @@ declare module 'hardhat/types/config' {
 
   interface HttpNetworkUserConfig {
     useWalletConnect?: boolean;
+    qrCodeUrl?: string;
   }
 }

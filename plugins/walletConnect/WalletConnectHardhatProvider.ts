@@ -12,14 +12,12 @@ export class WalletConnectHardhatProvider extends ProviderWrapper {
 
   async request(args: RequestArguments) {
     console.log(args);
-    if (args.method === 'eth_sendTransaction') {
-      return this.wcProvider.request(args);
-    }
-    if (args.method === 'eth_sendRawTransaction') {
-      return this.wcProvider.request(args);
-    }
-    if (args.method === 'eth_accounts') {
-      return this.wcProvider.request(args);
+    switch (args.method) {
+      case 'eth_estimateGas':
+      case 'eth_sendTransaction':
+      case 'eth_sendRawTransaction':
+      case 'eth_accounts':
+        return this.wcProvider.request(args);
     }
 
     return this._wrappedProvider.request(args);

@@ -18,7 +18,7 @@
             "label": "registry",
             "offset": 0,
             "slot": "0",
-            "type": "t_contract(IRegistry)5501",
+            "type": "t_contract(IRegistry)4742",
             "contract": "SCI",
             "src": "contracts/SCI.sol:13"
           },
@@ -26,7 +26,7 @@
             "label": "nameHashUtils",
             "offset": 0,
             "slot": "1",
-            "type": "t_contract(INameHash)5249",
+            "type": "t_contract(INameHash)4615",
             "contract": "SCI",
             "src": "contracts/SCI.sol:14"
           }
@@ -36,7 +36,7 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_struct(InitializableStorage)110_storage": {
+          "t_struct(InitializableStorage)10_storage": {
             "label": "struct Initializable.InitializableStorage",
             "members": [
               {
@@ -58,11 +58,11 @@
             "label": "uint64",
             "numberOfBytes": "8"
           },
-          "t_contract(INameHash)5249": {
+          "t_contract(INameHash)4615": {
             "label": "contract INameHash",
             "numberOfBytes": "20"
           },
-          "t_contract(IRegistry)5501": {
+          "t_contract(IRegistry)4742": {
             "label": "contract IRegistry",
             "numberOfBytes": "20"
           }
