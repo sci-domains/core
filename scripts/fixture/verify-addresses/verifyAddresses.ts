@@ -5,7 +5,7 @@ import {
   Registry__factory,
   SCIAuthorizer__factory,
 } from '../../../types';
-import { ADD_AUTHORIZER_ROLE } from '../../../utils/roles';
+import { IS_AUTHORIZED } from '../../../utils/roles';
 import { ADDRESS_TO_VERIFY } from './addresses';
 import { CONTRACT_NAMES, getDeployedContractAddress, sendTransactionsViaSafe } from '../../utils';
 import { ContractTransaction } from 'ethers';
@@ -16,8 +16,8 @@ async function main() {
   const sciAuthorizerAddress = await getDeployedContractAddress(CONTRACT_NAMES.SCI_AUTHORIZER);
   const nameHashAddress = await getDeployedContractAddress(CONTRACT_NAMES.NAME_HASH);
 
+  const safeAddress = process.env.SAFE_ADDRESS!;
   const owner = await ethers.provider.getSigner();
-  console.log(owner.address);
   const publicListVerifier = PublicListVerifier__factory.connect(verifierAddress, owner);
   const sciAuthorizer = SCIAuthorizer__factory.connect(sciAuthorizerAddress, owner);
   const registry = Registry__factory.connect(registryAddress, owner);
@@ -26,8 +26,8 @@ async function main() {
   const txs: ContractTransaction[] = [];
 
   // Add the pk as domain owner
-  if (!(await sciAuthorizer.hasRole(ADD_AUTHORIZER_ROLE, owner.address))) {
-    txs.push(await sciAuthorizer.grantRole.populateTransaction(ADD_AUTHORIZER_ROLE, owner.address));
+  if (!(await sciAuthorizer.hasRole(IS_AUTHORIZED, safeAddress))) {
+    txs.push(await sciAuthorizer.grantRole.populateTransaction(IS_AUTHORIZED, safeAddress));
   }
 
   const addressEntries = Object.entries(ADDRESS_TO_VERIFY);
@@ -35,7 +35,7 @@ async function main() {
     const [domain, contracts] = addressEntries[i];
     const domainHash = await nameHash.getDomainHash(domain);
 
-    if (!(await registry.isDomainOwner(domainHash, owner.address))) {
+    if (!(await registry.isDomainOwner(domainHash, safeAddress))) {
       txs.push(
         await registry.registerDomainWithVerifier.populateTransaction(
           1,
@@ -57,7 +57,7 @@ async function main() {
     console.log(`Finish ${domain}`);
   }
 
-  await sendTransactionsViaSafe(txs, process.env.SAFE_ADDRESS!);
+  await sendTransactionsViaSafe(txs, safeAddress);
 
   console.log(`Finish everything`);
 }
