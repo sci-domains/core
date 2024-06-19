@@ -45,7 +45,8 @@ interface IRegistry {
     error AccountIsNotAuthorizeToRegisterDomain(address account, bytes32 domainHash);
 
     /**
-     * @dev Returns the owner and the verifier for a given domainHash.
+     * @dev Returns the owner, the verifier, lastOwnerSetTime and lastVerifierSetTime
+     * for a given domainHash.
      * @param domainHash The name hash of the domain
      */
     function domainHashToRecord(

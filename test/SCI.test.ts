@@ -58,4 +58,23 @@ describe('SCI', function () {
       ).to.deep.equal([false, false]);
     });
   });
+
+  describe('Domain info', function () {
+    it.only('It should return the domain info for a registered domains', async function () {
+      const domain = 'secureci.xyz';
+      const tx = await registry.registerDomainWithVerifier(
+        ALWAYS_TRUE_AUTHORIZER_ID,
+        domain,
+        false,
+        publicListverifier.target,
+      );
+      const block = await tx.getBlock();
+      expect(await sci.domainToRecord(domain)).to.deep.equal([
+        owner.address,
+        publicListverifier.target,
+        block?.timestamp,
+        block?.timestamp,
+      ]);
+    });
+  });
 });
