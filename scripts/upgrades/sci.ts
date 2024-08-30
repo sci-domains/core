@@ -1,10 +1,9 @@
 import { ethers, upgrades } from 'hardhat';
-
-const SCI_ADDRESS = '0xB015ac4d088B8693f18e16b820937875FB5703f6';
+import { CONTRACT_NAMES, getDeployedContractAddress } from '../utils';
 
 async function main() {
   const SCIFactory = await ethers.getContractFactory('SCI');
-  await upgrades.upgradeProxy(SCI_ADDRESS, SCIFactory);
+  await upgrades.upgradeProxy(await getDeployedContractAddress(CONTRACT_NAMES.SCI), SCIFactory);
   console.log(`SCI Upgrade`);
 }
 

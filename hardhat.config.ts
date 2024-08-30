@@ -3,6 +3,7 @@ import '@nomicfoundation/hardhat-toolbox';
 import '@nomiclabs/hardhat-solhint';
 import '@openzeppelin/hardhat-upgrades';
 import 'dotenv/config';
+import './plugins/walletConnect/index';
 
 function getAccounts(privateKey: string | undefined): string[] {
   return privateKey ? [privateKey] : [];
@@ -23,15 +24,14 @@ const config: HardhatUserConfig = {
     outDir: 'types',
   },
   networks: {
-    goerli: {
-      chainId: 5,
-      url: getUrl(process.env.ETHEREUM_GOERLI_PROVIDER_URL),
-      accounts: getAccounts(process.env.ETHEREUM_GOERLI_PRIVATE_KEY),
+    sepolia: {
+      chainId: 11155111,
+      url: getUrl(process.env.ETHEREUM_SEPOLIA_PROVIDER_URL),
     },
     mainnet: {
       chainId: 1,
       url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL),
-      accounts: getAccounts(process.env.ETHEREUM_MAINNET_PRIVATE_KEY),
+      useWalletConnect: true,
     },
   },
   etherscan: {
@@ -39,6 +39,17 @@ const config: HardhatUserConfig = {
   },
   sourcify: {
     enabled: false,
+  },
+  walletConnect: {
+    projectId: process.env.WALLET_CONNECT_PROJECT_ID!,
+    metadata: {
+      name: 'SCI',
+      description: 'SCI Deployer',
+      url: 'https://sci.domains',
+      icons: ['https://www.sci.domains/images/logo/sci_logo.svg'],
+    },
+    showQrModal: false,
+    optionalChains: [1],
   },
 };
 

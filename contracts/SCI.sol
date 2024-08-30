@@ -42,7 +42,7 @@ contract SCI is Initializable {
         address contractAddress,
         uint256 chainId
     ) public view returns (bool) {
-        (, Verifier verifier) = registry.domainHashToRecord(domainHash);
+        (, Verifier verifier, , ) = registry.domainHashToRecord(domainHash);
 
         if (address(verifier) == address(0)) {
             return false;
@@ -132,5 +132,50 @@ contract SCI is Initializable {
     ) public view returns (bool) {
         return
             isVerifiedForDomainHash(nameHashUtils.getDomainHash(domain), contractAddress, chainId);
+    }
+
+    /**
+     * @dev Returns info from the domain
+     *
+     * @param domain The domain you want to get information from
+     */
+    function domainToRecord(
+        string calldata domain
+    )
+        external
+        view
+        returns (
+            address owner,
+            Verifier verifier,
+            uint256 lastOwnerSetTime,
+            uint256 lastVerifierSetTime
+        )
+    {
+        return registry.domainHashToRecord(nameHashUtils.getDomainHash(domain));
+    }
+
+    /**
+     * @dev Returns info from the domain
+     *
+     * @param domainHash The name hash of the domain
+     */
+    function domainHashToRecord(
+        bytes32 domainHash
+    )
+        external
+        view
+        returns (
+            address owner,
+            Verifier verifier,
+            uint256 lastOwnerSetTime,
+            uint256 lastVerifierSetTime
+        )
+    {
+        return registry.domainHashToRecord(domainHash);
+    }
+
+    // This is a temporary function until we change to the new SCI
+    function setRegistry() public {
+        registry = IRegistry(0x5f613920dc691b6177F2123eD2D27F00a3B5748b);
     }
 }
