@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity 0.8.25;
+pragma solidity 0.8.26;
 
 /**
  * @dev External interface of NameHash declared to support EIP-137 namehash algorithm for domains.

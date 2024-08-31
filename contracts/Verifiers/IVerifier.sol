@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity 0.8.25;
+pragma solidity 0.8.26;
 
 /**
  * @dev Required interface of a Verifier compliant contract for the SCI IRegistry.sol.

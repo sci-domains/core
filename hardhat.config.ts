@@ -15,7 +15,7 @@ function getUrl(url: string | undefined): string {
 }
 
 const config: HardhatUserConfig = {
-  solidity: '0.8.25',
+  solidity: '0.8.26',
   gasReporter: {
     currency: 'USD',
     enabled: true,

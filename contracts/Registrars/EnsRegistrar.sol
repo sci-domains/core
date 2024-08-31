@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity 0.8.25;
+pragma solidity 0.8.26;
 
 import {ENS} from '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
 import {IRegistry} from '../Registry/IRegistry.sol';
