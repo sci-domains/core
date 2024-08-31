@@ -1,6 +1,7 @@
 import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import '@nomiclabs/hardhat-solhint';
+import 'solidity-coverage'
 import '@openzeppelin/hardhat-upgrades';
 import 'dotenv/config';
 import './plugins/walletConnect/index';
