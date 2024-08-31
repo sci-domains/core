@@ -1,21 +1,28 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.25;
 
-import {Verifier} from './Verifiers/Verifier.sol';
+import {IVerifier} from './Verifiers/IVerifier.sol';
 import {IRegistry} from './Registry/IRegistry.sol';
-import {INameHash} from './Ens/INameHash.sol';
+import {INameHash} from './NameHash/INameHash.sol';
 import {Initializable} from '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
+import {Ownable2StepUpgradeable} from '@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol';
 
 /**
  * @custom:security-contact security@sci.domains
  */
-contract SCI is Initializable {
+contract SCI is Initializable, Ownable2StepUpgradeable {
     IRegistry public registry;
     INameHash public nameHashUtils;
 
-    function initialize(address registryAddress, address nameHashAddress) external initializer {
+    function initialize(
+        address owner,
+        address registryAddress,
+        address nameHashAddress
+    ) external initializer {
         registry = IRegistry(registryAddress);
         nameHashUtils = INameHash(nameHashAddress);
+        __Ownable2Step_init();
+        __Ownable_init(owner);
     }
 
     /**
@@ -42,7 +49,7 @@ contract SCI is Initializable {
         address contractAddress,
         uint256 chainId
     ) public view returns (bool) {
-        (, Verifier verifier, , ) = registry.domainHashToRecord(domainHash);
+        (, IVerifier verifier, , ) = registry.domainHashToRecord(domainHash);
 
         if (address(verifier) == address(0)) {
             return false;
@@ -146,7 +153,7 @@ contract SCI is Initializable {
         view
         returns (
             address owner,
-            Verifier verifier,
+            IVerifier verifier,
             uint256 lastOwnerSetTime,
             uint256 lastVerifierSetTime
         )
@@ -166,7 +173,7 @@ contract SCI is Initializable {
         view
         returns (
             address owner,
-            Verifier verifier,
+            IVerifier verifier,
             uint256 lastOwnerSetTime,
             uint256 lastVerifierSetTime
         )
@@ -174,8 +181,7 @@ contract SCI is Initializable {
         return registry.domainHashToRecord(domainHash);
     }
 
-    // This is a temporary function until we change to the new SCI
-    function setRegistry() public {
-        registry = IRegistry(0x5f613920dc691b6177F2123eD2D27F00a3B5748b);
+    function setRegistry(address newRegistry) public onlyOwner {
+        registry = IRegistry(newRegistry);
     }
 }

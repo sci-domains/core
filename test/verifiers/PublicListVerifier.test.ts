@@ -1,13 +1,10 @@
 import { ethers } from 'hardhat';
-import { ADD_AUTHORIZER_ROLE } from '../../utils/roles';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { AlwaysTrueAuthorizer, PublicListVerifier, Registry } from '../../types';
+import { PublicListVerifier, Registry } from '../../types';
 import { expect } from 'chai';
 import { MaxUint256 } from 'ethers';
 
-const ALWAYS_TRUE_AUTHORIZER_ID = 1;
 const CHAIN_ID = 1;
-const DOMAIN = 'secureci.xyz';
 const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
 const DOMAIN_WITH_WILDCARD_HASH =
   '0x1716343d0689cbd485fdf69796462e95bb6ff7a1249660b9fcf2fdd6c6c04f0e';
@@ -17,7 +14,6 @@ describe('Public List Verifier', function () {
   let domainOwner: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
   let registry: Registry;
-  let alwaysTrueAuthorizer: AlwaysTrueAuthorizer;
   let publicListverifier: PublicListVerifier;
 
   beforeEach(async () => {
@@ -27,17 +23,16 @@ describe('Public List Verifier', function () {
     const nameHash = await NameHashFactory.deploy();
 
     const RegistryFactory = await ethers.getContractFactory('Registry');
-    registry = await RegistryFactory.deploy(await nameHash.getAddress());
-    await registry.grantRole(ADD_AUTHORIZER_ROLE, owner.address);
+    registry = await RegistryFactory.deploy();
 
-    const AlwaysTrueAuthorizer = await ethers.getContractFactory('AlwaysTrueAuthorizer');
-    alwaysTrueAuthorizer = await AlwaysTrueAuthorizer.deploy();
-    await registry.setAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer);
+    await registry.grantRole(await registry.MANAGE_REGISTRAR_ROLE(), owner.address);
+    registry.grantRole(await registry.REGISTRAR_ROLE(), owner.address);
+    registry.grantRole(await registry.REGISTRAR_ROLE(), domainOwner.address);
 
     const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
     publicListverifier = await PubicListVerifierFactory.deploy(registry.target);
 
-    await registry.registerDomain(ALWAYS_TRUE_AUTHORIZER_ID, domainOwner, DOMAIN, false);
+    await registry.registerDomain(domainOwner, DOMAIN_HASH);
   });
 
   describe('Add Addresses', function () {

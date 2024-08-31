@@ -27,6 +27,7 @@ const config: HardhatUserConfig = {
     sepolia: {
       chainId: 11155111,
       url: getUrl(process.env.ETHEREUM_SEPOLIA_PROVIDER_URL),
+      useWalletConnect: true,
     },
     mainnet: {
       chainId: 1,

@@ -4,25 +4,24 @@ pragma solidity 0.8.25;
 import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
-import {INameHash} from '../Ens/INameHash.sol';
-import {Authorizer} from '../Authorizers/Authorizer.sol';
-import {Verifier} from '../Verifiers/Verifier.sol';
+import {IVerifier} from '../Verifiers/IVerifier.sol';
 import {IRegistry} from './IRegistry.sol';
 import {DomainManager} from '../DomainMangager/DomainManager.sol';
 
+// TODO: Add Pausable
 /**
  * @custom:security-contact security@sci.domains
  */
 contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainManager {
     struct Record {
         address owner;
-        Verifier verifier;
+        IVerifier verifier;
         uint256 ownerSetTime;
         uint256 verifierSetTime;
     }
 
-    bytes32 public constant ADD_AUTHORIZER_ROLE = keccak256('ADD_AUTHORIZER_ROLE');
-    INameHash public immutable nameHashUtils;
+    bytes32 public constant MANAGE_REGISTRAR_ROLE = keccak256('MANAGE_REGISTRAR_ROLE');
+    bytes32 public constant REGISTRAR_ROLE = keccak256('REGISTRAR_ROLE');
 
     /**
      * @dev Maps the name hash of a domain to a Record.
@@ -30,42 +29,37 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     mapping(bytes32 nameHash => Record domain) public domainHashToRecord;
 
     /**
-     * @dev Maps the id of an authorizer to the Authorizer address.
+     * @dev Gives the deployer the ADMIN role.
      */
-    mapping(uint256 authorizerId => Authorizer authorizer) public authorizers;
-
-    /**
-     * @dev Sets the address for {nameHashUtils} and gives the deployer the ADMIN role.
-     */
-    constructor(
-        address _nameHashAddress
-    ) AccessControlDefaultAdminRules(0, _msgSender()) DomainManager(address(this)) {
-        nameHashUtils = INameHash(_nameHashAddress);
+    constructor() AccessControlDefaultAdminRules(0, _msgSender()) DomainManager(address(this)) {
+        _setRoleAdmin(REGISTRAR_ROLE, MANAGE_REGISTRAR_ROLE);
     }
 
     /**
      * @dev See {IRegistry-version}.
      */
     function registerDomain(
-        uint256 authorizerId,
         address owner,
-        string memory domain,
-        bool isWildcard
+        bytes32 domainHash
     ) external {
-        _registerDomain(authorizerId, owner, domain, isWildcard);
+        _registerDomain(owner, domainHash);
     }
 
     /**
      * @dev See {IRegistry-version}.
      */
     function registerDomainWithVerifier(
-        uint256 authorizerId,
-        string memory domain,
-        bool isWildcard,
-        Verifier verifier
+        address owner,
+        bytes32 domainHash,
+        IVerifier verifier
     ) external {
-        bytes32 domainHash = _registerDomain(authorizerId, _msgSender(), domain, isWildcard);
+        _registerDomain(owner, domainHash);
         _setVerifier(domainHash, verifier);
+    }
+
+    // TODO: Add timelock
+    function grantRole(bytes32 role, address account) public override onlyRole(getRoleAdmin(role)) {
+        _grantRole(role, account);
     }
 
     /**
@@ -90,7 +84,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      */
     function setVerifier(
         bytes32 domainHash,
-        Verifier verifier
+        IVerifier verifier
     ) external onlyDomainOwner(domainHash) {
         _setVerifier(domainHash, verifier);
     }
@@ -98,7 +92,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     /**
      * @dev See {IRegistry-version}.
      */
-    function domainVerifier(bytes32 domainHash) external view virtual returns (Verifier) {
+    function domainVerifier(bytes32 domainHash) external view virtual returns (IVerifier) {
         return domainHashToRecord[domainHash].verifier;
     }
 
@@ -110,26 +104,10 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-version}.
-     */
-    function setAuthorizer(
-        uint256 authorizerId,
-        Authorizer authorizer
-    ) external onlyRole(ADD_AUTHORIZER_ROLE) {
-        authorizers[authorizerId] = authorizer;
-        emit AuthorizerSet(authorizerId, authorizer, _msgSender());
-    }
-
-    /**
      * @dev Base function to register a domain.
      *
-     * @param authorizerId The id of the authorizer being used.
      * @param owner The owner of the domain.
-     * @param domain The domain being registered (example.com).
-     * @param isWildcard If you are registering a wildcard to set a verifier for all subdomains.
-     * @return the name hash of the domain.
-     *
-     * NOTE: If wildcard is true then it registers the name hash of `*.domain`.
+     * @param domainHash The name hash of the domain being registered.
      *
      * Requirements:
      *
@@ -138,30 +116,11 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      * May emit a {DomainRegistered} event.
      */
     function _registerDomain(
-        uint256 authorizerId,
         address owner,
-        string memory domain,
-        bool isWildcard
-    ) private returns (bytes32) {
-        bytes32 domainHash = nameHashUtils.getDomainHash(domain);
-
-        if (!authorizers[authorizerId].isAuthorized(owner, domainHash)) {
-            revert AccountIsNotAuthorizeToRegisterDomain(owner, domainHash);
-        }
-
-        bytes32 recordDomain = domainHash;
-
-        if (isWildcard) {
-            recordDomain = keccak256(
-                abi.encodePacked(domainHash, keccak256(abi.encodePacked('*')))
-            );
-        }
-
-        _setDomainOwner(recordDomain, owner);
-
-        emit DomainRegistered(authorizerId, owner, recordDomain, domain);
-
-        return recordDomain;
+        bytes32 domainHash
+    ) private onlyRole(REGISTRAR_ROLE) {
+        _setDomainOwner(domainHash, owner);
+        emit DomainRegistered(_msgSender(), owner, domainHash);
     }
 
     /**
@@ -169,7 +128,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      * emits VerifierSet events.
      * All updates to a verifier should be through this function
      */
-    function _setVerifier(bytes32 domainHash, Verifier verifier) private {
+    function _setVerifier(bytes32 domainHash, IVerifier verifier) private {
         domainHashToRecord[domainHash].verifier = verifier;
         domainHashToRecord[domainHash].verifierSetTime = block.timestamp;
         emit VerifierSet(_msgSender(), domainHash, verifier);

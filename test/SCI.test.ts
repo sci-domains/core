@@ -1,25 +1,17 @@
 import { expect } from 'chai';
 import { ethers, upgrades } from 'hardhat';
 import {
-  AlwaysFalseAuthorizer,
-  AlwaysTrueAuthorizer,
   PublicListVerifier,
   Registry,
   SCI,
 } from '../types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { ADD_AUTHORIZER_ROLE, ADD_TRUSTED_VERIFIER_ROLE } from '../utils/roles';
-
-const ALWAYS_TRUE_AUTHORIZER_ID = 1;
-const ALWAYS_FALSE_AUTHORIZER_ID = 2;
 
 describe('SCI', function () {
   let owner: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
   let sci: SCI;
   let registry: Registry;
-  let alwaysTrueAuthorizer: AlwaysTrueAuthorizer;
-  let alwaysFalseAuthorizer: AlwaysFalseAuthorizer;
   let publicListverifier: PublicListVerifier;
 
   beforeEach(async () => {
@@ -29,25 +21,22 @@ describe('SCI', function () {
     const nameHash = await NameHashFactory.deploy();
 
     const RegistryFactory = await ethers.getContractFactory('Registry');
-    registry = await RegistryFactory.deploy(await nameHash.getAddress());
-    await registry.grantRole(ADD_AUTHORIZER_ROLE, owner.address);
-    await registry.grantRole(ADD_TRUSTED_VERIFIER_ROLE, owner.address);
+    registry = await RegistryFactory.deploy();
 
-    const AlwaysTrueAuthorizer = await ethers.getContractFactory('AlwaysTrueAuthorizer');
-    alwaysTrueAuthorizer = await AlwaysTrueAuthorizer.deploy();
-    await registry.setAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer);
-
-    const AlwaysFalseAuthorizer = await ethers.getContractFactory('AlwaysFalseAuthorizer');
-    alwaysFalseAuthorizer = await AlwaysFalseAuthorizer.deploy();
-    await registry.setAuthorizer(ALWAYS_FALSE_AUTHORIZER_ID, alwaysFalseAuthorizer);
+    await registry.grantRole(await registry.MANAGE_REGISTRAR_ROLE(), owner.address);
+    registry.grantRole(await registry.REGISTRAR_ROLE(), owner);
 
     const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
     publicListverifier = await PubicListVerifierFactory.deploy(registry.target);
 
     const SCIFactory = await ethers.getContractFactory('SCI');
-    sci = (await upgrades.deployProxy(SCIFactory, [registry.target, nameHash.target], {
-      initializer: 'initialize',
-    })) as unknown as SCI;
+    sci = (await upgrades.deployProxy(
+      SCIFactory,
+      [owner.address, registry.target, nameHash.target],
+      {
+        initializer: 'initialize',
+      },
+    )) as unknown as SCI;
     await sci.waitForDeployment();
   });
 
@@ -59,13 +48,36 @@ describe('SCI', function () {
     });
   });
 
+  describe('Ownable', function () {
+    it('Should set the right ownable in the deployment', async function () {
+      expect(await sci.owner()).to.equal(owner.address);
+    });
+  });
+
+  describe('Set Registry', function () {
+    it('Only the owner is allow to set a new Registry', async function () {
+      const notTheOwner = addresses[0];
+      expect(await sci.owner()).to.not.equal(notTheOwner);
+
+      const newRegistryAddress = addresses[1].address;
+      expect(await sci.registry()).to.not.equal(newRegistryAddress);
+
+      await expect(sci.connect(notTheOwner).setRegistry(newRegistryAddress))
+        .to.revertedWithCustomError(sci, 'OwnableUnauthorizedAccount')
+        .withArgs(notTheOwner.address);
+
+      await sci.connect(owner).setRegistry(newRegistryAddress);
+      expect(await sci.registry()).to.equal(newRegistryAddress);
+    });
+  });
+
   describe('Domain info', function () {
-    it.only('It should return the domain info for a registered domains', async function () {
+    it('It should return the domain info for a registered domains', async function () {
       const domain = 'secureci.xyz';
+      const domainNameHash = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
       const tx = await registry.registerDomainWithVerifier(
-        ALWAYS_TRUE_AUTHORIZER_ID,
-        domain,
-        false,
+        owner,
+        domainNameHash,
         publicListverifier.target,
       );
       const block = await tx.getBlock();

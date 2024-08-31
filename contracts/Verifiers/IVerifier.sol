@@ -5,7 +5,7 @@ pragma solidity 0.8.25;
  * @dev Required interface of a Verifier compliant contract for the SCI IRegistry.sol.
  * @custom:security-contact security@sci.domains
  */
-interface Verifier {
+interface IVerifier {
     /**
      * @dev Verifies if a contract in a specific chain is authorized
      * to interact within a domain.

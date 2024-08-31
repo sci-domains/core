@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.25;
 
-import {Verifier} from './Verifier.sol';
+import {IVerifier} from './IVerifier.sol';
 import {DomainManager} from '../DomainMangager/DomainManager.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
@@ -13,7 +13,7 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
  * this contract is verified for all chains for that domain.
  * @custom:security-contact security@sci.domains
  */
-contract PublicListVerifier is Verifier, Context, DomainManager {
+contract PublicListVerifier is IVerifier, Context, DomainManager {
     uint256 private constant MAX_INT = 2 ** 256 - 1;
 
     // Domain hash -> contract address -> chain id -> true/false.
@@ -95,7 +95,7 @@ contract PublicListVerifier is Verifier, Context, DomainManager {
     }
 
     /**
-     * @dev See {Verifier-version}.
+     * @dev See {IVerifier-version}.
      */
     function isVerified(
         bytes32 domainHash,
