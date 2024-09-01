@@ -38,7 +38,7 @@ describe('EnsRegistrar', function () {
     const EnsRegistrar = await ethers.getContractFactory('EnsRegistrar');
     ensRegistrar = await EnsRegistrar.deploy(ens.target, registry, nameHash);
 
-    await registry.grantRole(await registry.MANAGE_REGISTRAR_ROLE(), owner.address);
+    await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
     registry.grantRole(await registry.REGISTRAR_ROLE(), ensRegistrar.target);
   });
 

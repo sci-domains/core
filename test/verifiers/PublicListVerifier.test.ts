@@ -25,7 +25,7 @@ describe('Public List Verifier', function () {
     const RegistryFactory = await ethers.getContractFactory('Registry');
     registry = await RegistryFactory.deploy();
 
-    await registry.grantRole(await registry.MANAGE_REGISTRAR_ROLE(), owner.address);
+    await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
     registry.grantRole(await registry.REGISTRAR_ROLE(), owner.address);
     registry.grantRole(await registry.REGISTRAR_ROLE(), domainOwner.address);
 

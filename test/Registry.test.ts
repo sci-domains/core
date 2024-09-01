@@ -24,7 +24,7 @@ describe('Registry', function () {
     const RegistryFactory = await ethers.getContractFactory('Registry');
     registry = await RegistryFactory.deploy();
 
-    await registry.grantRole(await registry.MANAGE_REGISTRAR_ROLE(), owner.address);
+    await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
     registry.grantRole(await registry.REGISTRAR_ROLE(), registrar.address);
 
     const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
@@ -32,30 +32,30 @@ describe('Registry', function () {
   });
 
   describe('Manage Registrars', function () {
-    it('Should only let an address with MANAGE_REGISTRAR_ROLE add a REGISTRAR_ROLE', async function () {
+    it('Should only let an address with REGISTRAR_MANAGER_ROLE add a REGISTRAR_ROLE', async function () {
       const accountWithoutAddRegistrarRole = addresses[0];
       const newRegistrar = addresses[1];
-      expect(await registry.hasRole(await registry.MANAGE_REGISTRAR_ROLE(), owner)).to.be.true;
-      expect(await registry.hasRole(await registry.MANAGE_REGISTRAR_ROLE(), accountWithoutAddRegistrarRole)).to.be.false;
+      expect(await registry.hasRole(await registry.REGISTRAR_MANAGER_ROLE(), owner)).to.be.true;
+      expect(await registry.hasRole(await registry.REGISTRAR_MANAGER_ROLE(), accountWithoutAddRegistrarRole)).to.be.false;
       expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), newRegistrar)).to.be.false;
       
       await expect(registry.connect(accountWithoutAddRegistrarRole).grantRole(await registry.REGISTRAR_ROLE(), newRegistrar))
       .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
-      .withArgs(accountWithoutAddRegistrarRole.address, await registry.MANAGE_REGISTRAR_ROLE());
+      .withArgs(accountWithoutAddRegistrarRole.address, await registry.REGISTRAR_MANAGER_ROLE());
 
       await registry.connect(owner).grantRole(await registry.REGISTRAR_ROLE(), newRegistrar);
       expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), registrar)).to.be.true;
     });
 
-    it('Should only let an address with MANAGE_REGISTRAR_ROLE remove a REGISTRAR_ROLE', async function () {
+    it('Should only let an address with REGISTRAR_MANAGER_ROLE remove a REGISTRAR_ROLE', async function () {
       const accountWithoutAddRegistrarRole = addresses[0];
-      expect(await registry.hasRole(await registry.MANAGE_REGISTRAR_ROLE(), owner)).to.be.true;
-      expect(await registry.hasRole(await registry.MANAGE_REGISTRAR_ROLE(), accountWithoutAddRegistrarRole)).to.be.false;
+      expect(await registry.hasRole(await registry.REGISTRAR_MANAGER_ROLE(), owner)).to.be.true;
+      expect(await registry.hasRole(await registry.REGISTRAR_MANAGER_ROLE(), accountWithoutAddRegistrarRole)).to.be.false;
       expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), registrar)).to.be.true;
       
       await expect(registry.connect(accountWithoutAddRegistrarRole).revokeRole(await registry.REGISTRAR_ROLE(), registrar))
       .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
-      .withArgs(accountWithoutAddRegistrarRole.address, await registry.MANAGE_REGISTRAR_ROLE());
+      .withArgs(accountWithoutAddRegistrarRole.address, await registry.REGISTRAR_MANAGER_ROLE());
 
       await registry.connect(owner).revokeRole(await registry.REGISTRAR_ROLE(), registrar);
       expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), registrar)).to.be.false;

@@ -21,7 +21,7 @@ describe('SciRegistrar', function () {
     const SciRegistrarFactory = await ethers.getContractFactory('SciRegistrar');
     sciRegistrar = await SciRegistrarFactory.deploy(registry);
 
-    await registry.grantRole(await registry.MANAGE_REGISTRAR_ROLE(), user.address);
+    await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), user.address);
     registry.grantRole(await registry.REGISTRAR_ROLE(), sciRegistrar.target);
   });
 

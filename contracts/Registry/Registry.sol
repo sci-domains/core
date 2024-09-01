@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.26;
 
-import {Ownable} from '@openzeppelin/contracts/access/Ownable.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
@@ -20,7 +19,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
         uint256 verifierSetTime;
     }
 
-    bytes32 public constant MANAGE_REGISTRAR_ROLE = keccak256('MANAGE_REGISTRAR_ROLE');
+    bytes32 public constant REGISTRAR_MANAGER_ROLE = keccak256('REGISTRAR_MANAGER_ROLE');
     bytes32 public constant REGISTRAR_ROLE = keccak256('REGISTRAR_ROLE');
 
     /**
@@ -32,7 +31,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      * @dev Gives the deployer the ADMIN role.
      */
     constructor() AccessControlDefaultAdminRules(0, _msgSender()) DomainManager(address(this)) {
-        _setRoleAdmin(REGISTRAR_ROLE, MANAGE_REGISTRAR_ROLE);
+        _setRoleAdmin(REGISTRAR_ROLE, REGISTRAR_MANAGER_ROLE);
     }
 
     /**
