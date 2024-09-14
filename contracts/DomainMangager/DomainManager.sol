@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.26;
 
-import {SCI} from '../SCI.sol';
+import {IRegistry} from '../Registry/IRegistry.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
 /**
@@ -10,7 +10,7 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
  * @custom:security-contact security@sci.domains
  */
 abstract contract DomainManager is Context {
-    SCI public immutable sci;
+    IRegistry public immutable registry;
 
     /**
      * @dev The caller account is not the owner of the domain.
@@ -22,7 +22,7 @@ abstract contract DomainManager is Context {
      * provided by the deployer as the SCI contract.
      */
     constructor(address _sciAddress) {
-        sci = SCI(_sciAddress);
+        registry = IRegistry(_sciAddress);
     }
 
     /**
@@ -42,7 +42,7 @@ abstract contract DomainManager is Context {
      * Overriding this function changes the behavior of the {onlyDomainOwner} modifier.
      */
     function _checkDomainOwner(bytes32 domainHash) private view {
-        if (sci.domainOwner(domainHash) != _msgSender()) {
+        if (registry.domainOwner(domainHash) != _msgSender()) {
             revert AccountIsNotDomainOwner(_msgSender(), domainHash);
         }
     }

@@ -6,16 +6,22 @@ import {
   SCI,
 } from '../types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
+import { Block } from 'ethers';
+
+const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
+const CHAIN = 1;
 
 describe('SCI', function () {
   let owner: HardhatEthersSigner;
+  let verifiedAccount: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
   let sci: SCI;
   let registry: Registry;
   let publicListverifier: PublicListVerifier;
+  let registrationBlock: Block;
 
   beforeEach(async () => {
-    [owner, ...addresses] = await ethers.getSigners();
+    [owner, verifiedAccount, ...addresses] = await ethers.getSigners();
 
     const RegistryFactory = await ethers.getContractFactory('Registry');
     registry = await RegistryFactory.deploy();
@@ -35,6 +41,24 @@ describe('SCI', function () {
       },
     )) as unknown as SCI;
     await sci.waitForDeployment();
+
+    // Register domain with verifiers
+    const tx = await registry.registerDomainWithVerifier(
+      owner,
+      DOMAIN_HASH,
+      publicListverifier.target,
+    );
+    // This will always return a block
+    registrationBlock = (await tx.getBlock())!;
+
+    // Register the account
+    await publicListverifier.addAddresses(DOMAIN_HASH, [verifiedAccount.address], [[CHAIN]]);
+  });
+
+  describe('Initializable', function () {
+    it('Should\'t be able to initialize a second time', async function () {
+      await expect(sci.initialize(owner.address, registry.target)).to.revertedWithCustomError(sci, "InvalidInitialization");
+    });
   });
 
   describe('Ownable', function () {
@@ -60,20 +84,32 @@ describe('SCI', function () {
     });
   });
 
-  describe('Domain info', function () {
+  describe('Verification', function () {
+    it('Should return true if the address if verified', async function () {
+      expect(await sci.isVerifiedForDomainHash(DOMAIN_HASH, verifiedAccount.address, CHAIN)).to.be.true
+    });
+    
+    it('Should return false if the address if not verified', async function () {
+      expect(await sci.isVerifiedForDomainHash(DOMAIN_HASH, addresses[0].address, CHAIN)).to.be.false;
+    });
+
+    it('Should return accordingly when verifying multiple addresses', async function () {
+      expect(await sci.isVerifiedForMultipleDomainHashes(
+        [DOMAIN_HASH, ethers.ZeroHash], 
+        verifiedAccount, 
+        CHAIN)
+      ).to.deep.equal([true, false])
+    });
+    
+  });
+
+  describe('Domain', function () {
     it('It should return the domain info for a registered domains', async function () {
-      const domainNameHash = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
-      const tx = await registry.registerDomainWithVerifier(
-        owner,
-        domainNameHash,
-        publicListverifier.target,
-      );
-      const block = await tx.getBlock();
-      expect(await sci.domainHashToRecord('0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15')).to.deep.equal([
+      expect(await sci.domainHashToRecord(DOMAIN_HASH)).to.deep.equal([
         owner.address,
         publicListverifier.target,
-        block?.timestamp,
-        block?.timestamp,
+        registrationBlock.timestamp,
+        registrationBlock.timestamp,
       ]);
     });
   });

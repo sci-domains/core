@@ -22,15 +22,6 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
     }
 
     /**
-     * @dev Returns the owner of the domainHash.
-     * @param domainHash The name hash of the domain.
-     * @return the address of the owner or the ZERO_ADDRESS if the domain is not registered.
-     */
-    function domainOwner(bytes32 domainHash) public view returns (address) {
-        return registry.domainOwner(domainHash);
-    }
-
-    /**
      * @dev Returns if the `contractAddress` deployed in the chain with id `chainId` is verified.
      * to interact with the domain with name hash `domainHash`.
      * @param domainHash The name hash of the domain the contract is interacting with
