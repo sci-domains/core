@@ -1,4 +1,3 @@
-import { ADD_AUTHORIZER_ROLE } from './../utils/roles';
 import { ethers } from 'hardhat';
 import {
   Registry,
@@ -8,8 +7,6 @@ import { expect } from 'chai';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 
 const DOMAIN_HASH = '0x46b1531f39389a596f2e173d7e93cd0eaeafaf690c2a196e3f9054ce4cb20843';
-const DOMAIN_WITH_WILDCARD_HASH =
-  '0xb33e1da180b89d355773c7722ac9fa01c5b52aef3e3b6ceb67b664ccf75b382c';
 
 describe('Registry', function () {
   let owner: HardhatEthersSigner;
@@ -63,6 +60,18 @@ describe('Registry', function () {
   });
 
   describe('Registering domains', function () {
+    it('Shouldn\'t let a non registrar register a domain', async function () {
+      const domainOwner = addresses[1];
+      expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), domainOwner.address)).to.be.false;
+      await expect(
+        registry
+          .connect(domainOwner)
+          .registerDomain(domainOwner, DOMAIN_HASH),
+      )
+        .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
+        .withArgs(domainOwner.address, await registry.REGISTRAR_ROLE());
+    });
+
     it('Should emit an event when a domain is registered', async function () {
       const domainOwner = addresses[1];
       await expect(

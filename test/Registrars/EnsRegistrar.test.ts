@@ -36,7 +36,7 @@ describe('EnsRegistrar', function () {
     ensRegistrar = await EnsRegistrar.deploy(ens.target, registry);
 
     await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
-    registry.grantRole(await registry.REGISTRAR_ROLE(), ensRegistrar.target);
+    await registry.grantRole(await registry.REGISTRAR_ROLE(), ensRegistrar.target);
   });
 
   describe('ENS Domain', function () {
