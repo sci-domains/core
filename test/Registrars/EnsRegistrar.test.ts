@@ -29,14 +29,11 @@ describe('EnsRegistrar', function () {
     await ens.setSubnodeOwner(namehash('eth'), keccak256(toUtf8Bytes('a')), owner.address);
 
     // SCI Contracts
-    const NameHashFactory = await ethers.getContractFactory("NameHash");
-    const nameHash = await NameHashFactory.deploy();
-
     const RegistryFactory = await ethers.getContractFactory("Registry");
     registry = await RegistryFactory.deploy();
 
     const EnsRegistrar = await ethers.getContractFactory('EnsRegistrar');
-    ensRegistrar = await EnsRegistrar.deploy(ens.target, registry, nameHash);
+    ensRegistrar = await EnsRegistrar.deploy(ens.target, registry);
 
     await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
     registry.grantRole(await registry.REGISTRAR_ROLE(), ensRegistrar.target);

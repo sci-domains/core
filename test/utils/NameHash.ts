@@ -2,12 +2,16 @@ import { ethers } from 'hardhat';
 import { NameHash } from '../../types';
 import { expect } from 'chai';
 
-describe('RegistryV0', function () {
+describe('NamHash', function () {
   let nameHash: NameHash;
 
   beforeEach(async () => {
     const NameHashFactory = await ethers.getContractFactory('NameHash');
     nameHash = await NameHashFactory.deploy();
+  });
+
+  it('Should calculate the hash of a domain correctly', async function () {
+    expect(await nameHash.getDomainHash('')).to.equal(ethers.ZeroHash);
   });
 
   it('Should calculate the hash of a domain correctly', async function () {
