@@ -24,18 +24,17 @@
     "build": "tsc",
     "compile": "hardhat compile",
     "clean": "rm -r artifacts cache types dist",
-    "test": "hardhat test"
+    "test": "hardhat test",
+    "test:cov": "hardhat coverage"
   },
   "dependencies": {
     "@ensdomains/ens-contracts": "1.1.4",
     "@openzeppelin/contracts": "^5.0.2",
     "@openzeppelin/contracts-upgradeable": "^5.0.1",
     "@openzeppelin/hardhat-upgrades": "^3.1.0",
-    "@walletconnect/ethereum-provider": "^2.13.1",
     "ethers": "^6.8.1"
   },
   "devDependencies": {
-    "@coinbase/wallet-sdk": "^4.0.4",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
