@@ -17,9 +17,6 @@ describe('SCI', function () {
   beforeEach(async () => {
     [owner, ...addresses] = await ethers.getSigners();
 
-    const NameHashFactory = await ethers.getContractFactory('NameHash');
-    const nameHash = await NameHashFactory.deploy();
-
     const RegistryFactory = await ethers.getContractFactory('Registry');
     registry = await RegistryFactory.deploy();
 
@@ -32,20 +29,12 @@ describe('SCI', function () {
     const SCIFactory = await ethers.getContractFactory('SCI');
     sci = (await upgrades.deployProxy(
       SCIFactory,
-      [owner.address, registry.target, nameHash.target],
+      [owner.address, registry.target],
       {
         initializer: 'initialize',
       },
     )) as unknown as SCI;
     await sci.waitForDeployment();
-  });
-
-  describe('Is Authorized', function () {
-    it('It should return true if owner has the IS_AUTHORIZED role ', async function () {
-      expect(
-        await sci.isVerifiedForMultipleDomains(['secureci.xyz', 'otro.com'], registry.target, 1),
-      ).to.deep.equal([false, false]);
-    });
   });
 
   describe('Ownable', function () {
@@ -73,7 +62,6 @@ describe('SCI', function () {
 
   describe('Domain info', function () {
     it('It should return the domain info for a registered domains', async function () {
-      const domain = 'secureci.xyz';
       const domainNameHash = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
       const tx = await registry.registerDomainWithVerifier(
         owner,
@@ -81,7 +69,7 @@ describe('SCI', function () {
         publicListverifier.target,
       );
       const block = await tx.getBlock();
-      expect(await sci.domainToRecord(domain)).to.deep.equal([
+      expect(await sci.domainHashToRecord('0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15')).to.deep.equal([
         owner.address,
         publicListverifier.target,
         block?.timestamp,

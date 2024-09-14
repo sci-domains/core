@@ -19,9 +19,6 @@ describe('Public List Verifier', function () {
   beforeEach(async () => {
     [owner, domainOwner, ...addresses] = await ethers.getSigners();
 
-    const NameHashFactory = await ethers.getContractFactory('NameHash');
-    const nameHash = await NameHashFactory.deploy();
-
     const RegistryFactory = await ethers.getContractFactory('Registry');
     registry = await RegistryFactory.deploy();
 

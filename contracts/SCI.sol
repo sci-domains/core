@@ -3,7 +3,6 @@ pragma solidity 0.8.26;
 
 import {IVerifier} from './Verifiers/IVerifier.sol';
 import {IRegistry} from './Registry/IRegistry.sol';
-import {INameHash} from './NameHash/INameHash.sol';
 import {Initializable} from '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 import {Ownable2StepUpgradeable} from '@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol';
 
@@ -12,15 +11,12 @@ import {Ownable2StepUpgradeable} from '@openzeppelin/contracts-upgradeable/acces
  */
 contract SCI is Initializable, Ownable2StepUpgradeable {
     IRegistry public registry;
-    INameHash public nameHashUtils;
 
     function initialize(
         address owner,
-        address registryAddress,
-        address nameHashAddress
+        address registryAddress
     ) external initializer {
         registry = IRegistry(registryAddress);
-        nameHashUtils = INameHash(nameHashAddress);
         __Ownable2Step_init();
         __Ownable_init(owner);
     }
@@ -89,76 +85,6 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
             }
         }
         return domainsVerification;
-    }
-
-    /**
-     * @dev Same as isVerifiedForMultipleDomainHashes but receives the domains
-     * and apply the name hash algorithm to them
-     *
-     * @param domains An array of domains.
-     * @param contractAddress The address of the contract is being verified.
-     * @param chainId The id of the chain the contract is deployed in.
-     * @return an array of bool indicating whether the contract address is verified for each domain or not.
-
-     * NOTE: If there is no verifier set then it returns false for that `domain`.
-     */
-    function isVerifiedForMultipleDomains(
-        string[] memory domains,
-        address contractAddress,
-        uint256 chainId
-    ) external view returns (bool[] memory) {
-        bool[] memory domainsVerification = new bool[](domains.length);
-        uint256 domainsLength = domains.length;
-        for (uint256 i; i < domainsLength; ) {
-            domainsVerification[i] = isVerifiedForDomainHash(
-                nameHashUtils.getDomainHash(domains[i]),
-                contractAddress,
-                chainId
-            );
-            unchecked {
-                ++i;
-            }
-        }
-        return domainsVerification;
-    }
-
-    /**
-    * @dev Same as isVerifiedForDomainHash but receives the domain and apply the name hash algorithm to them
-     *
-     * @param domain the domain the contract is interacting with.
-     * @param contractAddress The address of the contract is being verified.
-     * @param chainId The id of the chain the contract is deployed in.
-     * @return a bool indicating whether the contract address is verified for the domain or not.
-
-     * NOTE: If there is no verifier set then it returns false.
-     */
-    function isVerifiedForDomain(
-        string memory domain,
-        address contractAddress,
-        uint256 chainId
-    ) public view returns (bool) {
-        return
-            isVerifiedForDomainHash(nameHashUtils.getDomainHash(domain), contractAddress, chainId);
-    }
-
-    /**
-     * @dev Returns info from the domain
-     *
-     * @param domain The domain you want to get information from
-     */
-    function domainToRecord(
-        string calldata domain
-    )
-        external
-        view
-        returns (
-            address owner,
-            IVerifier verifier,
-            uint256 lastOwnerSetTime,
-            uint256 lastVerifierSetTime
-        )
-    {
-        return registry.domainHashToRecord(nameHashUtils.getDomainHash(domain));
     }
 
     /**
