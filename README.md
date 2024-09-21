@@ -54,7 +54,7 @@ yarn compile
 
 Run the test:
 ```bash 
-yarn compile
+yarn test
 ```
 
 ## Contributing
