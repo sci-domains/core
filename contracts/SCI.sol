@@ -17,7 +17,7 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
     IRegistry public registry;
 
     /**
-     *  @dev Emitted when the Registry is changed
+     *  @dev Emitted when the Registry is changed.
      */
     event RegistrySet(
         address indexed oldRegistryAddress,
@@ -89,9 +89,9 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
     }
 
     /**
-     * @dev Returns info from the domain
+     * @dev Returns info from the domain.
      *
-     * @param domainHash The namehash of the domain
+     * @param domainHash The namehash of the domain.
      */
     function domainHashToRecord(
         bytes32 domainHash
@@ -109,9 +109,9 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
     }
 
     /**
-     * @dev Stes a new registry
+     * @dev Stes a new registry.
      *
-     * @param newRegistry The address of the new SCI Registry
+     * @param newRegistry The address of the new SCI Registry.
      */
     function setRegistry(address newRegistry) public onlyOwner {
         address oldRegistryAddress = address(registry);

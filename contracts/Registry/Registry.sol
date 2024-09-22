@@ -28,11 +28,11 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
         uint256 verifierSetTime;
     }
 
-    // Role that allows managing registrar roles
+    // Role that allows managing registrar roles.
     bytes32 public constant REGISTRAR_MANAGER_ROLE = keccak256('REGISTRAR_MANAGER_ROLE');
-    // Role that allows registering domains
+    // Role that allows registering domains.
     bytes32 public constant REGISTRAR_ROLE = keccak256('REGISTRAR_ROLE');
-    // Role that allows to pause the contract
+    // Role that allows to pause the contract.
     bytes32 public constant PAUSER_ROLE = keccak256('PAUSER_ROLE');
 
     /**
@@ -43,7 +43,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     /**
      * @dev Constructor to initialize the Registry contract.
      * Sets the REGISTRAR_MANAGER_ROLE as the admin role of REGISTRAR_ROLE.
-     * @param initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information
+     * @param initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information.
      */
     constructor(
         uint48 initialDelay
@@ -75,14 +75,14 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
 
 
     /**
-     * @dev Pauses registering a domain and setting a verifier
+     * @dev Pauses registering a domain and setting a verifier.
      */
     function pause() external onlyRole(PAUSER_ROLE) {
         _pause();
     }
 
     /**
-     * @dev Unpauses registering a domain and setting a verifier
+     * @dev Unpauses registering a domain and setting a verifier.
      */
     function unpause() public onlyRole(PAUSER_ROLE) {
         _unpause();
@@ -94,7 +94,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      * @param account The account receiving the role.
      * 
      * Note: Overrides the OpenZeppelin function to require the 
-     * _msgSender() to have the admin role for the role being granted.
+     * caller to have the admin role for the role being granted.
      */
     function grantRole(bytes32 role, address account) public override onlyRole(getRoleAdmin(role)) {
         _grantRole(role, account);
@@ -123,7 +123,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     function setVerifier(
         bytes32 domainHash,
         IVerifier verifier
-    ) external onlyDomainOwner(domainHash) {
+    ) external onlyDomainOwner(_msgSender(), domainHash) {
         _setVerifier(domainHash, verifier);
     }
 
@@ -165,7 +165,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     /**
      * @dev Sets the verifier, updates the verifier timestamp and
      * emits VerifierSet events.
-     * All updates to a verifier should be through this function
+     * All updates to a verifier should be through this function.
      * 
      * Requirements:
      *
@@ -179,7 +179,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
 
     /**
      * @dev Sets the owner of a domain,
-     * All updates to an owner should be through this function
+     * All updates to an owner should be through this function.
      */
     function _setDomainOwner(bytes32 domainHash, address owner) private {
         domainHashToRecord[domainHash].owner = owner;

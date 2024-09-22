@@ -19,7 +19,7 @@ contract EnsRegistrar is Context  {
     IRegistry public immutable registry;
 
     /**
-     * @dev Thrown when the account is not the owner of the ENS domain hash.
+     * @dev Thrown when the `account` is not the owner of the ENS `domainhash`.
      */
     error AccountIsNotEnsOwner(address account, bytes32 domainHash);
 
@@ -34,14 +34,14 @@ contract EnsRegistrar is Context  {
     }
 
     /**
-     * @dev Modifier that checks if the provided address is the owner of the ENS domain.
-     * @param owner Address expected to be the domain owner.
+     * @dev Modifier that checks if the provided `account` is the owner of the `domainhash`.
+     * @param account Address expected to be the domain owner.
      * @param domainHash Namehash of the domain.
      * 
      * Note: Reverts with `AccountIsNotEnsOwner` error if the check fails.
      */
-    modifier onlyEnsOwner(address owner, bytes32 domainHash) {
-        _checkEnsOwner(owner, domainHash);
+    modifier onlyEnsOwner(address account, bytes32 domainHash) {
+        _checkEnsOwner(account, domainHash);
         _;
     }
 
@@ -68,7 +68,7 @@ contract EnsRegistrar is Context  {
      *
      * Requirements:
      *
-     * - The _msgSender() must be the ENS owner of the domainHash.
+     * - The caller must be the ENS owner of the domainHash.
      */
     function registerDomainWithVerifier(
         bytes32 domainHash,
@@ -79,14 +79,14 @@ contract EnsRegistrar is Context  {
 
     /**
      * @dev Private helper function to check if the specified address owns the ENS domain.
-     * @param owner Address expected to be the ENS domain owner.
+     * @param account Address expected to be the domain owner.
      * @param domainHash Namehash of the domain.
      * 
      * Note: Reverts with `AccountIsNotEnsOwner` error if the address is not the owner of the ENS domain.
      */
-    function _checkEnsOwner(address owner, bytes32 domainHash) private view {
-        if (ensRegistry.owner(domainHash) != owner) {
-            revert AccountIsNotEnsOwner(owner, domainHash);
+    function _checkEnsOwner(address account, bytes32 domainHash) private view {
+        if (ensRegistry.owner(domainHash) != account) {
+            revert AccountIsNotEnsOwner(account, domainHash);
         }
     }
 }

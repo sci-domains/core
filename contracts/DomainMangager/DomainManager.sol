@@ -2,19 +2,18 @@
 pragma solidity 0.8.26;
 
 import {IRegistry} from '../Registry/IRegistry.sol';
-import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
 /**
  * @title DomainManager
- * @dev Contract module that implement access.
- * control only to owners of a domain.
+ * @dev Contract module that implement access
+ * control only to owners of a domain in the SCI Registry.
  * @custom:security-contact security@sci.domains
  */
-abstract contract DomainManager is Context {
+abstract contract DomainManager {
     IRegistry public immutable registry;
 
     /**
-     * @dev Thrown when the account is not the owner of the SCI domain hash.
+     * @dev Thrown when the `account` is not the owner of the domainhash.
      */
     error AccountIsNotDomainOwner(address account, bytes32 domainHash);
 
@@ -28,22 +27,23 @@ abstract contract DomainManager is Context {
 
     /**
      * @dev Modifier that checks if the provided address is the owner of the SCI domain.
-     * 
+     * @param domainHash The namehash of the domain
      * Note: Reverts with `AccountIsNotDomainOwner` error if the check fails.
      */
-    modifier onlyDomainOwner(bytes32 domainHash) {
-        _checkDomainOwner(domainHash);
+    modifier onlyDomainOwner(address account, bytes32 domainHash) {
+        _checkDomainOwner(account, domainHash);
         _;
     }
 
     /**
-     * @dev Reverts with an {AccountIsNotDomainOwner} error if `_msgSender()`
+     * @dev Reverts with an {AccountIsNotDomainOwner} error if the caller
      * is not the owner of the domain.
+     * @param domainHash The namehash of the domain
      * Overriding this function changes the behavior of the {onlyDomainOwner} modifier.
      */
-    function _checkDomainOwner(bytes32 domainHash) private view {
-        if (registry.domainOwner(domainHash) != _msgSender()) {
-            revert AccountIsNotDomainOwner(_msgSender(), domainHash);
+    function _checkDomainOwner(address account, bytes32 domainHash) private view {
+        if (registry.domainOwner(domainHash) != account) {
+            revert AccountIsNotDomainOwner(account, domainHash);
         }
     }
 }

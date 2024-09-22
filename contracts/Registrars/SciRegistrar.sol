@@ -9,9 +9,9 @@ import {IVerifier} from '../Verifiers/IVerifier.sol';
  * @title SciRegistrar
  * @dev This contract allows addresses with REGISTER_DOMAIN_ROLE role to register a domain
  * in the SCI Registry. This will be use by the SCI team to register domains until the protocol
- * became widly used and we don't need to be registering domains for protocols
+ * became widly used and we don't need to be registering domains for protocols.
  * 
- * The address with REGISTER_DOMAIN_ROLE and DEFAULT_ADMIN_ROLE should be a multisig
+ * The address with REGISTER_DOMAIN_ROLE and DEFAULT_ADMIN_ROLE should be a multisig.
  *  
  * @custom:security-contact security@sci.domains
  */
@@ -40,7 +40,7 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
      * 
      * Requirements:
      *
-     * - The _msgSender() must have the REGISTER_DOMAIN_ROLE role.
+     * - The caller must have the REGISTER_DOMAIN_ROLE role.
      */
     function registerDomain(
         address owner,
@@ -57,9 +57,9 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
      *
      * Requirements:
      *
-     * - The _msgSender() must have the REGISTER_DOMAIN_ROLE role.
+     * - The caller must have the REGISTER_DOMAIN_ROLE role.
      * 
-     * Note: This contract MUST only be handle by the SCI Team so we assume
+     * Note: This contract must only be handle by the SCI Team so we assume
      * it's safe to receive the owner.
      */
     function registerDomainWithVerifier(

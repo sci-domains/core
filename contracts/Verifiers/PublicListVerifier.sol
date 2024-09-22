@@ -22,7 +22,7 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
         public verifiedContracts;
 
     /**
-     *  @dev Emitted when the `msgSender` removes an address to a `domainHash` for a `chainId`
+     *  @dev Emitted when the `msgSender` removes an address to a `domainHash` for a `chainId`.
      */
     event AddressRemoved(
         bytes32 indexed domainHash,
@@ -32,7 +32,7 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
     );
 
     /**
-     *  @dev Emitted when the `msgSender` adds an address to a `domainHash` for a `chainId`
+     *  @dev Emitted when the `msgSender` adds an address to a `domainHash` for a `chainId`.
      */
     event AddressAdded(
         bytes32 indexed domainHash,
@@ -48,13 +48,13 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
      *
      * Requirements:
      *
-     * - The message sender must be the owner of the domain.
+     * - The caller must be the owner of the domain.
      */
     function addAddresses(
         bytes32 domainHash,
         address[] calldata contractAddresses,
         uint256[][] calldata chainIds
-    ) external onlyDomainOwner(domainHash) {
+    ) external onlyDomainOwner(_msgSender(), domainHash) {
         for (uint256 i; i < contractAddresses.length; ) {
             for (uint256 j; j < chainIds[i].length; ) {
                 verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = true;
@@ -74,13 +74,13 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
      *
      * Requirements:
      *
-     * - The message sender must be the owner of the domain.
+     * - The caller must be the owner of the domain.
      */
     function removeAddresses(
         bytes32 domainHash,
         address[] calldata contractAddresses,
         uint256[][] calldata chainIds
-    ) external onlyDomainOwner(domainHash) {
+    ) external onlyDomainOwner(_msgSender(), domainHash) {
         for (uint256 i; i < contractAddresses.length; ) {
             for (uint256 j; j < chainIds[i].length; ++j) {
                 verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = false;

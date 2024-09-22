@@ -21,6 +21,7 @@ interface IRegistry {
         bytes32 indexed domainHash
     );
 
+    // TODO: Add old verifier also index the domainHash?
     /**
      * @dev Emitted when the `owner` of the `domainHash` adds a `IVerifier`.
      *
@@ -28,6 +29,7 @@ interface IRegistry {
      */
     event VerifierSet(address indexed owner, bytes32 domainHash, IVerifier indexed IVerifier);
 
+    // TODO: Add old owner also index the domainHash?
     /**
      * @dev Emitted when the owner of a `domainHash` is set.
      *
@@ -78,7 +80,7 @@ interface IRegistry {
      * 
      * @param owner The owner of the domain being registered.
      * @param domainHash The namehash of the domain being registered.
-     * @param IVerifier the IVerifier that is being set for the domain.
+     * @param IVerifier The IVerifier that is being set for the domain.
      *
      * Requirements:
      *
@@ -104,14 +106,14 @@ interface IRegistry {
     /**
      * @dev Returns the owner of the domainHash.
      * @param domainHash The namehash of the domain.
-     * @return the address of the owner or the ZERO_ADDRESS if the domain is not registered.
+     * @return The address of the owner or the ZERO_ADDRESS if the domain is not registered.
      */
     function domainOwner(bytes32 domainHash) external view returns (address);
 
     /**
      * @dev Returns the IVerifier of the domainHash.
      * @param domainHash The namehash of the domain.
-     * @return the address of the IVerifier or the ZERO_ADDRESS if the domain or
+     * @return The address of the IVerifier or the ZERO_ADDRESS if the domain or
      * the IVerifier are not registered.
      */
     function domainVerifier(bytes32 domainHash) external view returns (IVerifier);
@@ -119,7 +121,7 @@ interface IRegistry {
     /**
      * @dev Returns the timestamp of the block where the IVerifier was set.
      * @param domainHash The namehash of the domain.
-     * @return the timestamp of the block where the IVerifier was set or
+     * @return The timestamp of the block where the IVerifier was set or
      * 0 if it wasn't.
      */
     function domainVerifierSetTime(bytes32 domainHash) external view returns (uint256);
