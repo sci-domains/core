@@ -13,7 +13,13 @@ import {DomainManager} from '../DomainMangager/DomainManager.sol';
  * @dev See {ISciRegistry}.
  * @custom:security-contact security@sci.domains
  */
-contract SciRegistry is ISciRegistry, Context, AccessControlDefaultAdminRules, DomainManager, Pausable {
+contract SciRegistry is
+    ISciRegistry,
+    Context,
+    AccessControlDefaultAdminRules,
+    DomainManager,
+    Pausable
+{
     /**
      * @dev Structure to hold domain record details, including:
      * - owner: Address of the domain owner.
@@ -54,10 +60,7 @@ contract SciRegistry is ISciRegistry, Context, AccessControlDefaultAdminRules, D
     /**
      * @dev See {ISciRegistry-registerDomain}.
      */
-    function registerDomain(
-        address owner,
-        bytes32 domainHash
-    ) external {
+    function registerDomain(address owner, bytes32 domainHash) external {
         _registerDomain(owner, domainHash);
     }
 
@@ -72,7 +75,6 @@ contract SciRegistry is ISciRegistry, Context, AccessControlDefaultAdminRules, D
         _registerDomain(owner, domainHash);
         _setVerifier(domainHash, verifier);
     }
-
 
     /**
      * @dev Pauses registering a domain and setting a verifier.
@@ -126,8 +128,8 @@ contract SciRegistry is ISciRegistry, Context, AccessControlDefaultAdminRules, D
      * @dev Grants a role to an account.
      * @param role The role to grant.
      * @param account The account receiving the role.
-     * 
-     * Note: Overrides the OpenZeppelin function to require the 
+     *
+     * Note: Overrides the OpenZeppelin function to require the
      * caller to have the admin role for the role being granted.
      */
     function grantRole(bytes32 role, address account) public override onlyRole(getRoleAdmin(role)) {
@@ -166,12 +168,12 @@ contract SciRegistry is ISciRegistry, Context, AccessControlDefaultAdminRules, D
      * @dev Sets the verifier, updates the verifier timestamp and
      * emits VerifierSet events.
      * All updates to a verifier should be through this function.
-     * 
+     *
      * Requirements:
      *
      * - The contract must not be paused.
      */
-    function _setVerifier(bytes32 domainHash, IVerifier verifier) whenNotPaused private {
+    function _setVerifier(bytes32 domainHash, IVerifier verifier) private whenNotPaused {
         domainHashToRecord[domainHash].verifier = verifier;
         domainHashToRecord[domainHash].verifierSetTime = block.timestamp;
         emit VerifierSet(_msgSender(), domainHash, verifier);

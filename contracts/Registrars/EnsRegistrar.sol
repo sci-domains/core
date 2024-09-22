@@ -9,12 +9,12 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 /**
  * @title EnsRegistrar
  * @dev This contract allows owners of an ENS (Ethereum Name Service) domain to register it
- * in the SCI Registry contract. 
- * The contract ensures that only the legitimate ENS owner can register a domain 
+ * in the SCI Registry contract.
+ * The contract ensures that only the legitimate ENS owner can register a domain
  * by verifying the domain ownership through the ENS contract.
  * @custom:security-contact security@sci.domains
  */
-contract EnsRegistrar is Context  {
+contract EnsRegistrar is Context {
     ENS public immutable ensRegistry;
     ISciRegistry public immutable registry;
 
@@ -27,7 +27,7 @@ contract EnsRegistrar is Context  {
      * @dev Modifier that checks if the provided `account` is the owner of the `domainhash`.
      * @param account Address expected to be the domain owner.
      * @param domainHash Namehash of the domain.
-     * 
+     *
      * Note: Reverts with `AccountIsNotEnsOwner` error if the check fails.
      */
     modifier onlyEnsOwner(address account, bytes32 domainHash) {
@@ -81,7 +81,7 @@ contract EnsRegistrar is Context  {
      * @dev Private helper function to check if the specified address owns the ENS domain.
      * @param account Address expected to be the domain owner.
      * @param domainHash Namehash of the domain.
-     * 
+     *
      * Note: Reverts with `AccountIsNotEnsOwner` error if the address is not the owner of the ENS domain.
      */
     function _checkEnsOwner(address account, bytes32 domainHash) private view {

@@ -19,15 +19,9 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
     /**
      *  @dev Emitted when the Registry is changed.
      */
-    event RegistrySet(
-        address indexed oldRegistryAddress,
-        address indexed newRegistryAddress
-    );
+    event RegistrySet(address indexed oldRegistryAddress, address indexed newRegistryAddress);
 
-    function initialize(
-        address owner,
-        address registryAddress
-    ) external initializer {
+    function initialize(address owner, address registryAddress) external initializer {
         __Ownable2Step_init();
         __Ownable_init(owner);
         setRegistry(registryAddress);
@@ -52,7 +46,6 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
     {
         return registry.domainHashToRecord(domainHash);
     }
-
 
     /**
      * @dev Same as isVerifiedForDomainHash but for multiple domains.
@@ -113,7 +106,7 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @dev Sets a new registry.
      *
      * @param newRegistry The address of the new SCI Registry.
-     * 
+     *
      * May emit a {RegistrySet} event.
      */
     function setRegistry(address newRegistry) public onlyOwner {

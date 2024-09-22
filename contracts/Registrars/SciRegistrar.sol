@@ -10,15 +10,15 @@ import {IVerifier} from '../Verifiers/IVerifier.sol';
  * @dev This contract allows addresses with REGISTER_DOMAIN_ROLE role to register a domain
  * in the SCI Registry. This will be use by the SCI team to register domains until the protocol
  * became widly used and we don't need to be registering domains for protocols.
- * 
+ *
  * The address with REGISTER_DOMAIN_ROLE and DEFAULT_ADMIN_ROLE should be a multisig.
- *  
+ *
  * @custom:security-contact security@sci.domains
  */
 contract SciRegistrar is AccessControlDefaultAdminRules {
     // Role that allows registering domains
     bytes32 public constant REGISTER_DOMAIN_ROLE = keccak256('REGISTER_DOMAIN_ROLE');
-    
+
     ISciRegistry public immutable registry;
 
     /**
@@ -27,7 +27,7 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
      * @param initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information.
      */
     constructor(
-        address _scISciRegistryAddress, 
+        address _scISciRegistryAddress,
         uint48 initialDelay
     ) AccessControlDefaultAdminRules(initialDelay, _msgSender()) {
         registry = ISciRegistry(_scISciRegistryAddress);
@@ -37,7 +37,7 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
      * @dev Registers a domain in the SCI Registry contract.
      * @param owner Address expected to be the domain owner.
      * @param domainHash Namehash of the domain.
-     * 
+     *
      * Requirements:
      *
      * - The caller must have the REGISTER_DOMAIN_ROLE role.
@@ -58,7 +58,7 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
      * Requirements:
      *
      * - The caller must have the REGISTER_DOMAIN_ROLE role.
-     * 
+     *
      * Note: This contract must only be handle by the SCI Team so we assume
      * it's safe to receive the owner.
      */

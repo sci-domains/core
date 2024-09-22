@@ -6,7 +6,7 @@ import {IVerifier} from '../Verifiers/IVerifier.sol';
 /**
  * @title ISciRegistry
  * @dev This contract manages domain registration and verifiers. It uses role-based access control to allow
- * only authorized accounts to register domains and update verifiers. 
+ * only authorized accounts to register domains and update verifiers.
  * The contract stores domain ownership and verifier information and allows domain owners to modify verifiers.
  * @custom:security-contact security@sci.domains
  */
@@ -23,11 +23,11 @@ interface ISciRegistry {
 
     // TODO: Add old verifier also index the domainHash?
     /**
-     * @dev Emitted when the `owner` of the `domainHash` adds a `IVerifier`.
+     * @dev Emitted when the `owner` of the `domainHash` adds a `verifier`.
      *
      * Note: This will also be emitted when the IVerifier is changed.
      */
-    event VerifierSet(address indexed owner, bytes32 domainHash, IVerifier indexed IVerifier);
+    event VerifierSet(address indexed owner, bytes32 domainHash, IVerifier indexed verifier);
 
     // TODO: Add old owner also index the domainHash?
     /**
@@ -53,7 +53,7 @@ interface ISciRegistry {
         view
         returns (
             address owner,
-            IVerifier IVerifier,
+            IVerifier verifier,
             uint256 lastOwnerSetTime,
             uint256 lastIVerifierSetTime
         );
@@ -70,22 +70,19 @@ interface ISciRegistry {
      *
      * May emit a {DomainRegistered} event.
      */
-    function registerDomain(
-        address owner,
-        bytes32 domainHash
-    ) external;
+    function registerDomain(address owner, bytes32 domainHash) external;
 
     /**
      * @dev Same as registerDomain but it also adds a IVerifier.
-     * 
+     *
      * @param owner The owner of the domain being registered.
      * @param domainHash The namehash of the domain being registered.
-     * @param IVerifier The IVerifier that is being set for the domain.
+     * @param verifier The verifier that is being set for the domain.
      *
      * Requirements:
      *
      * - Only valid Registrars must be able to call this function.
-     * 
+     *
      * Note: Most of registrars should implement this function by sending
      * the message sender as the owner to avoid other addresses changing or setting
      * a malicous verifier.
@@ -95,7 +92,7 @@ interface ISciRegistry {
     function registerDomainWithVerifier(
         address owner,
         bytes32 domainHash,
-        IVerifier IVerifier
+        IVerifier verifier
     ) external;
 
     /**
