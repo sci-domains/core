@@ -45,7 +45,7 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
     constructor(address _registry) DomainManager(_registry) {}
 
     /**
-     * @dev
+     * @dev Adds multiple addresses in multiple chains to the domain.
      *
      * Requirements:
      *
@@ -71,7 +71,7 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
     }
 
     /**
-     * @dev See {IERC1155-balanceOfBatch}.
+     * @dev Removes multiple addresses in multiple chains to the domain.
      *
      * Requirements:
      *

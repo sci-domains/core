@@ -21,6 +21,13 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      */
     event RegistrySet(address indexed oldRegistryAddress, address indexed newRegistryAddress);
 
+    /**
+     * @dev Initializes the SCI contract with the owner and registry address.
+     * Can only be called once during contract deployment.
+     *
+     * @param owner The owner of this contract.
+     * @param registryAddress The address of the registry to be used by the contract.
+     */
     function initialize(address owner, address registryAddress) external initializer {
         __Ownable2Step_init();
         __Ownable_init(owner);
