@@ -12,7 +12,8 @@ Additionally, if you are writing a new feature,
 please ensure you add appropriate test cases under test/ (see below).
 
 
-Please make sure you respect the coding style for this project. 
+Please make sure you respect the coding style for this project.
+You can run `yarn lint` for the linter and check the [solidity style guides](https://docs.soliditylang.org/en/latest/style-guide.html#) for more information
 Also, even though we do CI testing, 
 please test your code and ensure that it builds locally before submitting a pull request.
 
