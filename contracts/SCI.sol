@@ -33,7 +33,7 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @param chainId The id of the chain the contract is deployed in.
      * @return a bool indicating whether the contract is verified or not.
      *
-     * NOTE: If there is no verifier set then it returns false.
+     * Note: If there is no verifier set then it returns false.
      */
     function isVerifiedForDomainHash(
         bytes32 domainHash,
@@ -58,7 +58,7 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @return an array of bool indicating whether the contract address is
      * verified for each domain hash or not.
      *
-     * NOTE: If there is no verifier set then it returns false for that `domainHash`.
+     * Note: If there is no verifier set then it returns false for that `domainHash`.
      */
     function isVerifiedForMultipleDomainHashes(
         bytes32[] memory domainHashes,

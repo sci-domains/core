@@ -29,7 +29,7 @@ abstract contract DomainManager is Context {
     /**
      * @dev Modifier that checks if the provided address is the owner of the SCI domain.
      * 
-     * NOTE: Reverts with `AccountIsNotDomainOwner` error if the check fails.
+     * Note: Reverts with `AccountIsNotDomainOwner` error if the check fails.
      */
     modifier onlyDomainOwner(bytes32 domainHash) {
         _checkDomainOwner(domainHash);

@@ -38,7 +38,7 @@ contract EnsRegistrar is Context  {
      * @param owner Address expected to be the domain owner.
      * @param domainHash Namehash of the domain.
      * 
-     * NOTE: Reverts with `AccountIsNotEnsOwner` error if the check fails.
+     * Note: Reverts with `AccountIsNotEnsOwner` error if the check fails.
      */
     modifier onlyEnsOwner(address owner, bytes32 domainHash) {
         _checkEnsOwner(owner, domainHash);
@@ -82,7 +82,7 @@ contract EnsRegistrar is Context  {
      * @param owner Address expected to be the ENS domain owner.
      * @param domainHash Namehash of the domain.
      * 
-     * NOTE: Reverts with `AccountIsNotEnsOwner` error if the address is not the owner of the ENS domain.
+     * Note: Reverts with `AccountIsNotEnsOwner` error if the address is not the owner of the ENS domain.
      */
     function _checkEnsOwner(address owner, bytes32 domainHash) private view {
         if (ensRegistry.owner(domainHash) != owner) {

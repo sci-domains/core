@@ -24,7 +24,7 @@ interface IRegistry {
     /**
      * @dev Emitted when the `owner` of the `domainHash` adds a `IVerifier`.
      *
-     * NOTE: This will also be emitted when the IVerifier is changed.
+     * Note: This will also be emitted when the IVerifier is changed.
      */
     event VerifierSet(address indexed owner, bytes32 domainHash, IVerifier indexed IVerifier);
 
@@ -84,7 +84,7 @@ interface IRegistry {
      *
      * - Only valid Registrars must be able to call this function.
      * 
-     * NOTE: Most of registrars should implement this function by sending
+     * Note: Most of registrars should implement this function by sending
      * the message sender as the owner to avoid other addresses changing or setting
      * a malicous verifier.
      *
@@ -135,7 +135,7 @@ interface IRegistry {
      *
      * May emit a {IVerifierAdded} event.
      *
-     * NOTE: If you want to remove a IVerifier you can set it to the ZERO_ADDRESS.
+     * Note: If you want to remove a IVerifier you can set it to the ZERO_ADDRESS.
      */
     function setVerifier(bytes32 domainHash, IVerifier verifier) external;
 }
