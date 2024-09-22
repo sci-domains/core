@@ -39,7 +39,7 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @param domainHash The namehash of the domain the contract is interacting with
      * @param contractAddress The address of the contract is being verified.
      * @param chainId The id of the chain the contract is deployed in.
-     * @return a bool indicating whether the contract is verified or not.
+     * @return A bool indicating whether the contract is verified or not.
      *
      * Note: If there is no verifier set then it returns false.
      */
@@ -63,7 +63,7 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @param domainHashes An array of domain hashes.
      * @param contractAddress The address of the contract is being verified.
      * @param chainId The id of the chain the contract is deployed in.
-     * @return an array of bool indicating whether the contract address is
+     * @return An array of bool indicating whether the contract address is
      * verified for each domain hash or not.
      *
      * Note: If there is no verifier set then it returns false for that `domainHash`.
@@ -112,6 +112,8 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @dev Stes a new registry.
      *
      * @param newRegistry The address of the new SCI Registry.
+     * 
+     * May emit a {RegistrySet} event.
      */
     function setRegistry(address newRegistry) public onlyOwner {
         address oldRegistryAddress = address(registry);

@@ -5,6 +5,7 @@ import {IVerifier} from './IVerifier.sol';
 import {DomainManager} from '../DomainMangager/DomainManager.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
+// TODO: Add documentation in missing functions
 /**
  * @title PublicListVerifier
  * @dev This contract implements the Verifier interface.

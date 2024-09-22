@@ -27,7 +27,8 @@ abstract contract DomainManager {
 
     /**
      * @dev Modifier that checks if the provided address is the owner of the SCI domain.
-     * @param domainHash The namehash of the domain
+     * @param domainHash The namehash of the domain.
+     * 
      * Note: Reverts with `AccountIsNotDomainOwner` error if the check fails.
      */
     modifier onlyDomainOwner(address account, bytes32 domainHash) {
@@ -38,8 +39,9 @@ abstract contract DomainManager {
     /**
      * @dev Reverts with an {AccountIsNotDomainOwner} error if the caller
      * is not the owner of the domain.
-     * @param domainHash The namehash of the domain
-     * Overriding this function changes the behavior of the {onlyDomainOwner} modifier.
+     * @param domainHash The namehash of the domain.
+     * 
+     * Note: Overriding this function changes the behavior of the {onlyDomainOwner} modifier.
      */
     function _checkDomainOwner(address account, bytes32 domainHash) private view {
         if (registry.domainOwner(domainHash) != account) {
