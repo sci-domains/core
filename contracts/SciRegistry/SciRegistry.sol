@@ -84,20 +84,8 @@ contract SciRegistry is ISciRegistry, Context, AccessControlDefaultAdminRules, D
     /**
      * @dev Unpauses registering a domain and setting a verifier.
      */
-    function unpause() public onlyRole(PAUSER_ROLE) {
+    function unpause() external onlyRole(PAUSER_ROLE) {
         _unpause();
-    }
-
-    /**
-     * @dev Grants a role to an account.
-     * @param role The role to grant.
-     * @param account The account receiving the role.
-     * 
-     * Note: Overrides the OpenZeppelin function to require the 
-     * caller to have the admin role for the role being granted.
-     */
-    function grantRole(bytes32 role, address account) public override onlyRole(getRoleAdmin(role)) {
-        _grantRole(role, account);
     }
 
     /**
@@ -108,13 +96,6 @@ contract SciRegistry is ISciRegistry, Context, AccessControlDefaultAdminRules, D
         address account
     ) external view virtual override returns (bool) {
         return domainOwner(domainHash) == account;
-    }
-
-    /**
-     * @dev See {ISciRegistry-domainOwner}.
-     */
-    function domainOwner(bytes32 domainHash) public view virtual override returns (address) {
-        return domainHashToRecord[domainHash].owner;
     }
 
     /**
@@ -139,6 +120,25 @@ contract SciRegistry is ISciRegistry, Context, AccessControlDefaultAdminRules, D
      */
     function domainVerifierSetTime(bytes32 domainHash) external view virtual returns (uint256) {
         return domainHashToRecord[domainHash].verifierSetTime;
+    }
+
+    /**
+     * @dev Grants a role to an account.
+     * @param role The role to grant.
+     * @param account The account receiving the role.
+     * 
+     * Note: Overrides the OpenZeppelin function to require the 
+     * caller to have the admin role for the role being granted.
+     */
+    function grantRole(bytes32 role, address account) public override onlyRole(getRoleAdmin(role)) {
+        _grantRole(role, account);
+    }
+
+    /**
+     * @dev See {ISciRegistry-domainOwner}.
+     */
+    function domainOwner(bytes32 domainHash) public view virtual override returns (address) {
+        return domainHashToRecord[domainHash].owner;
     }
 
     /**

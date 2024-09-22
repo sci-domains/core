@@ -18,14 +18,6 @@ abstract contract DomainManager {
     error AccountIsNotDomainOwner(address account, bytes32 domainHash);
 
     /**
-     * @dev Initializes the contract with references to the SCI Registry.
-     * @param _sciRegistryAddress Address of the SCI Registry contract.
-     */
-    constructor(address _sciRegistryAddress) {
-        registry = ISciRegistry(_sciRegistryAddress);
-    }
-
-    /**
      * @dev Modifier that checks if the provided address is the owner of the SCI domain.
      * @param domainHash The namehash of the domain.
      * 
@@ -34,6 +26,14 @@ abstract contract DomainManager {
     modifier onlyDomainOwner(address account, bytes32 domainHash) {
         _checkDomainOwner(account, domainHash);
         _;
+    }
+
+    /**
+     * @dev Initializes the contract with references to the SCI Registry.
+     * @param _sciRegistryAddress Address of the SCI Registry contract.
+     */
+    constructor(address _sciRegistryAddress) {
+        registry = ISciRegistry(_sciRegistryAddress);
     }
 
     /**

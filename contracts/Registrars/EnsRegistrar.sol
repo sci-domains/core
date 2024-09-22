@@ -24,16 +24,6 @@ contract EnsRegistrar is Context  {
     error AccountIsNotEnsOwner(address account, bytes32 domainHash);
 
     /**
-     * @dev Initializes the contract with references to the ENS and the SCI Registry.
-     * @param _ensRegistryAddress Address of the ENS Registry contract.
-     * @param _sciRegistryAddress Address of the SCI Registry contract.
-     */
-    constructor(address _ensRegistryAddress, address _sciRegistryAddress) {
-        ensRegistry = ENS(_ensRegistryAddress);
-        registry = ISciRegistry(_sciRegistryAddress);
-    }
-
-    /**
      * @dev Modifier that checks if the provided `account` is the owner of the `domainhash`.
      * @param account Address expected to be the domain owner.
      * @param domainHash Namehash of the domain.
@@ -43,6 +33,16 @@ contract EnsRegistrar is Context  {
     modifier onlyEnsOwner(address account, bytes32 domainHash) {
         _checkEnsOwner(account, domainHash);
         _;
+    }
+
+    /**
+     * @dev Initializes the contract with references to the ENS and the SCI Registry.
+     * @param _ensRegistryAddress Address of the ENS Registry contract.
+     * @param _sciRegistryAddress Address of the SCI Registry contract.
+     */
+    constructor(address _ensRegistryAddress, address _sciRegistryAddress) {
+        ensRegistry = ENS(_ensRegistryAddress);
+        registry = ISciRegistry(_sciRegistryAddress);
     }
 
     /**

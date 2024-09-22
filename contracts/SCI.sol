@@ -34,28 +34,25 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
     }
 
     /**
-     * @dev Returns if the `contractAddress` deployed in the chain with id `chainId` is verified.
-     * to interact with the domain with namehash `domainHash`.
-     * @param domainHash The namehash of the domain the contract is interacting with
-     * @param contractAddress The address of the contract is being verified.
-     * @param chainId The id of the chain the contract is deployed in.
-     * @return A bool indicating whether the contract is verified or not.
+     * @dev Returns info from the domain.
      *
-     * Note: If there is no verifier set then it returns false.
+     * @param domainHash The namehash of the domain.
      */
-    function isVerifiedForDomainHash(
-        bytes32 domainHash,
-        address contractAddress,
-        uint256 chainId
-    ) public view returns (bool) {
-        (, IVerifier verifier, , ) = registry.domainHashToRecord(domainHash);
-
-        if (address(verifier) == address(0)) {
-            return false;
-        }
-
-        return verifier.isVerified(domainHash, contractAddress, chainId);
+    function domainHashToRecord(
+        bytes32 domainHash
+    )
+        external
+        view
+        returns (
+            address owner,
+            IVerifier verifier,
+            uint256 lastOwnerSetTime,
+            uint256 lastVerifierSetTime
+        )
+    {
+        return registry.domainHashToRecord(domainHash);
     }
+
 
     /**
      * @dev Same as isVerifiedForDomainHash but for multiple domains.
@@ -89,27 +86,31 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
     }
 
     /**
-     * @dev Returns info from the domain.
+     * @dev Returns if the `contractAddress` deployed in the chain with id `chainId` is verified.
+     * to interact with the domain with namehash `domainHash`.
+     * @param domainHash The namehash of the domain the contract is interacting with
+     * @param contractAddress The address of the contract is being verified.
+     * @param chainId The id of the chain the contract is deployed in.
+     * @return A bool indicating whether the contract is verified or not.
      *
-     * @param domainHash The namehash of the domain.
+     * Note: If there is no verifier set then it returns false.
      */
-    function domainHashToRecord(
-        bytes32 domainHash
-    )
-        external
-        view
-        returns (
-            address owner,
-            IVerifier verifier,
-            uint256 lastOwnerSetTime,
-            uint256 lastVerifierSetTime
-        )
-    {
-        return registry.domainHashToRecord(domainHash);
+    function isVerifiedForDomainHash(
+        bytes32 domainHash,
+        address contractAddress,
+        uint256 chainId
+    ) public view returns (bool) {
+        (, IVerifier verifier, , ) = registry.domainHashToRecord(domainHash);
+
+        if (address(verifier) == address(0)) {
+            return false;
+        }
+
+        return verifier.isVerified(domainHash, contractAddress, chainId);
     }
 
     /**
-     * @dev Stes a new registry.
+     * @dev Sets a new registry.
      *
      * @param newRegistry The address of the new SCI Registry.
      * 
