@@ -9,9 +9,18 @@ import {DomainManager} from '../DomainMangager/DomainManager.sol';
 
 // TODO: Add Pausable
 /**
+ * @title Registry
+ * @dev See {IRegistry-version}.
  * @custom:security-contact security@sci.domains
  */
 contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainManager {
+    /**
+     * @dev Structure to hold domain record details, including:
+     * - owner: Address of the domain owner.
+     * - verifier: Address of the verifier contract associated with the domain.
+     * - ownerSetTime: Timestamp of when the domain owner was last set.
+     * - verifierSetTime: Timestamp of when the verifier was last set.
+     */
     struct Record {
         address owner;
         IVerifier verifier;
@@ -19,18 +28,24 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
         uint256 verifierSetTime;
     }
 
+    // Role that allows managing registrar roles
     bytes32 public constant REGISTRAR_MANAGER_ROLE = keccak256('REGISTRAR_MANAGER_ROLE');
+    // Role that allows registering domains
     bytes32 public constant REGISTRAR_ROLE = keccak256('REGISTRAR_ROLE');
 
     /**
-     * @dev Maps the name hash of a domain to a Record.
+     * @dev Maps the namehash of a domain to a Record.
      */
     mapping(bytes32 nameHash => Record domain) public domainHashToRecord;
 
     /**
-     * @dev Gives the deployer the ADMIN role.
+     * @dev Constructor to initialize the Registry contract.
+     * Sets the REGISTRAR_MANAGER_ROLE as the admin role of REGISTRAR_ROLE.
+     * @param initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information
      */
-    constructor() AccessControlDefaultAdminRules(0, _msgSender()) DomainManager(address(this)) {
+    constructor(
+        uint48 initialDelay
+    ) AccessControlDefaultAdminRules(initialDelay, _msgSender()) DomainManager(address(this)) {
         _setRoleAdmin(REGISTRAR_ROLE, REGISTRAR_MANAGER_ROLE);
     }
 
@@ -56,7 +71,14 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
         _setVerifier(domainHash, verifier);
     }
 
-    // TODO: Add timelock
+    /**
+     * @dev Grants a role to an account.
+     * @param role The role to grant.
+     * @param account The account receiving the role.
+     * 
+     * Note: Overrides the OpenZeppelin function to require the 
+     * _msgSender() to have the admin role for the role being granted.
+     */
     function grantRole(bytes32 role, address account) public override onlyRole(getRoleAdmin(role)) {
         _grantRole(role, account);
     }
@@ -106,7 +128,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      * @dev Base function to register a domain.
      *
      * @param owner The owner of the domain.
-     * @param domainHash The name hash of the domain being registered.
+     * @param domainHash The namehash of the domain being registered.
      *
      * Requirements:
      *

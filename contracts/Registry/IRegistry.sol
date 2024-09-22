@@ -4,6 +4,10 @@ pragma solidity 0.8.26;
 import {IVerifier} from '../Verifiers/IVerifier.sol';
 
 /**
+ * @title IRegistry
+ * @dev This contract manages domain registration and verifiers. It uses role-based access control to allow
+ * only authorized accounts to register domains and update verifiers. 
+ * The contract stores domain ownership and verifier information and allows domain owners to modify verifiers.
  * @custom:security-contact security@sci.domains
  */
 interface IRegistry {
@@ -38,7 +42,7 @@ interface IRegistry {
     /**
      * @dev Returns the owner, the IVerifier, lastOwnerSetTime and lastIVerifierSetTime
      * for a given domainHash.
-     * @param domainHash The name hash of the domain
+     * @param domainHash The namehash of the domain.
      */
     function domainHashToRecord(
         bytes32 domainHash
@@ -56,11 +60,11 @@ interface IRegistry {
      * @dev Register a domain.
      *
      * @param owner The owner of the domain.
-     * @param domainHash The name hash of the domain being registered.
+     * @param domainHash The namehash of the domain being registered.
      *
      * Requirements:
      *
-     * - Only valid Registrars must be able to call this function
+     * - Only valid Registrars must be able to call this function.
      *
      * May emit a {DomainRegistered} event.
      */
@@ -72,12 +76,17 @@ interface IRegistry {
     /**
      * @dev Same as registerDomain but it also adds a IVerifier.
      * 
-     * @param domainHash The name hash of the domain being registered.
+     * @param owner The owner of the domain being registered.
+     * @param domainHash The namehash of the domain being registered.
      * @param IVerifier the IVerifier that is being set for the domain.
      *
      * Requirements:
      *
-     * - Only valid Registrars must be able to call this function
+     * - Only valid Registrars must be able to call this function.
+     * 
+     * NOTE: Most of registrars should implement this function by sending
+     * the message sender as the owner to avoid other addresses changing or setting
+     * a malicous verifier.
      *
      * May emit a {DomainRegistered} and a {IVerifierAdded} events.
      */
@@ -94,31 +103,31 @@ interface IRegistry {
 
     /**
      * @dev Returns the owner of the domainHash.
-     * @param domainHash The name hash of the domain
-     * @return the address of the owner or the ZERO_ADDRESS if the domain is not registered
+     * @param domainHash The namehash of the domain.
+     * @return the address of the owner or the ZERO_ADDRESS if the domain is not registered.
      */
     function domainOwner(bytes32 domainHash) external view returns (address);
 
     /**
      * @dev Returns the IVerifier of the domainHash.
-     * @param domainHash The name hash of the domain
+     * @param domainHash The namehash of the domain.
      * @return the address of the IVerifier or the ZERO_ADDRESS if the domain or
-     * the IVerifier are not registered
+     * the IVerifier are not registered.
      */
     function domainVerifier(bytes32 domainHash) external view returns (IVerifier);
 
     /**
      * @dev Returns the timestamp of the block where the IVerifier was set.
-     * @param domainHash The name hash of the domain
+     * @param domainHash The namehash of the domain.
      * @return the timestamp of the block where the IVerifier was set or
-     * 0 if it wasn't
+     * 0 if it wasn't.
      */
     function domainVerifierSetTime(bytes32 domainHash) external view returns (uint256);
 
     /**
      * @dev Sets a IVerifier to the domain hash.
-     * @param domainHash The name hash of the domain
-     * @param verifier The address of the IVerifier contract
+     * @param domainHash The namehash of the domain.
+     * @param verifier The address of the IVerifier contract.
      *
      * Requirements:
      *
@@ -126,7 +135,7 @@ interface IRegistry {
      *
      * May emit a {IVerifierAdded} event.
      *
-     * NOTE: If you want to remove a IVerifier you can set it to the ZERO_ADDRESS
+     * NOTE: If you want to remove a IVerifier you can set it to the ZERO_ADDRESS.
      */
     function setVerifier(bytes32 domainHash, IVerifier verifier) external;
 }

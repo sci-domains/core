@@ -5,7 +5,8 @@ import {IRegistry} from '../Registry/IRegistry.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
 /**
- * @dev Contract module that allows children to implement access
+ * @title DomainManager
+ * @dev Contract module that implement access.
  * control only to owners of a domain.
  * @custom:security-contact security@sci.domains
  */
@@ -13,23 +14,22 @@ abstract contract DomainManager is Context {
     IRegistry public immutable registry;
 
     /**
-     * @dev The caller account is not the owner of the domain.
+     * @dev Thrown when the account is not the owner of the SCI domain hash.
      */
     error AccountIsNotDomainOwner(address account, bytes32 domainHash);
 
     /**
-     * @dev Initializes the contract setting the address
-     * provided by the deployer as the SCI contract.
+     * @dev Initializes the contract with references to the SCI Registry.
+     * @param _sciRegistryAddress Address of the SCI Registry contract.
      */
-    constructor(address _sciAddress) {
-        registry = IRegistry(_sciAddress);
+    constructor(address _sciRegistryAddress) {
+        registry = IRegistry(_sciRegistryAddress);
     }
 
     /**
-     * @dev Modifier that checks that only the owner of the domain hash is able to call
-     * the function.
-     * Reverts with an {AccountIsNotDomainOwner} error including the account
-     * and the domain hash.
+     * @dev Modifier that checks if the provided address is the owner of the SCI domain.
+     * 
+     * NOTE: Reverts with `AccountIsNotDomainOwner` error if the check fails.
      */
     modifier onlyDomainOwner(bytes32 domainHash) {
         _checkDomainOwner(domainHash);

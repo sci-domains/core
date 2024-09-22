@@ -6,6 +6,7 @@ import {DomainManager} from '../DomainMangager/DomainManager.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
 /**
+ * @title PublicListVerifier
  * @dev This contract implements the Verifier interface.
  * Domain owners can add or remove addresses that can interact within their domain.
  *

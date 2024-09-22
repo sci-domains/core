@@ -30,7 +30,7 @@ describe('EnsRegistrar', function () {
 
     // SCI Contracts
     const RegistryFactory = await ethers.getContractFactory("Registry");
-    registry = await RegistryFactory.deploy();
+    registry = await RegistryFactory.deploy(0);
 
     const EnsRegistrar = await ethers.getContractFactory('EnsRegistrar');
     ensRegistrar = await EnsRegistrar.deploy(ens.target, registry);

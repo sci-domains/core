@@ -19,7 +19,7 @@ describe('Registry', function () {
     [owner, registrar, ...addresses] = await ethers.getSigners();
 
     const RegistryFactory = await ethers.getContractFactory('Registry');
-    registry = await RegistryFactory.deploy();
+    registry = await RegistryFactory.deploy(0);
 
     await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
     registry.grantRole(await registry.REGISTRAR_ROLE(), registrar.address);
