@@ -25,7 +25,8 @@
     "compile": "hardhat compile",
     "clean": "rm -r artifacts cache types dist",
     "test": "hardhat test",
-    "test:cov": "hardhat coverage"
+    "test:cov": "hardhat coverage",
+    "lint": "hardhat check"
   },
   "dependencies": {
     "@ensdomains/ens-contracts": "1.1.4",
