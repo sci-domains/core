@@ -23,6 +23,7 @@ describe('Registry', function () {
 
     await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
     registry.grantRole(await registry.REGISTRAR_ROLE(), registrar.address);
+    registry.grantRole(await registry.PAUSER_ROLE(), owner.address);
 
     const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
     publicListverifier = await PubicListVerifierFactory.deploy(registry.target);
@@ -70,6 +71,17 @@ describe('Registry', function () {
       )
         .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
         .withArgs(domainOwner.address, await registry.REGISTRAR_ROLE());
+    });
+
+    it('Shouldn\'t let someone register a domain if the contract is paused', async function () {
+      const domainOwner = addresses[1];
+      await registry.connect(owner).pause();
+      await expect(
+        registry
+          .connect(registrar)
+          .registerDomain(domainOwner, DOMAIN_HASH),
+      )
+        .to.revertedWithCustomError(registry, 'EnforcedPause')
     });
 
     it('Should emit an event when a domain is registered', async function () {
@@ -124,6 +136,18 @@ describe('Registry', function () {
         BigInt(block?.timestamp!),
       ]);
     });
+
+    it('Shouldn\'t let someone register a domain with verifier if the contract is paused', async function () {
+      const domainOwner = addresses[0];
+      const verifierAddress = addresses[1].address;
+      await registry.connect(owner).pause();
+      await expect(
+        registry
+          .connect(registrar)
+          .registerDomainWithVerifier(domainOwner, DOMAIN_HASH, verifierAddress),
+      )
+        .to.revertedWithCustomError(registry, 'EnforcedPause')
+    });
   });
 
   describe('Domain Owner', function () {
@@ -162,7 +186,7 @@ describe('Registry', function () {
     });
   });
 
-  describe('Add Verifier', function () {
+  describe('Set Verifier', function () {
     let domainOwner: HardhatEthersSigner;
     let notDomainOwner: HardhatEthersSigner;
 
@@ -174,7 +198,7 @@ describe('Registry', function () {
         .registerDomain(domainOwner, DOMAIN_HASH);
     });
 
-    it('Should only let the owner of the domain add a verifier', async function () {
+    it('Should only let the owner of the domain set a verifier', async function () {
       await registry.connect(domainOwner).setVerifier(DOMAIN_HASH, publicListverifier.target);
       expect(await registry.domainVerifier(DOMAIN_HASH)).to.equal(publicListverifier.target);
 
@@ -183,6 +207,18 @@ describe('Registry', function () {
       )
         .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
         .withArgs(notDomainOwner.address, DOMAIN_HASH);
+    });
+
+
+    it('Should\'t set a verifier if it is paused', async function () {
+      await registry.connect(owner).pause();
+
+      await expect(
+        registry
+          .connect(domainOwner)
+          .setVerifier(DOMAIN_HASH, publicListverifier.target),
+      )
+        .to.revertedWithCustomError(registry, 'EnforcedPause')
     });
 
     it('Should add the date when a verifier is set', async function () {
@@ -205,6 +241,45 @@ describe('Registry', function () {
       )
         .to.emit(registry, 'VerifierSet')
         .withArgs(domainOwner.address, DOMAIN_HASH, publicListverifier.target);
+    });
+  });
+
+  describe('Pausable', function () {
+    it('Should only let an address with the PAUSER_ROLE pause', async function () {
+      const accountWithPauserRole = owner;
+      const accountWithoutPauserRole = addresses[0];
+
+      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithPauserRole.address)).to.be.true;
+      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithoutPauserRole.address)).to.be.false;
+      expect(await registry.paused()).to.be.false;
+
+      await expect(
+        registry.connect(accountWithoutPauserRole).pause(),
+      )
+      .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
+      .withArgs(accountWithoutPauserRole.address, await registry.PAUSER_ROLE());
+
+      await registry.connect(accountWithPauserRole).pause();
+      expect(await registry.paused()).to.be.true;
+    });
+
+    it('Should only let an address with the PAUSER_ROLE unpause', async function () {
+      const accountWithPauserRole = owner;
+      const accountWithoutPauserRole = addresses[0];
+      await registry.connect(accountWithPauserRole).pause();
+
+      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithPauserRole.address)).to.be.true;
+      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithoutPauserRole.address)).to.be.false;
+      expect(await registry.paused()).to.be.true;
+
+      await expect(
+        registry.connect(accountWithoutPauserRole).unpause(),
+      )
+      .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
+      .withArgs(accountWithoutPauserRole.address, await registry.PAUSER_ROLE());
+
+      await registry.connect(accountWithPauserRole).unpause();
+      expect(await registry.paused()).to.be.false;
     });
   });
 });

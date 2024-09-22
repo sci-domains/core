@@ -2,18 +2,18 @@
 pragma solidity 0.8.26;
 
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
+import {Pausable} from '@openzeppelin/contracts/utils/Pausable.sol';
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
 import {IRegistry} from './IRegistry.sol';
 import {DomainManager} from '../DomainMangager/DomainManager.sol';
 
-// TODO: Add Pausable
 /**
  * @title Registry
  * @dev See {IRegistry-version}.
  * @custom:security-contact security@sci.domains
  */
-contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainManager {
+contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainManager, Pausable {
     /**
      * @dev Structure to hold domain record details, including:
      * - owner: Address of the domain owner.
@@ -32,6 +32,8 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     bytes32 public constant REGISTRAR_MANAGER_ROLE = keccak256('REGISTRAR_MANAGER_ROLE');
     // Role that allows registering domains
     bytes32 public constant REGISTRAR_ROLE = keccak256('REGISTRAR_ROLE');
+    // Role that allows to pause the contract
+    bytes32 public constant PAUSER_ROLE = keccak256('PAUSER_ROLE');
 
     /**
      * @dev Maps the namehash of a domain to a Record.
@@ -69,6 +71,21 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     ) external {
         _registerDomain(owner, domainHash);
         _setVerifier(domainHash, verifier);
+    }
+
+
+    /**
+     * @dev Pauses registering a domain and setting a verifier
+     */
+    function pause() external onlyRole(PAUSER_ROLE) {
+        _pause();
+    }
+
+    /**
+     * @dev Unpauses registering a domain and setting a verifier
+     */
+    function unpause() public onlyRole(PAUSER_ROLE) {
+        _unpause();
     }
 
     /**
@@ -133,13 +150,14 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      * Requirements:
      *
      * - the owner must be authorized by the authorizer.
+     * - The contract must not be paused.
      *
      * May emit a {DomainRegistered} event.
      */
     function _registerDomain(
         address owner,
         bytes32 domainHash
-    ) private onlyRole(REGISTRAR_ROLE) {
+    ) private onlyRole(REGISTRAR_ROLE) whenNotPaused {
         _setDomainOwner(domainHash, owner);
         emit DomainRegistered(_msgSender(), owner, domainHash);
     }
@@ -148,8 +166,12 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
      * @dev Sets the verifier, updates the verifier timestamp and
      * emits VerifierSet events.
      * All updates to a verifier should be through this function
+     * 
+     * Requirements:
+     *
+     * - The contract must not be paused.
      */
-    function _setVerifier(bytes32 domainHash, IVerifier verifier) private {
+    function _setVerifier(bytes32 domainHash, IVerifier verifier) whenNotPaused private {
         domainHashToRecord[domainHash].verifier = verifier;
         domainHashToRecord[domainHash].verifierSetTime = block.timestamp;
         emit VerifierSet(_msgSender(), domainHash, verifier);
