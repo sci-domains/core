@@ -10,7 +10,7 @@ import {DomainManager} from '../DomainMangager/DomainManager.sol';
 
 /**
  * @title Registry
- * @dev See {IRegistry-version}.
+ * @dev See {IRegistry}.
  * @custom:security-contact security@sci.domains
  */
 contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainManager, Pausable {
@@ -52,7 +52,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-version}.
+     * @dev See {IRegistry-registerDomain}.
      */
     function registerDomain(
         address owner,
@@ -62,7 +62,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-version}.
+     * @dev See {IRegistry-registerDomainWithVerifier}.
      */
     function registerDomainWithVerifier(
         address owner,
@@ -101,7 +101,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-version}.
+     * @dev See {IRegistry-isDomainOwner}.
      */
     function isDomainOwner(
         bytes32 domainHash,
@@ -111,14 +111,14 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-version}.
+     * @dev See {IRegistry-domainOwner}.
      */
     function domainOwner(bytes32 domainHash) public view virtual override returns (address) {
         return domainHashToRecord[domainHash].owner;
     }
 
     /**
-     * @dev See {IRegistry-version}.
+     * @dev See {IRegistry-setVerifier}.
      */
     function setVerifier(
         bytes32 domainHash,
@@ -128,14 +128,14 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-version}.
+     * @dev See {IRegistry-domainVerifier}.
      */
     function domainVerifier(bytes32 domainHash) external view virtual returns (IVerifier) {
         return domainHashToRecord[domainHash].verifier;
     }
 
     /**
-     * @dev See {IRegistry-version}.
+     * @dev See {IRegistry-domainVerifierSetTime}.
      */
     function domainVerifierSetTime(bytes32 domainHash) external view virtual returns (uint256) {
         return domainHashToRecord[domainHash].verifierSetTime;

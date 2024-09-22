@@ -97,7 +97,7 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
     }
 
     /**
-     * @dev See {IVerifier-version}.
+     * @dev See {IVerifier-isVerified}.
      */
     function isVerified(
         bytes32 domainHash,
