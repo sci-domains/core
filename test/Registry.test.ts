@@ -103,7 +103,7 @@ describe('Registry', function () {
           .registerDomain(domainOwner, DOMAIN_HASH),
       )
         .to.emit(registry, 'OwnerSet')
-        .withArgs(registrar.address, DOMAIN_HASH, domainOwner.address);
+        .withArgs(registrar.address, DOMAIN_HASH, ethers.ZeroAddress, domainOwner.address);
     });
 
     it('Should register a domain successfully', async function () {
@@ -240,7 +240,7 @@ describe('Registry', function () {
         registry.connect(domainOwner).setVerifier(DOMAIN_HASH, publicListverifier.target),
       )
         .to.emit(registry, 'VerifierSet')
-        .withArgs(domainOwner.address, DOMAIN_HASH, publicListverifier.target);
+        .withArgs(domainOwner.address, DOMAIN_HASH, ethers.ZeroAddress, publicListverifier.target);
     });
   });
 

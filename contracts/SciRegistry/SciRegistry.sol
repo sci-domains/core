@@ -174,9 +174,10 @@ contract SciRegistry is
      * - The contract must not be paused.
      */
     function _setVerifier(bytes32 domainHash, IVerifier verifier) private whenNotPaused {
+        IVerifier oldVerifier = domainHashToRecord[domainHash].verifier;
         domainHashToRecord[domainHash].verifier = verifier;
         domainHashToRecord[domainHash].verifierSetTime = block.timestamp;
-        emit VerifierSet(_msgSender(), domainHash, verifier);
+        emit VerifierSet(_msgSender(), domainHash, oldVerifier, verifier);
     }
 
     /**
@@ -184,8 +185,9 @@ contract SciRegistry is
      * All updates to an owner should be through this function.
      */
     function _setDomainOwner(bytes32 domainHash, address owner) private {
+        address oldOwner = domainHashToRecord[domainHash].owner;
         domainHashToRecord[domainHash].owner = owner;
         domainHashToRecord[domainHash].ownerSetTime = block.timestamp;
-        emit OwnerSet(_msgSender(), domainHash, owner);
+        emit OwnerSet(_msgSender(), domainHash, oldOwner, owner);
     }
 }

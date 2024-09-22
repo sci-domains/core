@@ -21,20 +21,28 @@ interface ISciRegistry {
         bytes32 indexed domainHash
     );
 
-    // TODO: Add old verifier also index the domainHash?
     /**
      * @dev Emitted when the `owner` of the `domainHash` adds a `verifier`.
      *
-     * Note: This will also be emitted when the IVerifier is changed.
+     * Note: This will also be emitted when the verifier is changed.
      */
-    event VerifierSet(address indexed owner, bytes32 domainHash, IVerifier indexed verifier);
+    event VerifierSet(
+        address msgSender,
+        bytes32 indexed domainHash,
+        IVerifier indexed oldVerifier,
+        IVerifier indexed newVerifie
+    );
 
-    // TODO: Add old owner also index the domainHash?
     /**
      * @dev Emitted when the owner of a `domainHash` is set.
      *
      */
-    event OwnerSet(address indexed msgSender, bytes32 domainHash, address indexed owner);
+    event OwnerSet(
+        address msgSender,
+        bytes32 indexed domainHash,
+        address indexed oldOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Thrown when the `account` is not authorized to register the domain with namehash `domainHash`.
