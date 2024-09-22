@@ -4,13 +4,13 @@ pragma solidity 0.8.26;
 import {IVerifier} from '../Verifiers/IVerifier.sol';
 
 /**
- * @title IRegistry
+ * @title ISciRegistry
  * @dev This contract manages domain registration and verifiers. It uses role-based access control to allow
  * only authorized accounts to register domains and update verifiers. 
  * The contract stores domain ownership and verifier information and allows domain owners to modify verifiers.
  * @custom:security-contact security@sci.domains
  */
-interface IRegistry {
+interface ISciRegistry {
     /**
      * @dev Emitted when a new `domain` with the `domainHash` is
      * registered by the `owner`.

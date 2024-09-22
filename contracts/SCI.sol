@@ -2,7 +2,7 @@
 pragma solidity 0.8.26;
 
 import {IVerifier} from './Verifiers/IVerifier.sol';
-import {IRegistry} from './Registry/IRegistry.sol';
+import {ISciRegistry} from './SciRegistry/ISciRegistry.sol';
 import {Initializable} from '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 import {Ownable2StepUpgradeable} from '@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol';
 
@@ -14,7 +14,7 @@ import {Ownable2StepUpgradeable} from '@openzeppelin/contracts-upgradeable/acces
  * @custom:security-contact security@sci.domains
  */
 contract SCI is Initializable, Ownable2StepUpgradeable {
-    IRegistry public registry;
+    ISciRegistry public registry;
 
     /**
      *  @dev Emitted when the Registry is changed.
@@ -117,7 +117,7 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      */
     function setRegistry(address newRegistry) public onlyOwner {
         address oldRegistryAddress = address(registry);
-        registry = IRegistry(newRegistry);
+        registry = ISciRegistry(newRegistry);
         emit RegistrySet(oldRegistryAddress, newRegistry);
     }
 }

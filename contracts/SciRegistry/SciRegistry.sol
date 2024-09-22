@@ -5,15 +5,15 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 import {Pausable} from '@openzeppelin/contracts/utils/Pausable.sol';
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
-import {IRegistry} from './IRegistry.sol';
+import {ISciRegistry} from './ISciRegistry.sol';
 import {DomainManager} from '../DomainMangager/DomainManager.sol';
 
 /**
  * @title Registry
- * @dev See {IRegistry}.
+ * @dev See {ISciRegistry}.
  * @custom:security-contact security@sci.domains
  */
-contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainManager, Pausable {
+contract SciRegistry is ISciRegistry, Context, AccessControlDefaultAdminRules, DomainManager, Pausable {
     /**
      * @dev Structure to hold domain record details, including:
      * - owner: Address of the domain owner.
@@ -52,7 +52,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-registerDomain}.
+     * @dev See {ISciRegistry-registerDomain}.
      */
     function registerDomain(
         address owner,
@@ -62,7 +62,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-registerDomainWithVerifier}.
+     * @dev See {ISciRegistry-registerDomainWithVerifier}.
      */
     function registerDomainWithVerifier(
         address owner,
@@ -101,7 +101,7 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-isDomainOwner}.
+     * @dev See {ISciRegistry-isDomainOwner}.
      */
     function isDomainOwner(
         bytes32 domainHash,
@@ -111,14 +111,14 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-domainOwner}.
+     * @dev See {ISciRegistry-domainOwner}.
      */
     function domainOwner(bytes32 domainHash) public view virtual override returns (address) {
         return domainHashToRecord[domainHash].owner;
     }
 
     /**
-     * @dev See {IRegistry-setVerifier}.
+     * @dev See {ISciRegistry-setVerifier}.
      */
     function setVerifier(
         bytes32 domainHash,
@@ -128,14 +128,14 @@ contract Registry is IRegistry, Context, AccessControlDefaultAdminRules, DomainM
     }
 
     /**
-     * @dev See {IRegistry-domainVerifier}.
+     * @dev See {ISciRegistry-domainVerifier}.
      */
     function domainVerifier(bytes32 domainHash) external view virtual returns (IVerifier) {
         return domainHashToRecord[domainHash].verifier;
     }
 
     /**
-     * @dev See {IRegistry-domainVerifierSetTime}.
+     * @dev See {ISciRegistry-domainVerifierSetTime}.
      */
     function domainVerifierSetTime(bytes32 domainHash) external view virtual returns (uint256) {
         return domainHashToRecord[domainHash].verifierSetTime;

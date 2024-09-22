@@ -2,7 +2,7 @@
 pragma solidity 0.8.26;
 
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
-import {IRegistry} from '../Registry/IRegistry.sol';
+import {ISciRegistry} from '../SciRegistry/ISciRegistry.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
 
 /**
@@ -19,18 +19,18 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
     // Role that allows registering domains
     bytes32 public constant REGISTER_DOMAIN_ROLE = keccak256('REGISTER_DOMAIN_ROLE');
     
-    IRegistry public immutable registry;
+    ISciRegistry public immutable registry;
 
     /**
      * @dev Initializes the contract by setting up the SCI Registry reference and defining the admin rules.
-     * @param _sciRegistryAddress Address of the custom domain registry contract.
+     * @param _scISciRegistryAddress Address of the custom domain registry contract.
      * @param initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information.
      */
     constructor(
-        address _sciRegistryAddress, 
+        address _scISciRegistryAddress, 
         uint48 initialDelay
     ) AccessControlDefaultAdminRules(initialDelay, _msgSender()) {
-        registry = IRegistry(_sciRegistryAddress);
+        registry = ISciRegistry(_scISciRegistryAddress);
     }
 
     /**

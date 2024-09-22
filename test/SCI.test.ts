@@ -23,7 +23,7 @@ describe('SCI', function () {
   beforeEach(async () => {
     [owner, verifiedAccount, ...addresses] = await ethers.getSigners();
 
-    const RegistryFactory = await ethers.getContractFactory('Registry');
+    const RegistryFactory = await ethers.getContractFactory('SciRegistry');
     registry = await RegistryFactory.deploy(0);
 
     await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);

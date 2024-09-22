@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.26;
 
-import {IRegistry} from '../Registry/IRegistry.sol';
+import {ISciRegistry} from '../SciRegistry/ISciRegistry.sol';
 
 /**
  * @title DomainManager
@@ -10,7 +10,7 @@ import {IRegistry} from '../Registry/IRegistry.sol';
  * @custom:security-contact security@sci.domains
  */
 abstract contract DomainManager {
-    IRegistry public immutable registry;
+    ISciRegistry public immutable registry;
 
     /**
      * @dev Thrown when the `account` is not the owner of the domainhash.
@@ -22,7 +22,7 @@ abstract contract DomainManager {
      * @param _sciRegistryAddress Address of the SCI Registry contract.
      */
     constructor(address _sciRegistryAddress) {
-        registry = IRegistry(_sciRegistryAddress);
+        registry = ISciRegistry(_sciRegistryAddress);
     }
 
     /**

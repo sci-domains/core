@@ -29,7 +29,7 @@ describe('EnsRegistrar', function () {
     await ens.setSubnodeOwner(namehash('eth'), keccak256(toUtf8Bytes('a')), owner.address);
 
     // SCI Contracts
-    const RegistryFactory = await ethers.getContractFactory("Registry");
+    const RegistryFactory = await ethers.getContractFactory('SciRegistry');
     registry = await RegistryFactory.deploy(0);
 
     const EnsRegistrar = await ethers.getContractFactory('EnsRegistrar');

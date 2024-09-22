@@ -14,7 +14,7 @@ describe('SciRegistrar', function () {
   beforeEach(async () => {
     [user, ...addresses] = await ethers.getSigners();
 
-    const RegistryFactory = await ethers.getContractFactory("Registry");
+    const RegistryFactory = await ethers.getContractFactory('SciRegistry');
     registry = await RegistryFactory.deploy(0);
 
     // Ens Authorization Contract Deployment

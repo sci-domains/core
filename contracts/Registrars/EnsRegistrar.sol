@@ -2,7 +2,7 @@
 pragma solidity 0.8.26;
 
 import {ENS} from '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
-import {IRegistry} from '../Registry/IRegistry.sol';
+import {ISciRegistry} from '../SciRegistry/ISciRegistry.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
@@ -16,7 +16,7 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
  */
 contract EnsRegistrar is Context  {
     ENS public immutable ensRegistry;
-    IRegistry public immutable registry;
+    ISciRegistry public immutable registry;
 
     /**
      * @dev Thrown when the `account` is not the owner of the ENS `domainhash`.
@@ -30,7 +30,7 @@ contract EnsRegistrar is Context  {
      */
     constructor(address _ensRegistryAddress, address _sciRegistryAddress) {
         ensRegistry = ENS(_ensRegistryAddress);
-        registry = IRegistry(_sciRegistryAddress);
+        registry = ISciRegistry(_sciRegistryAddress);
     }
 
     /**
