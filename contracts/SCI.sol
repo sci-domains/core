@@ -16,13 +16,21 @@ import {Ownable2StepUpgradeable} from '@openzeppelin/contracts-upgradeable/acces
 contract SCI is Initializable, Ownable2StepUpgradeable {
     IRegistry public registry;
 
+    /**
+     *  @dev Emitted when the Registry is changed
+     */
+    event RegistrySet(
+        address indexed oldRegistryAddress,
+        address indexed newRegistryAddress
+    );
+
     function initialize(
         address owner,
         address registryAddress
     ) external initializer {
-        registry = IRegistry(registryAddress);
         __Ownable2Step_init();
         __Ownable_init(owner);
+        setRegistry(registryAddress);
     }
 
     /**
@@ -100,13 +108,14 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
         return registry.domainHashToRecord(domainHash);
     }
 
-    // TODO: Should emit an event    
     /**
      * @dev Stes a new registry
      *
      * @param newRegistry The address of the new SCI Registry
      */
     function setRegistry(address newRegistry) public onlyOwner {
+        address oldRegistryAddress = address(registry);
         registry = IRegistry(newRegistry);
+        emit RegistrySet(oldRegistryAddress, newRegistry);
     }
 }

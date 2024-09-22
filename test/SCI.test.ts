@@ -82,6 +82,13 @@ describe('SCI', function () {
       await sci.connect(owner).setRegistry(newRegistryAddress);
       expect(await sci.registry()).to.equal(newRegistryAddress);
     });
+
+    it('Should emit RegistrySet when the registry is changed', async function () {
+      const newRegistryAddress = addresses[1].address;
+      await expect(sci.connect(owner).setRegistry(newRegistryAddress))
+      .to.emit(sci, 'RegistrySet')
+      .withArgs(registry.target, newRegistryAddress);
+    });
   });
 
   describe('Verification', function () {
