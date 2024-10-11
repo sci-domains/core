@@ -1,7 +1,7 @@
 import { PublicListVerifier } from './../../../types/contracts/Verifiers/PublicListVerifier';
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-import {SciRegistryModule} from '../SciRegistryModule';
+import {SciRegistryModule} from '../registry/SciRegistryModule';
 import { SciRegistry } from '../../../types';
 
 export const PublicListVerifierModule = buildModule("PublicListVerifier", (m) => {

@@ -1,5 +1,5 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
-import { SciRegistry } from "../../types";
+import { SciRegistry } from "../../../types";
 
 export const SciRegistryModule = buildModule("SciRegistry", (m) => {
   const sciRegistry = m.contract("SciRegistry", [0]);

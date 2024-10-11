@@ -5,7 +5,7 @@ import {
 } from '../types';
 import { expect } from 'chai';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { SciRegistryModule, SciRegistryModuleReturnType } from '../ignition/modules/SciRegistryModule';
+import { SciRegistryModule, SciRegistryModuleReturnType } from '../ignition/modules/registry/SciRegistryModule';
 
 const DOMAIN_HASH = '0x46b1531f39389a596f2e173d7e93cd0eaeafaf690c2a196e3f9054ce4cb20843';
 
