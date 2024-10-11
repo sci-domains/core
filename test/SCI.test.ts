@@ -1,12 +1,17 @@
 import { expect } from 'chai';
-import { ethers, upgrades } from 'hardhat';
+import { ethers, ignition, upgrades } from 'hardhat';
 import {
   PublicListVerifier,
-  Registry,
+  SciRegistry,
   SCI,
+  Proxy
 } from '../types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { Block } from 'ethers';
+import { PublicListVerifierModule, PublicListVerifierModuleReturnType } from '../ignition/modules/verifiers/PublicListVerifierModule';
+import {SciModule, SciModuleReturnType} from '../ignition/modules/sci/SciModule';
+import { getImplementationAddress } from '@openzeppelin/upgrades-core';
+import {SciUpgradeModule} from '../ignition/modules/sci/SciUpgradeModule';
 
 const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
 const CHAIN = 1;
@@ -16,50 +21,45 @@ describe('SCI', function () {
   let verifiedAccount: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
   let sci: SCI;
-  let registry: Registry;
-  let publicListverifier: PublicListVerifier;
+  let proxy: Proxy;
+  let sciRegistry: SciRegistry;
+  let publicListVerifier: PublicListVerifier;
   let verififcationTime: number;
   let registrationBlock: Block;
 
   beforeEach(async () => {
     [owner, verifiedAccount, ...addresses] = await ethers.getSigners();
 
-    const RegistryFactory = await ethers.getContractFactory('SciRegistry');
-    registry = await RegistryFactory.deploy(0);
+    ({ publicListVerifier, sciRegistry } = await (ignition.deploy(
+      PublicListVerifierModule
+    ) as unknown as PublicListVerifierModuleReturnType));
 
-    await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
-    registry.grantRole(await registry.REGISTRAR_ROLE(), owner);
+    ({ sci } = await (ignition.deploy(
+      SciModule
+    ) as unknown as SciModuleReturnType));
 
-    const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
-    publicListverifier = await PubicListVerifierFactory.deploy(registry.target);
-
-    const SCIFactory = await ethers.getContractFactory('SCI');
-    sci = (await upgrades.deployProxy(
-      SCIFactory,
-      [owner.address, registry.target],
-      {
-        initializer: 'initialize',
-      },
-    )) as unknown as SCI;
-    await sci.waitForDeployment();
+    // We need to set up this because the sci module deploys another 
+    // registry for the tests
+    sci.setRegistry(sciRegistry.target);
+    sciRegistry.grantRole(await sciRegistry.REGISTRAR_ROLE(), owner);
 
     // Register domain with verifiers
-    let tx = await registry.registerDomainWithVerifier(
+    let tx = await sciRegistry.registerDomainWithVerifier(
       owner,
       DOMAIN_HASH,
-      publicListverifier.target,
+      publicListVerifier.target,
     );
     // This will always return a block
     registrationBlock = (await tx.getBlock())!;
 
     // Register the account
-    tx = await publicListverifier.addAddresses(DOMAIN_HASH, [verifiedAccount.address], [[CHAIN]]);
+    tx = await publicListVerifier.addAddresses(DOMAIN_HASH, [verifiedAccount.address], [[CHAIN]]);
     verififcationTime = (await tx.getBlock())!.timestamp;
   });
 
   describe('Initializable', function () {
     it('Should\'t be able to initialize a second time', async function () {
-      await expect(sci.initialize(owner.address, registry.target)).to.revertedWithCustomError(sci, "InvalidInitialization");
+      await expect(sci.initialize(owner.address, sciRegistry.target)).to.revertedWithCustomError(sci, "InvalidInitialization");
     });
   });
 
@@ -89,7 +89,7 @@ describe('SCI', function () {
       const newRegistryAddress = addresses[1].address;
       await expect(sci.connect(owner).setRegistry(newRegistryAddress))
       .to.emit(sci, 'RegistrySet')
-      .withArgs(registry.target, newRegistryAddress);
+      .withArgs(sciRegistry.target, newRegistryAddress);
     });
   });
 
@@ -116,7 +116,7 @@ describe('SCI', function () {
     it('It should return the domain info for a registered domains', async function () {
       expect(await sci.domainHashToRecord(DOMAIN_HASH)).to.deep.equal([
         owner.address,
-        publicListverifier.target,
+        publicListVerifier.target,
         registrationBlock.timestamp,
         registrationBlock.timestamp,
       ]);
