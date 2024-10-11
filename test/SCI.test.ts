@@ -18,6 +18,7 @@ describe('SCI', function () {
   let sci: SCI;
   let registry: Registry;
   let publicListverifier: PublicListVerifier;
+  let verififcationTime: number;
   let registrationBlock: Block;
 
   beforeEach(async () => {
@@ -43,7 +44,7 @@ describe('SCI', function () {
     await sci.waitForDeployment();
 
     // Register domain with verifiers
-    const tx = await registry.registerDomainWithVerifier(
+    let tx = await registry.registerDomainWithVerifier(
       owner,
       DOMAIN_HASH,
       publicListverifier.target,
@@ -52,7 +53,8 @@ describe('SCI', function () {
     registrationBlock = (await tx.getBlock())!;
 
     // Register the account
-    await publicListverifier.addAddresses(DOMAIN_HASH, [verifiedAccount.address], [[CHAIN]]);
+    tx = await publicListverifier.addAddresses(DOMAIN_HASH, [verifiedAccount.address], [[CHAIN]]);
+    verififcationTime = (await tx.getBlock())!.timestamp;
   });
 
   describe('Initializable', function () {
@@ -92,12 +94,12 @@ describe('SCI', function () {
   });
 
   describe('Verification', function () {
-    it('Should return true if the address if verified', async function () {
-      expect(await sci.isVerifiedForDomainHash(DOMAIN_HASH, verifiedAccount.address, CHAIN)).to.be.true
+    it('Should return the verification time if the address if verified', async function () {
+      expect(await sci.isVerifiedForDomainHash(DOMAIN_HASH, verifiedAccount.address, CHAIN)).to.be.equal(verififcationTime);
     });
     
-    it('Should return false if the address if not verified', async function () {
-      expect(await sci.isVerifiedForDomainHash(DOMAIN_HASH, addresses[0].address, CHAIN)).to.be.false;
+    it('Should return 0 if the address if not verified', async function () {
+      expect(await sci.isVerifiedForDomainHash(DOMAIN_HASH, addresses[0].address, CHAIN)).to.be.equal(0);
     });
 
     it('Should return accordingly when verifying multiple addresses', async function () {
@@ -105,7 +107,7 @@ describe('SCI', function () {
         [DOMAIN_HASH, ethers.ZeroHash], 
         verifiedAccount, 
         CHAIN)
-      ).to.deep.equal([true, false])
+      ).to.deep.equal([verififcationTime, 0])
     });
     
   });

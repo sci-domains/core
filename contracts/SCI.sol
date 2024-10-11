@@ -60,17 +60,17 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @param domainHashes An array of domain hashes.
      * @param contractAddress The address of the contract is being verified.
      * @param chainId The id of the chain the contract is deployed in.
-     * @return An array of bool indicating whether the contract address is
-     * verified for each domain hash or not.
-     *
+     * @return an array of uint256 representing the time when the contract was verified for each domain 
+     * or 0 if it wasn't. 
+     * 
      * Note: If there is no verifier set then it returns false for that `domainHash`.
      */
     function isVerifiedForMultipleDomainHashes(
         bytes32[] memory domainHashes,
         address contractAddress,
         uint256 chainId
-    ) external view returns (bool[] memory) {
-        bool[] memory domainsVerification = new bool[](domainHashes.length);
+    ) external view returns (uint256[] memory) {
+        uint256[] memory domainsVerification = new uint256[](domainHashes.length);
         uint256 domainHashesLength = domainHashes.length;
         for (uint256 i; i < domainHashesLength; ) {
             domainsVerification[i] = isVerifiedForDomainHash(
@@ -91,19 +91,20 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @param domainHash The namehash of the domain the contract is interacting with
      * @param contractAddress The address of the contract is being verified.
      * @param chainId The id of the chain the contract is deployed in.
-     * @return A bool indicating whether the contract is verified or not.
+     * @return a uint256 representing the time when the contract was verified. 
+     * If the contract is not verified, it returns 0. 
      *
-     * Note: If there is no verifier set then it returns false.
+     * Note: If there is no verifier set then it returns 0.
      */
     function isVerifiedForDomainHash(
         bytes32 domainHash,
         address contractAddress,
         uint256 chainId
-    ) public view returns (bool) {
+    ) public view returns (uint256) {
         (, IVerifier verifier, , ) = registry.domainHashToRecord(domainHash);
 
         if (address(verifier) == address(0)) {
-            return false;
+            return 0;
         }
 
         return verifier.isVerified(domainHash, contractAddress, chainId);

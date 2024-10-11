@@ -13,11 +13,16 @@ interface IVerifier {
      * @param domainHash The domain's namehash.
      * @param contractAddress The address of the contract trying to be verified.
      * @param chainId The chain where the contract is deployed.
-     * @return a bool indicating whether the sender is authorizer or not.
+     * @return a uint256 representing the time when the contract was verified. 
+     * If the contract is not verified, it returns 0.
+     * 
+     * Note: The return timestamp is a best effor approach to provide the time when the contract 
+     * was verified. For verifiers that can't know when the contract was verified they could 
+     * return when the verifier was deployed.
      */
     function isVerified(
         bytes32 domainHash,
         address contractAddress,
         uint256 chainId
-    ) external view returns (bool);
+    ) external view returns (uint256);
 }

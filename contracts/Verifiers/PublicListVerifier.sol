@@ -5,7 +5,6 @@ import {IVerifier} from './IVerifier.sol';
 import {DomainManager} from '../DomainMangager/DomainManager.sol';
 import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
-// TODO: Add documentation in missing functions
 /**
  * @title PublicListVerifier
  * @dev This contract implements the Verifier interface.
@@ -19,7 +18,7 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
     uint256 private constant MAX_INT = 2 ** 256 - 1;
 
     // Domain hash -> contract address -> chain id -> true/false.
-    mapping(bytes32 domainHash => mapping(address contractAddress => mapping(uint256 chainId => bool exists)))
+    mapping(bytes32 domainHash => mapping(address contractAddress => mapping(uint256 chainId => uint256 registerTimestamp)))
         public verifiedContracts;
 
     /**
@@ -58,7 +57,7 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
     ) external onlyDomainOwner(_msgSender(), domainHash) {
         for (uint256 i; i < contractAddresses.length; ) {
             for (uint256 j; j < chainIds[i].length; ) {
-                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = true;
+                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = block.timestamp;
                 emit AddressAdded(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
                 unchecked {
                     ++j;
@@ -84,7 +83,7 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
     ) external onlyDomainOwner(_msgSender(), domainHash) {
         for (uint256 i; i < contractAddresses.length; ) {
             for (uint256 j; j < chainIds[i].length; ++j) {
-                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = false;
+                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = 0;
                 emit AddressRemoved(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
                 unchecked {
                     ++j;
@@ -103,9 +102,19 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
         bytes32 domainHash,
         address contractAddress,
         uint256 chainId
-    ) external view returns (bool) {
-        return
-            verifiedContracts[domainHash][contractAddress][chainId] ||
-            verifiedContracts[domainHash][contractAddress][MAX_INT];
+    ) external view returns (uint256) {
+    uint256 verifiedContract = verifiedContracts[domainHash][contractAddress][chainId];
+
+    if (verifiedContract != 0) {
+        return verifiedContract;
+    }
+
+    verifiedContract = verifiedContracts[domainHash][contractAddress][MAX_INT];
+    if (verifiedContract != 0) {
+        return verifiedContract;
+    }
+
+    // Return 0 if no match is found
+    return 0;        
     }
 }

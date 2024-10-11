@@ -43,11 +43,11 @@ describe('Public List Verifier', function () {
         .revertedWithCustomError(sciRegistry, 'AccountIsNotDomainOwner')
         .withArgs(notOwner.address, DOMAIN_HASH);
 
-      await publicListVerifier
+      const tx = await publicListVerifier
         .connect(domainOwner)
         .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[chainId]]);
       expect(await publicListVerifier.verifiedContracts(DOMAIN_HASH, sciRegistry.target, CHAIN_ID)).to
-        .be.true;
+        .be.equal((await tx.getBlock())!.timestamp);
     });
   });
 
@@ -71,46 +71,48 @@ describe('Public List Verifier', function () {
         .connect(domainOwner)
         .removeAddresses(DOMAIN_HASH, [sciRegistry.target], [[chainId]]);
       expect(await publicListVerifier.verifiedContracts(DOMAIN_HASH, sciRegistry.target, CHAIN_ID)).to
-        .be.false;
+        .be.equal(0);
     });
   });
 
   describe('Verify Address', function () {
+    let verificationTime: number;
     beforeEach(async () => {
-      await publicListVerifier
+      const tx = await publicListVerifier
         .connect(domainOwner)
         .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[1]]);
+      verificationTime = (await tx.getBlock())!.timestamp;
     });
 
-    it('Should return true for a verified address', async function () {
+    it('Should return the verification time for a verified address', async function () {
       expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID)).to.be
-        .true;
+        .equal(verificationTime);
     });
 
-    it('Should return true for any chain if it is with the multi chain id', async function () {
+    it('Should return the verification time for any chain if it is with the multi chain id', async function () {
       expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1)).to.be
-        .false;
-      await publicListVerifier
+        .equal(0);
+      const tx = await publicListVerifier
         .connect(domainOwner)
         .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[MaxUint256]]);
       expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1)).to.be
-        .true;
+        .equal((await tx.getBlock())!.timestamp);
     });
 
-    it('Should return false for a verified address in a wrong chain', async function () {
+    it('Should return 0 for a verified address in a wrong chain', async function () {
       expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1)).to.be
-        .false;
+        .equal(0);
     });
 
-    it('Should return false for an unverified address', async function () {
+    it('Should return 0 for an unverified address', async function () {
       expect(await publicListVerifier.isVerified(DOMAIN_HASH, publicListVerifier.target, CHAIN_ID))
-        .to.be.false;
+        .to.be.equal(0);
     });
 
-    it('Should return false for an unregistered domain', async function () {
+    it('Should return 0 for an unregistered domain', async function () {
       expect(
         await publicListVerifier.isVerified(DOMAIN_WITH_WILDCARD_HASH, sciRegistry.target, CHAIN_ID),
-      ).to.be.false;
+      ).to.be.equal(0);
     });
   });
 });
