@@ -6,16 +6,12 @@ import '@openzeppelin/hardhat-upgrades';
 import "@nomicfoundation/hardhat-ignition-ethers";
 import 'dotenv/config';
 
-function getAccounts(privateKey: string | undefined): string[] {
-  return privateKey ? [privateKey] : [];
-}
-
 function getUrl(url: string | undefined): string {
   return url ?? '';
 }
 
 const config: HardhatUserConfig = {
-  solidity: '0.8.26',
+  solidity: '0.8.28',
   gasReporter: {
     currency: 'USD',
     enabled: true,
