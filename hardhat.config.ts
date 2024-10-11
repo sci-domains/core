@@ -3,6 +3,7 @@ import '@nomicfoundation/hardhat-toolbox';
 import '@nomiclabs/hardhat-solhint';
 import 'solidity-coverage'
 import '@openzeppelin/hardhat-upgrades';
+import "@nomicfoundation/hardhat-ignition-ethers";
 import 'dotenv/config';
 
 function getAccounts(privateKey: string | undefined): string[] {

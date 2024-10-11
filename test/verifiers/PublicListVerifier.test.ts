@@ -1,8 +1,9 @@
-import { ethers } from 'hardhat';
+import { ethers, ignition } from 'hardhat';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { PublicListVerifier, Registry } from '../../types';
+import { PublicListVerifier, SciRegistry } from '../../types';
 import { expect } from 'chai';
 import { MaxUint256 } from 'ethers';
+import { PublicListVerifierModule, PublicListVerifierModuleReturnType } from '../../ignition/modules/verifiers/PublicListVerifierModule';
 
 const CHAIN_ID = 1;
 const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
@@ -13,23 +14,21 @@ describe('Public List Verifier', function () {
   let owner: HardhatEthersSigner;
   let domainOwner: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
-  let registry: Registry;
-  let publicListverifier: PublicListVerifier;
+  let sciRegistry: SciRegistry;
+  let publicListVerifier: PublicListVerifier;
 
   beforeEach(async () => {
     [owner, domainOwner, ...addresses] = await ethers.getSigners();
 
-    const RegistryFactory = await ethers.getContractFactory('SciRegistry');
-    registry = await RegistryFactory.deploy(0);
+    ({ publicListVerifier, sciRegistry } = await (ignition.deploy(
+      PublicListVerifierModule
+    ) as unknown as PublicListVerifierModuleReturnType));
+    
+    sciRegistry.grantRole(await sciRegistry.REGISTRAR_ROLE(), owner.address);
+    sciRegistry.grantRole(await sciRegistry.REGISTRAR_ROLE(), domainOwner.address);
 
-    await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
-    registry.grantRole(await registry.REGISTRAR_ROLE(), owner.address);
-    registry.grantRole(await registry.REGISTRAR_ROLE(), domainOwner.address);
 
-    const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
-    publicListverifier = await PubicListVerifierFactory.deploy(registry.target);
-
-    await registry.registerDomain(domainOwner, DOMAIN_HASH);
+    await sciRegistry.registerDomain(domainOwner, DOMAIN_HASH);
   });
 
   describe('Add Addresses', function () {
@@ -37,17 +36,17 @@ describe('Public List Verifier', function () {
       const notOwner = addresses[0];
       const chainId = 1;
       await expect(
-        publicListverifier
+        publicListVerifier
           .connect(notOwner)
-          .addAddresses(DOMAIN_HASH, [registry.target], [[chainId]]),
+          .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[chainId]]),
       )
-        .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
+        .revertedWithCustomError(sciRegistry, 'AccountIsNotDomainOwner')
         .withArgs(notOwner.address, DOMAIN_HASH);
 
-      await publicListverifier
+      await publicListVerifier
         .connect(domainOwner)
-        .addAddresses(DOMAIN_HASH, [registry.target], [[chainId]]);
-      expect(await publicListverifier.verifiedContracts(DOMAIN_HASH, registry.target, CHAIN_ID)).to
+        .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[chainId]]);
+      expect(await publicListVerifier.verifiedContracts(DOMAIN_HASH, sciRegistry.target, CHAIN_ID)).to
         .be.true;
     });
   });
@@ -56,61 +55,61 @@ describe('Public List Verifier', function () {
     it('Should let only the owner of the domain remove addresses for the domain', async function () {
       const notOwner = addresses[0];
       const chainId = 1;
-      await publicListverifier
+      await publicListVerifier
         .connect(domainOwner)
-        .addAddresses(DOMAIN_HASH, [registry.target], [[chainId]]);
+        .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[chainId]]);
 
       await expect(
-        publicListverifier
+        publicListVerifier
           .connect(notOwner)
-          .removeAddresses(DOMAIN_HASH, [registry.target], [[chainId]]),
+          .removeAddresses(DOMAIN_HASH, [sciRegistry.target], [[chainId]]),
       )
-        .revertedWithCustomError(registry, 'AccountIsNotDomainOwner')
+        .revertedWithCustomError(sciRegistry, 'AccountIsNotDomainOwner')
         .withArgs(notOwner.address, DOMAIN_HASH);
 
-      await publicListverifier
+      await publicListVerifier
         .connect(domainOwner)
-        .removeAddresses(DOMAIN_HASH, [registry.target], [[chainId]]);
-      expect(await publicListverifier.verifiedContracts(DOMAIN_HASH, registry.target, CHAIN_ID)).to
+        .removeAddresses(DOMAIN_HASH, [sciRegistry.target], [[chainId]]);
+      expect(await publicListVerifier.verifiedContracts(DOMAIN_HASH, sciRegistry.target, CHAIN_ID)).to
         .be.false;
     });
   });
 
   describe('Verify Address', function () {
     beforeEach(async () => {
-      await publicListverifier
+      await publicListVerifier
         .connect(domainOwner)
-        .addAddresses(DOMAIN_HASH, [registry.target], [[1]]);
+        .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[1]]);
     });
 
     it('Should return true for a verified address', async function () {
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, registry.target, CHAIN_ID)).to.be
+      expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID)).to.be
         .true;
     });
 
     it('Should return true for any chain if it is with the multi chain id', async function () {
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, registry.target, CHAIN_ID + 1)).to.be
+      expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1)).to.be
         .false;
-      await publicListverifier
+      await publicListVerifier
         .connect(domainOwner)
-        .addAddresses(DOMAIN_HASH, [registry.target], [[MaxUint256]]);
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, registry.target, CHAIN_ID + 1)).to.be
+        .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[MaxUint256]]);
+      expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1)).to.be
         .true;
     });
 
     it('Should return false for a verified address in a wrong chain', async function () {
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, registry.target, CHAIN_ID + 1)).to.be
+      expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1)).to.be
         .false;
     });
 
     it('Should return false for an unverified address', async function () {
-      expect(await publicListverifier.isVerified(DOMAIN_HASH, publicListverifier.target, CHAIN_ID))
+      expect(await publicListVerifier.isVerified(DOMAIN_HASH, publicListVerifier.target, CHAIN_ID))
         .to.be.false;
     });
 
     it('Should return false for an unregistered domain', async function () {
       expect(
-        await publicListverifier.isVerified(DOMAIN_WITH_WILDCARD_HASH, registry.target, CHAIN_ID),
+        await publicListVerifier.isVerified(DOMAIN_WITH_WILDCARD_HASH, sciRegistry.target, CHAIN_ID),
       ).to.be.false;
     });
   });

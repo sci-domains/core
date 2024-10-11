@@ -1,10 +1,11 @@
-import { ethers } from 'hardhat';
+import { ethers, ignition } from 'hardhat';
 import {
-  Registry,
+  SciRegistry,
   PublicListVerifier,
 } from '../types';
 import { expect } from 'chai';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
+import { SciRegistryModule, SciRegistryModuleReturnType } from '../ignition/modules/SciRegistryModule';
 
 const DOMAIN_HASH = '0x46b1531f39389a596f2e173d7e93cd0eaeafaf690c2a196e3f9054ce4cb20843';
 
@@ -12,16 +13,16 @@ describe('Registry', function () {
   let owner: HardhatEthersSigner;
   let registrar: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
-  let registry: Registry;
+  let registry: SciRegistry;
   let publicListverifier: PublicListVerifier;
 
   beforeEach(async () => {
     [owner, registrar, ...addresses] = await ethers.getSigners();
 
-    const RegistryFactory = await ethers.getContractFactory('SciRegistry');
-    registry = await RegistryFactory.deploy(0);
+    ({ sciRegistry: registry } = await (ignition.deploy(
+      SciRegistryModule
+    ) as unknown as SciRegistryModuleReturnType));
 
-    await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
     registry.grantRole(await registry.REGISTRAR_ROLE(), registrar.address);
     registry.grantRole(await registry.PAUSER_ROLE(), owner.address);
 

@@ -1,8 +1,9 @@
 import { expect } from 'chai';
-import { ethers } from 'hardhat';
+import { ethers, ignition } from 'hardhat';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { keccak256, namehash, toUtf8Bytes } from 'ethers';
-import { EnsRegistrar, Registry } from '../../types';
+import { EnsRegistrar, SciRegistry } from '../../types';
+import {EnsRegistrarModule, EnsRegistrarModuleReturnType} from '../../ignition/modules/registrars/EnsRegistrarModule';
 
 const NON_EXISTING_DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
 const DOMAIN_HASH = '0xfcec0ff58c10be0e399a3a51186968513cc3a4c572a51d688ff338b3fbf6a7f9';
@@ -11,7 +12,7 @@ describe('EnsRegistrar', function () {
   let owner: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
   let ensRegistrar: EnsRegistrar;
-  let registry: Registry;
+  let sciRegistry: SciRegistry;
 
   beforeEach(async () => {
     [owner, ...addresses] = await ethers.getSigners();
@@ -29,14 +30,16 @@ describe('EnsRegistrar', function () {
     await ens.setSubnodeOwner(namehash('eth'), keccak256(toUtf8Bytes('a')), owner.address);
 
     // SCI Contracts
-    const RegistryFactory = await ethers.getContractFactory('SciRegistry');
-    registry = await RegistryFactory.deploy(0);
-
-    const EnsRegistrar = await ethers.getContractFactory('EnsRegistrar');
-    ensRegistrar = await EnsRegistrar.deploy(ens.target, registry);
-
-    await registry.grantRole(await registry.REGISTRAR_MANAGER_ROLE(), owner.address);
-    await registry.grantRole(await registry.REGISTRAR_ROLE(), ensRegistrar.target);
+    ({ ensRegistrar, sciRegistry } = await (ignition.deploy(
+      EnsRegistrarModule,
+      {
+        parameters: {
+          EnsRegistrar: {
+            "ensRegistryAddress": ens.target as string,
+          },
+        },
+      },
+    ) as unknown as EnsRegistrarModuleReturnType));
   });
 
   describe('ENS Domain', function () {
@@ -67,7 +70,7 @@ describe('EnsRegistrar', function () {
     it('It should register a domain if it is the domain owner', async function () {
       await ensRegistrar.registerDomain(owner, DOMAIN_HASH);
       
-      expect(await registry.isDomainOwner(DOMAIN_HASH, owner)).to.be.true;
+      expect(await sciRegistry.isDomainOwner(DOMAIN_HASH, owner)).to.be.true;
     });    
     
     it('It should register a domain with verifier if it is the domain owner', async function () {
@@ -75,8 +78,8 @@ describe('EnsRegistrar', function () {
       
       await ensRegistrar.connect(owner).registerDomainWithVerifier(DOMAIN_HASH, verifier);
       
-      expect(await registry.isDomainOwner(DOMAIN_HASH, owner)).to.be.true;
-      expect(await registry.domainVerifier(DOMAIN_HASH)).to.equal(verifier);
+      expect(await sciRegistry.isDomainOwner(DOMAIN_HASH, owner)).to.be.true;
+      expect(await sciRegistry.domainVerifier(DOMAIN_HASH)).to.equal(verifier);
     });
   });
 });
