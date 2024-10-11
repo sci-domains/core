@@ -1,20 +1,17 @@
 import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import '@nomiclabs/hardhat-solhint';
+import 'solidity-coverage'
 import '@openzeppelin/hardhat-upgrades';
+import "@nomicfoundation/hardhat-ignition-ethers";
 import 'dotenv/config';
-import './plugins/walletConnect/index';
-
-function getAccounts(privateKey: string | undefined): string[] {
-  return privateKey ? [privateKey] : [];
-}
 
 function getUrl(url: string | undefined): string {
   return url ?? '';
 }
 
 const config: HardhatUserConfig = {
-  solidity: '0.8.25',
+  solidity: '0.8.28',
   gasReporter: {
     currency: 'USD',
     enabled: true,
@@ -26,12 +23,11 @@ const config: HardhatUserConfig = {
   networks: {
     sepolia: {
       chainId: 11155111,
-      url: getUrl(process.env.ETHEREUM_SEPOLIA_PROVIDER_URL),
+      url: getUrl(process.env.ETHEREUM_SEPOLIA_PROVIDER_URL)
     },
     mainnet: {
       chainId: 1,
-      url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL),
-      useWalletConnect: true,
+      url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL)
     },
   },
   etherscan: {
@@ -39,17 +35,6 @@ const config: HardhatUserConfig = {
   },
   sourcify: {
     enabled: false,
-  },
-  walletConnect: {
-    projectId: process.env.WALLET_CONNECT_PROJECT_ID!,
-    metadata: {
-      name: 'SCI',
-      description: 'SCI Deployer',
-      url: 'https://sci.domains',
-      icons: ['https://www.sci.domains/images/logo/sci_logo.svg'],
-    },
-    showQrModal: false,
-    optionalChains: [1],
   },
 };
 

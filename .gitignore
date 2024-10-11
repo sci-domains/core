@@ -16,4 +16,4 @@ node_modules
 dist
 
 # local deployments
-/deployments/hardhat
+/ignition/deployments/chain-31337
