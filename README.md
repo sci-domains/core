@@ -26,7 +26,7 @@ For more information you can read the [Whitepaper](Whitepaper.pdf)
 
 ```bash
 git clone https://github.com/your-username/sci-protocol.git
-````
+```
 
 2. Navigate to the project directory:
 
@@ -48,12 +48,14 @@ yarn install
 ```
 
 Compile the Solidity contracts:
-```bash 
+
+```bash
 yarn compile
 ```
 
 Run the test:
-```bash 
+
+```bash
 yarn test
 ```
 
@@ -62,6 +64,7 @@ yarn test
 Please see our contribution [guidelines](CONTRIBUTING.md).
 
 ## Maintainers
+
 SCI is an open-source community project governed by a core team.
 
 ## License
