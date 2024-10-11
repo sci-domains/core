@@ -60,9 +60,9 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @param domainHashes An array of domain hashes.
      * @param contractAddress The address of the contract is being verified.
      * @param chainId The id of the chain the contract is deployed in.
-     * @return an array of uint256 representing the time when the contract was verified for each domain 
-     * or 0 if it wasn't. 
-     * 
+     * @return an array of uint256 representing the time when the contract was verified for each domain
+     * or 0 if it wasn't.
+     *
      * Note: If there is no verifier set then it returns false for that `domainHash`.
      */
     function isVerifiedForMultipleDomainHashes(
@@ -91,8 +91,8 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * @param domainHash The namehash of the domain the contract is interacting with
      * @param contractAddress The address of the contract is being verified.
      * @param chainId The id of the chain the contract is deployed in.
-     * @return a uint256 representing the time when the contract was verified. 
-     * If the contract is not verified, it returns 0. 
+     * @return a uint256 representing the time when the contract was verified.
+     * If the contract is not verified, it returns 0.
      *
      * Note: If there is no verifier set then it returns 0.
      */

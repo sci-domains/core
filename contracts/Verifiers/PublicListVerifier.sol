@@ -57,7 +57,8 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
     ) external onlyDomainOwner(_msgSender(), domainHash) {
         for (uint256 i; i < contractAddresses.length; ) {
             for (uint256 j; j < chainIds[i].length; ) {
-                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = block.timestamp;
+                verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = block
+                    .timestamp;
                 emit AddressAdded(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
                 unchecked {
                     ++j;
@@ -103,18 +104,18 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
         address contractAddress,
         uint256 chainId
     ) external view returns (uint256) {
-    uint256 verifiedContract = verifiedContracts[domainHash][contractAddress][chainId];
+        uint256 verifiedContract = verifiedContracts[domainHash][contractAddress][chainId];
 
-    if (verifiedContract != 0) {
-        return verifiedContract;
-    }
+        if (verifiedContract != 0) {
+            return verifiedContract;
+        }
 
-    verifiedContract = verifiedContracts[domainHash][contractAddress][MAX_INT];
-    if (verifiedContract != 0) {
-        return verifiedContract;
-    }
+        verifiedContract = verifiedContracts[domainHash][contractAddress][MAX_INT];
+        if (verifiedContract != 0) {
+            return verifiedContract;
+        }
 
-    // Return 0 if no match is found
-    return 0;        
+        // Return 0 if no match is found
+        return 0;
     }
 }
