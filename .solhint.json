@@ -4,7 +4,7 @@
   "rules": {
     "prettier/prettier": "error",
     "func-visibility": ["error", { "ignoreConstructors": true }],
-    "quotes": ["error","single"],
+    "quotes": ["error", "single"],
     "immutable-vars-naming": ["warn", { "immutablesAsConstants": false }]
   }
 }

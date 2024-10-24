@@ -3,7 +3,10 @@ import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { PublicListVerifier, SciRegistry } from '../../types';
 import { expect } from 'chai';
 import { MaxUint256 } from 'ethers';
-import { PublicListVerifierModule, PublicListVerifierModuleReturnType } from '../../ignition/modules/verifiers/PublicListVerifierModule';
+import {
+  PublicListVerifierModule,
+  PublicListVerifierModuleReturnType,
+} from '../../ignition/modules/verifiers/PublicListVerifierModule';
 
 const CHAIN_ID = 1;
 const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
@@ -21,12 +24,11 @@ describe('Public List Verifier', function () {
     [owner, domainOwner, ...addresses] = await ethers.getSigners();
 
     ({ publicListVerifier, sciRegistry } = await (ignition.deploy(
-      PublicListVerifierModule
+      PublicListVerifierModule,
     ) as unknown as PublicListVerifierModuleReturnType));
-    
+
     sciRegistry.grantRole(await sciRegistry.REGISTRAR_ROLE(), owner.address);
     sciRegistry.grantRole(await sciRegistry.REGISTRAR_ROLE(), domainOwner.address);
-
 
     await sciRegistry.registerDomain(domainOwner, DOMAIN_HASH);
   });
@@ -46,8 +48,9 @@ describe('Public List Verifier', function () {
       const tx = await publicListVerifier
         .connect(domainOwner)
         .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[chainId]]);
-      expect(await publicListVerifier.verifiedContracts(DOMAIN_HASH, sciRegistry.target, CHAIN_ID)).to
-        .be.equal((await tx.getBlock())!.timestamp);
+      expect(
+        await publicListVerifier.verifiedContracts(DOMAIN_HASH, sciRegistry.target, CHAIN_ID),
+      ).to.be.equal((await tx.getBlock())!.timestamp);
     });
   });
 
@@ -70,8 +73,9 @@ describe('Public List Verifier', function () {
       await publicListVerifier
         .connect(domainOwner)
         .removeAddresses(DOMAIN_HASH, [sciRegistry.target], [[chainId]]);
-      expect(await publicListVerifier.verifiedContracts(DOMAIN_HASH, sciRegistry.target, CHAIN_ID)).to
-        .be.equal(0);
+      expect(
+        await publicListVerifier.verifiedContracts(DOMAIN_HASH, sciRegistry.target, CHAIN_ID),
+      ).to.be.equal(0);
     });
   });
 
@@ -85,33 +89,42 @@ describe('Public List Verifier', function () {
     });
 
     it('Should return the verification time for a verified address', async function () {
-      expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID)).to.be
-        .equal(verificationTime);
+      expect(
+        await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID),
+      ).to.be.equal(verificationTime);
     });
 
     it('Should return the verification time for any chain if it is with the multi chain id', async function () {
-      expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1)).to.be
-        .equal(0);
+      expect(
+        await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1),
+      ).to.be.equal(0);
       const tx = await publicListVerifier
         .connect(domainOwner)
         .addAddresses(DOMAIN_HASH, [sciRegistry.target], [[MaxUint256]]);
-      expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1)).to.be
-        .equal((await tx.getBlock())!.timestamp);
+      expect(
+        await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1),
+      ).to.be.equal((await tx.getBlock())!.timestamp);
     });
 
     it('Should return 0 for a verified address in a wrong chain', async function () {
-      expect(await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1)).to.be
-        .equal(0);
+      expect(
+        await publicListVerifier.isVerified(DOMAIN_HASH, sciRegistry.target, CHAIN_ID + 1),
+      ).to.be.equal(0);
     });
 
     it('Should return 0 for an unverified address', async function () {
-      expect(await publicListVerifier.isVerified(DOMAIN_HASH, publicListVerifier.target, CHAIN_ID))
-        .to.be.equal(0);
+      expect(
+        await publicListVerifier.isVerified(DOMAIN_HASH, publicListVerifier.target, CHAIN_ID),
+      ).to.be.equal(0);
     });
 
     it('Should return 0 for an unregistered domain', async function () {
       expect(
-        await publicListVerifier.isVerified(DOMAIN_WITH_WILDCARD_HASH, sciRegistry.target, CHAIN_ID),
+        await publicListVerifier.isVerified(
+          DOMAIN_WITH_WILDCARD_HASH,
+          sciRegistry.target,
+          CHAIN_ID,
+        ),
       ).to.be.equal(0);
     });
   });

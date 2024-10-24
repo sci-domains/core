@@ -1,11 +1,11 @@
 import { ethers, ignition } from 'hardhat';
-import {
-  SciRegistry,
-  PublicListVerifier,
-} from '../types';
+import { SciRegistry, PublicListVerifier } from '../types';
 import { expect } from 'chai';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { SciRegistryModule, SciRegistryModuleReturnType } from '../ignition/modules/registry/SciRegistryModule';
+import {
+  SciRegistryModule,
+  SciRegistryModuleReturnType,
+} from '../ignition/modules/registry/SciRegistryModule';
 
 const DOMAIN_HASH = '0x46b1531f39389a596f2e173d7e93cd0eaeafaf690c2a196e3f9054ce4cb20843';
 
@@ -20,7 +20,7 @@ describe('Registry', function () {
     [owner, registrar, ...addresses] = await ethers.getSigners();
 
     ({ sciRegistry: registry } = await (ignition.deploy(
-      SciRegistryModule
+      SciRegistryModule,
     ) as unknown as SciRegistryModuleReturnType));
 
     registry.grantRole(await registry.REGISTRAR_ROLE(), registrar.address);
@@ -35,12 +35,21 @@ describe('Registry', function () {
       const accountWithoutAddRegistrarRole = addresses[0];
       const newRegistrar = addresses[1];
       expect(await registry.hasRole(await registry.REGISTRAR_MANAGER_ROLE(), owner)).to.be.true;
-      expect(await registry.hasRole(await registry.REGISTRAR_MANAGER_ROLE(), accountWithoutAddRegistrarRole)).to.be.false;
+      expect(
+        await registry.hasRole(
+          await registry.REGISTRAR_MANAGER_ROLE(),
+          accountWithoutAddRegistrarRole,
+        ),
+      ).to.be.false;
       expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), newRegistrar)).to.be.false;
-      
-      await expect(registry.connect(accountWithoutAddRegistrarRole).grantRole(await registry.REGISTRAR_ROLE(), newRegistrar))
-      .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
-      .withArgs(accountWithoutAddRegistrarRole.address, await registry.REGISTRAR_MANAGER_ROLE());
+
+      await expect(
+        registry
+          .connect(accountWithoutAddRegistrarRole)
+          .grantRole(await registry.REGISTRAR_ROLE(), newRegistrar),
+      )
+        .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
+        .withArgs(accountWithoutAddRegistrarRole.address, await registry.REGISTRAR_MANAGER_ROLE());
 
       await registry.connect(owner).grantRole(await registry.REGISTRAR_ROLE(), newRegistrar);
       expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), registrar)).to.be.true;
@@ -49,12 +58,21 @@ describe('Registry', function () {
     it('Should only let an address with REGISTRAR_MANAGER_ROLE remove a REGISTRAR_ROLE', async function () {
       const accountWithoutAddRegistrarRole = addresses[0];
       expect(await registry.hasRole(await registry.REGISTRAR_MANAGER_ROLE(), owner)).to.be.true;
-      expect(await registry.hasRole(await registry.REGISTRAR_MANAGER_ROLE(), accountWithoutAddRegistrarRole)).to.be.false;
+      expect(
+        await registry.hasRole(
+          await registry.REGISTRAR_MANAGER_ROLE(),
+          accountWithoutAddRegistrarRole,
+        ),
+      ).to.be.false;
       expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), registrar)).to.be.true;
-      
-      await expect(registry.connect(accountWithoutAddRegistrarRole).revokeRole(await registry.REGISTRAR_ROLE(), registrar))
-      .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
-      .withArgs(accountWithoutAddRegistrarRole.address, await registry.REGISTRAR_MANAGER_ROLE());
+
+      await expect(
+        registry
+          .connect(accountWithoutAddRegistrarRole)
+          .revokeRole(await registry.REGISTRAR_ROLE(), registrar),
+      )
+        .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
+        .withArgs(accountWithoutAddRegistrarRole.address, await registry.REGISTRAR_MANAGER_ROLE());
 
       await registry.connect(owner).revokeRole(await registry.REGISTRAR_ROLE(), registrar);
       expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), registrar)).to.be.false;
@@ -62,56 +80,40 @@ describe('Registry', function () {
   });
 
   describe('Registering domains', function () {
-    it('Shouldn\'t let a non registrar register a domain', async function () {
+    it("Shouldn't let a non registrar register a domain", async function () {
       const domainOwner = addresses[1];
-      expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), domainOwner.address)).to.be.false;
-      await expect(
-        registry
-          .connect(domainOwner)
-          .registerDomain(domainOwner, DOMAIN_HASH),
-      )
+      expect(await registry.hasRole(await registry.REGISTRAR_ROLE(), domainOwner.address)).to.be
+        .false;
+      await expect(registry.connect(domainOwner).registerDomain(domainOwner, DOMAIN_HASH))
         .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
         .withArgs(domainOwner.address, await registry.REGISTRAR_ROLE());
     });
 
-    it('Shouldn\'t let someone register a domain if the contract is paused', async function () {
+    it("Shouldn't let someone register a domain if the contract is paused", async function () {
       const domainOwner = addresses[1];
       await registry.connect(owner).pause();
       await expect(
-        registry
-          .connect(registrar)
-          .registerDomain(domainOwner, DOMAIN_HASH),
-      )
-        .to.revertedWithCustomError(registry, 'EnforcedPause')
+        registry.connect(registrar).registerDomain(domainOwner, DOMAIN_HASH),
+      ).to.revertedWithCustomError(registry, 'EnforcedPause');
     });
 
     it('Should emit an event when a domain is registered', async function () {
       const domainOwner = addresses[1];
-      await expect(
-        registry
-          .connect(registrar)
-          .registerDomain(domainOwner, DOMAIN_HASH),
-      )
+      await expect(registry.connect(registrar).registerDomain(domainOwner, DOMAIN_HASH))
         .to.emit(registry, 'DomainRegistered')
         .withArgs(registrar.address, domainOwner.address, DOMAIN_HASH);
     });
 
     it('Should emit an event when a domain is set', async function () {
       const domainOwner = addresses[0];
-      await expect(
-        registry
-          .connect(registrar)
-          .registerDomain(domainOwner, DOMAIN_HASH),
-      )
+      await expect(registry.connect(registrar).registerDomain(domainOwner, DOMAIN_HASH))
         .to.emit(registry, 'OwnerSet')
         .withArgs(registrar.address, DOMAIN_HASH, ethers.ZeroAddress, domainOwner.address);
     });
 
     it('Should register a domain successfully', async function () {
       const domainOwner = addresses[0];
-      const tx = await registry
-        .connect(registrar)
-        .registerDomain(domainOwner, DOMAIN_HASH);
+      const tx = await registry.connect(registrar).registerDomain(domainOwner, DOMAIN_HASH);
       const block = await tx.getBlock();
 
       expect(await registry.domainHashToRecord(DOMAIN_HASH)).to.deep.equal([
@@ -138,7 +140,7 @@ describe('Registry', function () {
       ]);
     });
 
-    it('Shouldn\'t let someone register a domain with verifier if the contract is paused', async function () {
+    it("Shouldn't let someone register a domain with verifier if the contract is paused", async function () {
       const domainOwner = addresses[0];
       const verifierAddress = addresses[1].address;
       await registry.connect(owner).pause();
@@ -146,8 +148,7 @@ describe('Registry', function () {
         registry
           .connect(registrar)
           .registerDomainWithVerifier(domainOwner, DOMAIN_HASH, verifierAddress),
-      )
-        .to.revertedWithCustomError(registry, 'EnforcedPause')
+      ).to.revertedWithCustomError(registry, 'EnforcedPause');
     });
   });
 
@@ -161,9 +162,7 @@ describe('Registry', function () {
     beforeEach(async () => {
       domainOwner = addresses[0];
       notDomainOwner = addresses[1];
-      await registry
-        .connect(registrar)
-        .registerDomain(domainOwner, DOMAIN_HASH);
+      await registry.connect(registrar).registerDomain(domainOwner, DOMAIN_HASH);
     });
 
     it('Should return false if the domain is not registered', async function () {
@@ -194,9 +193,7 @@ describe('Registry', function () {
     beforeEach(async () => {
       domainOwner = addresses[0];
       notDomainOwner = addresses[1];
-      await registry
-        .connect(registrar)
-        .registerDomain(domainOwner, DOMAIN_HASH);
+      await registry.connect(registrar).registerDomain(domainOwner, DOMAIN_HASH);
     });
 
     it('Should only let the owner of the domain set a verifier', async function () {
@@ -210,16 +207,12 @@ describe('Registry', function () {
         .withArgs(notDomainOwner.address, DOMAIN_HASH);
     });
 
-
-    it('Should\'t set a verifier if it is paused', async function () {
+    it("Should't set a verifier if it is paused", async function () {
       await registry.connect(owner).pause();
 
       await expect(
-        registry
-          .connect(domainOwner)
-          .setVerifier(DOMAIN_HASH, publicListverifier.target),
-      )
-        .to.revertedWithCustomError(registry, 'EnforcedPause')
+        registry.connect(domainOwner).setVerifier(DOMAIN_HASH, publicListverifier.target),
+      ).to.revertedWithCustomError(registry, 'EnforcedPause');
     });
 
     it('Should add the date when a verifier is set', async function () {
@@ -250,15 +243,15 @@ describe('Registry', function () {
       const accountWithPauserRole = owner;
       const accountWithoutPauserRole = addresses[0];
 
-      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithPauserRole.address)).to.be.true;
-      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithoutPauserRole.address)).to.be.false;
+      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithPauserRole.address)).to
+        .be.true;
+      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithoutPauserRole.address))
+        .to.be.false;
       expect(await registry.paused()).to.be.false;
 
-      await expect(
-        registry.connect(accountWithoutPauserRole).pause(),
-      )
-      .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
-      .withArgs(accountWithoutPauserRole.address, await registry.PAUSER_ROLE());
+      await expect(registry.connect(accountWithoutPauserRole).pause())
+        .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
+        .withArgs(accountWithoutPauserRole.address, await registry.PAUSER_ROLE());
 
       await registry.connect(accountWithPauserRole).pause();
       expect(await registry.paused()).to.be.true;
@@ -269,15 +262,15 @@ describe('Registry', function () {
       const accountWithoutPauserRole = addresses[0];
       await registry.connect(accountWithPauserRole).pause();
 
-      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithPauserRole.address)).to.be.true;
-      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithoutPauserRole.address)).to.be.false;
+      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithPauserRole.address)).to
+        .be.true;
+      expect(await registry.hasRole(await registry.PAUSER_ROLE(), accountWithoutPauserRole.address))
+        .to.be.false;
       expect(await registry.paused()).to.be.true;
 
-      await expect(
-        registry.connect(accountWithoutPauserRole).unpause(),
-      )
-      .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
-      .withArgs(accountWithoutPauserRole.address, await registry.PAUSER_ROLE());
+      await expect(registry.connect(accountWithoutPauserRole).unpause())
+        .to.revertedWithCustomError(registry, 'AccessControlUnauthorizedAccount')
+        .withArgs(accountWithoutPauserRole.address, await registry.PAUSER_ROLE());
 
       await registry.connect(accountWithPauserRole).unpause();
       expect(await registry.paused()).to.be.false;

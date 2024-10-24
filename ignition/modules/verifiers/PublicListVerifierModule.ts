@@ -1,17 +1,23 @@
-import { PublicListVerifier } from './../../../types/contracts/Verifiers/PublicListVerifier';
-import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
+import { buildModule } from '@nomicfoundation/hardhat-ignition/modules';
 
-import {SciRegistryModule} from '../registry/SciRegistryModule';
-import { SciRegistry } from '../../../types';
+import { SciRegistryModule } from '../registry/SciRegistryModule';
+import { PublicListVerifier, SciRegistry } from '../../../types';
+import { IgnitionModuleBuilder } from '@nomicfoundation/ignition-core';
 
-export const PublicListVerifierModule = buildModule("PublicListVerifier", (m) => {
-  const { sciRegistry } = m.useModule(SciRegistryModule);
+export const PublicListVerifierModule = buildModule(
+  'PublicListVerifier',
+  (m: IgnitionModuleBuilder) => {
+    const { sciRegistry } = m.useModule(SciRegistryModule);
 
-  const publicListVerifier = m.contract("PublicListVerifier", [sciRegistry]);
+    const publicListVerifier = m.contract('PublicListVerifier', [sciRegistry]);
 
-  return { publicListVerifier, sciRegistry };
-});
+    return { publicListVerifier, sciRegistry };
+  },
+);
 
-export type PublicListVerifierModuleReturnType = Promise<{ publicListVerifier: PublicListVerifier, sciRegistry: SciRegistry }>;
+export type PublicListVerifierModuleReturnType = Promise<{
+  publicListVerifier: PublicListVerifier;
+  sciRegistry: SciRegistry;
+}>;
 
 export default PublicListVerifierModule;

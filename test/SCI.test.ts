@@ -1,17 +1,13 @@
 import { expect } from 'chai';
-import { ethers, ignition, upgrades } from 'hardhat';
-import {
-  PublicListVerifier,
-  SciRegistry,
-  SCI,
-  Proxy
-} from '../types';
+import { ethers, ignition } from 'hardhat';
+import { PublicListVerifier, SciRegistry, SCI, Proxy } from '../types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { Block } from 'ethers';
-import { PublicListVerifierModule, PublicListVerifierModuleReturnType } from '../ignition/modules/verifiers/PublicListVerifierModule';
-import {SciModule, SciModuleReturnType} from '../ignition/modules/sci/SciModule';
-import { getImplementationAddress } from '@openzeppelin/upgrades-core';
-import {SciUpgradeModule} from '../ignition/modules/sci/SciUpgradeModule';
+import {
+  PublicListVerifierModule,
+  PublicListVerifierModuleReturnType,
+} from '../ignition/modules/verifiers/PublicListVerifierModule';
+import { SciModule, SciModuleReturnType } from '../ignition/modules/sci/SciModule';
 
 const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
 const CHAIN = 1;
@@ -31,14 +27,12 @@ describe('SCI', function () {
     [owner, verifiedAccount, ...addresses] = await ethers.getSigners();
 
     ({ publicListVerifier, sciRegistry } = await (ignition.deploy(
-      PublicListVerifierModule
+      PublicListVerifierModule,
     ) as unknown as PublicListVerifierModuleReturnType));
 
-    ({ sci } = await (ignition.deploy(
-      SciModule
-    ) as unknown as SciModuleReturnType));
+    ({ sci } = await (ignition.deploy(SciModule) as unknown as SciModuleReturnType));
 
-    // We need to set up this because the sci module deploys another 
+    // We need to set up this because the sci module deploys another
     // registry for the tests
     sci.setRegistry(sciRegistry.target);
     sciRegistry.grantRole(await sciRegistry.REGISTRAR_ROLE(), owner);
@@ -58,8 +52,11 @@ describe('SCI', function () {
   });
 
   describe('Initializable', function () {
-    it('Should\'t be able to initialize a second time', async function () {
-      await expect(sci.initialize(owner.address, sciRegistry.target)).to.revertedWithCustomError(sci, "InvalidInitialization");
+    it("Should't be able to initialize a second time", async function () {
+      await expect(sci.initialize(owner.address, sciRegistry.target)).to.revertedWithCustomError(
+        sci,
+        'InvalidInitialization',
+      );
     });
   });
 
@@ -88,28 +85,33 @@ describe('SCI', function () {
     it('Should emit RegistrySet when the registry is changed', async function () {
       const newRegistryAddress = addresses[1].address;
       await expect(sci.connect(owner).setRegistry(newRegistryAddress))
-      .to.emit(sci, 'RegistrySet')
-      .withArgs(sciRegistry.target, newRegistryAddress);
+        .to.emit(sci, 'RegistrySet')
+        .withArgs(sciRegistry.target, newRegistryAddress);
     });
   });
 
   describe('Verification', function () {
     it('Should return the verification time if the address if verified', async function () {
-      expect(await sci.isVerifiedForDomainHash(DOMAIN_HASH, verifiedAccount.address, CHAIN)).to.be.equal(verififcationTime);
+      expect(
+        await sci.isVerifiedForDomainHash(DOMAIN_HASH, verifiedAccount.address, CHAIN),
+      ).to.be.equal(verififcationTime);
     });
-    
+
     it('Should return 0 if the address if not verified', async function () {
-      expect(await sci.isVerifiedForDomainHash(DOMAIN_HASH, addresses[0].address, CHAIN)).to.be.equal(0);
+      expect(
+        await sci.isVerifiedForDomainHash(DOMAIN_HASH, addresses[0].address, CHAIN),
+      ).to.be.equal(0);
     });
 
     it('Should return accordingly when verifying multiple addresses', async function () {
-      expect(await sci.isVerifiedForMultipleDomainHashes(
-        [DOMAIN_HASH, ethers.ZeroHash], 
-        verifiedAccount, 
-        CHAIN)
-      ).to.deep.equal([verififcationTime, 0])
+      expect(
+        await sci.isVerifiedForMultipleDomainHashes(
+          [DOMAIN_HASH, ethers.ZeroHash],
+          verifiedAccount,
+          CHAIN,
+        ),
+      ).to.deep.equal([verififcationTime, 0]);
     });
-    
   });
 
   describe('Domain', function () {

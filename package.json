@@ -22,11 +22,11 @@
     "clean": "rm -r artifacts cache types dist publish",
     "test": "hardhat test",
     "test:cov": "hardhat coverage",
-    "lint": "hardhat check",
+    "lint": "hardhat check; lint --fix .; prettier --write .",
     "deploy:mainnet": "hardhat ignition deploy --verify --network mainnet",
     "deploy:sepolia": "hardhat ignition deploy --verify --network sepolia",
-    "prepare:build": "pnpm clean; pnpm compile; pnpm build; ts-node scripts/build-publish.ts",
-    "publish:build": "pnpm prepare:build; cd publish && npm publish"
+    "prepare:package": "pnpm clean; pnpm compile; pnpm build; ts-node scripts/build-publish.ts",
+    "publish:package": "pnpm prepare:build; cd publish && npm publish"
   },
   "dependencies": {
     "@ensdomains/ens-contracts": "1.1.4",
@@ -43,6 +43,7 @@
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@nomicfoundation/ignition-core": "^0.15.7",
     "@nomiclabs/hardhat-solhint": "^3.0.1",
     "@openzeppelin/hardhat-upgrades": "^3.1.0",
     "@openzeppelin/upgrades-core": "^1.40.0",
