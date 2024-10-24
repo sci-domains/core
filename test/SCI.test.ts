@@ -1,79 +1,126 @@
 import { expect } from 'chai';
-import { ethers, upgrades } from 'hardhat';
-import {
-  AlwaysFalseAuthorizer,
-  AlwaysTrueAuthorizer,
-  PublicListVerifier,
-  Registry,
-  SCI,
-} from '../types';
+import { ethers, ignition } from 'hardhat';
+import { PublicListVerifier, SciRegistry, SCI, Proxy } from '../types';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
-import { ADD_AUTHORIZER_ROLE, ADD_TRUSTED_VERIFIER_ROLE } from '../utils/roles';
+import { Block } from 'ethers';
+import {
+  PublicListVerifierModule,
+  PublicListVerifierModuleReturnType,
+} from '../ignition/modules/verifiers/PublicListVerifierModule';
+import { SciModule, SciModuleReturnType } from '../ignition/modules/sci/SciModule';
 
-const ALWAYS_TRUE_AUTHORIZER_ID = 1;
-const ALWAYS_FALSE_AUTHORIZER_ID = 2;
+const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
+const CHAIN = 1;
 
 describe('SCI', function () {
   let owner: HardhatEthersSigner;
+  let verifiedAccount: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
   let sci: SCI;
-  let registry: Registry;
-  let alwaysTrueAuthorizer: AlwaysTrueAuthorizer;
-  let alwaysFalseAuthorizer: AlwaysFalseAuthorizer;
-  let publicListverifier: PublicListVerifier;
+  let proxy: Proxy;
+  let sciRegistry: SciRegistry;
+  let publicListVerifier: PublicListVerifier;
+  let verififcationTime: number;
+  let registrationBlock: Block;
 
   beforeEach(async () => {
-    [owner, ...addresses] = await ethers.getSigners();
+    [owner, verifiedAccount, ...addresses] = await ethers.getSigners();
 
-    const NameHashFactory = await ethers.getContractFactory('NameHash');
-    const nameHash = await NameHashFactory.deploy();
+    ({ publicListVerifier, sciRegistry } = await (ignition.deploy(
+      PublicListVerifierModule,
+    ) as unknown as PublicListVerifierModuleReturnType));
 
-    const RegistryFactory = await ethers.getContractFactory('Registry');
-    registry = await RegistryFactory.deploy(await nameHash.getAddress());
-    await registry.grantRole(ADD_AUTHORIZER_ROLE, owner.address);
-    await registry.grantRole(ADD_TRUSTED_VERIFIER_ROLE, owner.address);
+    ({ sci } = await (ignition.deploy(SciModule) as unknown as SciModuleReturnType));
 
-    const AlwaysTrueAuthorizer = await ethers.getContractFactory('AlwaysTrueAuthorizer');
-    alwaysTrueAuthorizer = await AlwaysTrueAuthorizer.deploy();
-    await registry.setAuthorizer(ALWAYS_TRUE_AUTHORIZER_ID, alwaysTrueAuthorizer);
+    // We need to set up this because the sci module deploys another
+    // registry for the tests
+    sci.setRegistry(sciRegistry.target);
+    sciRegistry.grantRole(await sciRegistry.REGISTRAR_ROLE(), owner);
 
-    const AlwaysFalseAuthorizer = await ethers.getContractFactory('AlwaysFalseAuthorizer');
-    alwaysFalseAuthorizer = await AlwaysFalseAuthorizer.deploy();
-    await registry.setAuthorizer(ALWAYS_FALSE_AUTHORIZER_ID, alwaysFalseAuthorizer);
+    // Register domain with verifiers
+    let tx = await sciRegistry.registerDomainWithVerifier(
+      owner,
+      DOMAIN_HASH,
+      publicListVerifier.target,
+    );
+    // This will always return a block
+    registrationBlock = (await tx.getBlock())!;
 
-    const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
-    publicListverifier = await PubicListVerifierFactory.deploy(registry.target);
-
-    const SCIFactory = await ethers.getContractFactory('SCI');
-    sci = (await upgrades.deployProxy(SCIFactory, [registry.target, nameHash.target], {
-      initializer: 'initialize',
-    })) as unknown as SCI;
-    await sci.waitForDeployment();
+    // Register the account
+    tx = await publicListVerifier.addAddresses(DOMAIN_HASH, [verifiedAccount.address], [[CHAIN]]);
+    verififcationTime = (await tx.getBlock())!.timestamp;
   });
 
-  describe('Is Authorized', function () {
-    it('It should return true if owner has the IS_AUTHORIZED role ', async function () {
-      expect(
-        await sci.isVerifiedForMultipleDomains(['secureci.xyz', 'otro.com'], registry.target, 1),
-      ).to.deep.equal([false, false]);
+  describe('Initializable', function () {
+    it("Should't be able to initialize a second time", async function () {
+      await expect(sci.initialize(owner.address, sciRegistry.target)).to.revertedWithCustomError(
+        sci,
+        'InvalidInitialization',
+      );
     });
   });
 
-  describe('Domain info', function () {
-    it.only('It should return the domain info for a registered domains', async function () {
-      const domain = 'secureci.xyz';
-      const tx = await registry.registerDomainWithVerifier(
-        ALWAYS_TRUE_AUTHORIZER_ID,
-        domain,
-        false,
-        publicListverifier.target,
-      );
-      const block = await tx.getBlock();
-      expect(await sci.domainToRecord(domain)).to.deep.equal([
+  describe('Ownable', function () {
+    it('Should set the right ownable in the deployment', async function () {
+      expect(await sci.owner()).to.equal(owner.address);
+    });
+  });
+
+  describe('Set Registry', function () {
+    it('Only the owner is allow to set a new Registry', async function () {
+      const notTheOwner = addresses[0];
+      expect(await sci.owner()).to.not.equal(notTheOwner);
+
+      const newRegistryAddress = addresses[1].address;
+      expect(await sci.registry()).to.not.equal(newRegistryAddress);
+
+      await expect(sci.connect(notTheOwner).setRegistry(newRegistryAddress))
+        .to.revertedWithCustomError(sci, 'OwnableUnauthorizedAccount')
+        .withArgs(notTheOwner.address);
+
+      await sci.connect(owner).setRegistry(newRegistryAddress);
+      expect(await sci.registry()).to.equal(newRegistryAddress);
+    });
+
+    it('Should emit RegistrySet when the registry is changed', async function () {
+      const newRegistryAddress = addresses[1].address;
+      await expect(sci.connect(owner).setRegistry(newRegistryAddress))
+        .to.emit(sci, 'RegistrySet')
+        .withArgs(sciRegistry.target, newRegistryAddress);
+    });
+  });
+
+  describe('Verification', function () {
+    it('Should return the verification time if the address if verified', async function () {
+      expect(
+        await sci.isVerifiedForDomainHash(DOMAIN_HASH, verifiedAccount.address, CHAIN),
+      ).to.be.equal(verififcationTime);
+    });
+
+    it('Should return 0 if the address if not verified', async function () {
+      expect(
+        await sci.isVerifiedForDomainHash(DOMAIN_HASH, addresses[0].address, CHAIN),
+      ).to.be.equal(0);
+    });
+
+    it('Should return accordingly when verifying multiple addresses', async function () {
+      expect(
+        await sci.isVerifiedForMultipleDomainHashes(
+          [DOMAIN_HASH, ethers.ZeroHash],
+          verifiedAccount,
+          CHAIN,
+        ),
+      ).to.deep.equal([verififcationTime, 0]);
+    });
+  });
+
+  describe('Domain', function () {
+    it('It should return the domain info for a registered domains', async function () {
+      expect(await sci.domainHashToRecord(DOMAIN_HASH)).to.deep.equal([
         owner.address,
-        publicListverifier.target,
-        block?.timestamp,
-        block?.timestamp,
+        publicListVerifier.target,
+        registrationBlock.timestamp,
+        registrationBlock.timestamp,
       ]);
     });
   });
