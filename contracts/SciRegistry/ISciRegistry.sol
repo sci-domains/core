@@ -45,11 +45,6 @@ interface ISciRegistry {
     );
 
     /**
-     * @dev Thrown when the `account` is not authorized to register the domain with namehash `domainHash`.
-     */
-    error AccountIsNotAuthorizeToRegisterDomain(address account, bytes32 domainHash);
-
-    /**
      * @dev Returns the owner, the IVerifier, lastOwnerSetTime and lastIVerifierSetTime
      * for a given domainHash.
      * @param domainHash The namehash of the domain.
