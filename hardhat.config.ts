@@ -1,9 +1,10 @@
 import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import '@nomiclabs/hardhat-solhint';
-import 'solidity-coverage'
+import 'solidity-coverage';
 import '@openzeppelin/hardhat-upgrades';
-import "@nomicfoundation/hardhat-ignition-ethers";
+import '@nomicfoundation/hardhat-ledger';
+import '@nomicfoundation/hardhat-ignition-ethers';
 import 'dotenv/config';
 
 function getUrl(url: string | undefined): string {
@@ -23,11 +24,12 @@ const config: HardhatUserConfig = {
   networks: {
     sepolia: {
       chainId: 11155111,
-      url: getUrl(process.env.ETHEREUM_SEPOLIA_PROVIDER_URL)
+      url: getUrl(process.env.ETHEREUM_SEPOLIA_PROVIDER_URL),
+      ledgerAccounts: [process.env.ADDRESS],
     },
     mainnet: {
       chainId: 1,
-      url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL)
+      url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL),
     },
   },
   etherscan: {
