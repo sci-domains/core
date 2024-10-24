@@ -25,8 +25,8 @@
     "lint": "hardhat check",
     "deploy:mainnet": "hardhat ignition deploy --verify --network mainnet",
     "deploy:sepolia": "hardhat ignition deploy --verify --network sepolia",
-    "prepare:build": "yarn clean; yarn compile; yarn build; ts-node scripts/build-publish.ts",
-    "publish:build": "yarn prepare:build; cd publish && npm publish"
+    "prepare:build": "pnpm clean; pnpm compile; pnpm build; ts-node scripts/build-publish.ts",
+    "publish:build": "pnpm prepare:build; cd publish && npm publish"
   },
   "dependencies": {
     "@ensdomains/ens-contracts": "1.1.4",
