@@ -17,3 +17,5 @@ dist
 
 # local deployments
 /ignition/deployments/chain-31337
+
+/publish
