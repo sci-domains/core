@@ -18,7 +18,7 @@ For more information you can read the [Whitepaper](Whitepaper.pdf)
 ### Prerequisites
 
 - [NVM installed](https://github.com/nvm-sh/nvm)
-- [Yarn package manager installed](https://classic.yarnpkg.com/lang/en/docs/install/)
+- [pnpm package manager installed](https://pnpm.io/installation)
 
 ### Steps
 
@@ -41,22 +41,22 @@ nvm install
 nvm use
 ```
 
-4. Install dependencies using Yarn:
+4. Install dependencies using Pnpm:
 
 ```bash
-yarn install
+pnpm install
 ```
 
 Compile the Solidity contracts:
 
 ```bash
-yarn compile
+pnpm compile
 ```
 
 Run the test:
 
 ```bash
-yarn test
+pnpm test
 ```
 
 ## Contributing

@@ -18,11 +18,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          cache: 'yarn'
+          cache: 'pnpm'
           node-version-file: '.nvmrc'
 
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile --immutable
+        run: pnpm install --frozen-lockfile --immutable
 
       - name: Run Tests
-        run: yarn test
+        run: pnpm test
