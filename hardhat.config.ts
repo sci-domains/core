@@ -1,7 +1,6 @@
 import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import '@nomiclabs/hardhat-solhint';
-import 'solidity-coverage';
 import '@openzeppelin/hardhat-upgrades';
 import '@nomicfoundation/hardhat-ledger';
 import '@nomicfoundation/hardhat-ignition-ethers';

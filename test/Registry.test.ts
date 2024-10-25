@@ -23,8 +23,8 @@ describe('Registry', function () {
       SciRegistryModule,
     ) as unknown as SciRegistryModuleReturnType));
 
-    registry.grantRole(await registry.REGISTRAR_ROLE(), registrar.address);
-    registry.grantRole(await registry.PAUSER_ROLE(), owner.address);
+    await registry.grantRole(await registry.REGISTRAR_ROLE(), registrar.address);
+    await registry.grantRole(await registry.PAUSER_ROLE(), owner.address);
 
     const PubicListVerifierFactory = await ethers.getContractFactory('PublicListVerifier');
     publicListverifier = await PubicListVerifierFactory.deploy(registry.target);
