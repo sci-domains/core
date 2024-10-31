@@ -1,47 +1,42 @@
-import { ethers } from 'hardhat';
-import {
-  NameHash__factory,
-  PublicListVerifier__factory,
-  Registry__factory,
-  SCIAuthorizer__factory,
-} from '../../../types';
-import { IS_AUTHORIZED } from '../../../utils/roles';
+import {ethers} from 'hardhat';
 import { ADDRESS_TO_VERIFY } from './addresses';
-import { CONTRACT_NAMES, getDeployedContractAddress, sendTransactionsViaSafe } from '../../utils';
+import {getDeployedContractAddress, sendTransactionsViaSafe} from '../../utils';
 import { ContractTransaction } from 'ethers';
+import { namehash } from '@ensdomains/ensjs/utils';
+import {PublicListVerifier__factory, SciRegistrar__factory, SciRegistry__factory} from "../../../types";
 
 async function main() {
-  const registryAddress = await getDeployedContractAddress(CONTRACT_NAMES.REGISTRY);
-  const verifierAddress = await getDeployedContractAddress(CONTRACT_NAMES.PUBLIC_LIST_VERIFIER);
-  const sciAuthorizerAddress = await getDeployedContractAddress(CONTRACT_NAMES.SCI_AUTHORIZER);
-  const nameHashAddress = await getDeployedContractAddress(CONTRACT_NAMES.NAME_HASH);
-
   const safeAddress = process.env.SAFE_ADDRESS!;
   const owner = await ethers.provider.getSigner();
-  const publicListVerifier = PublicListVerifier__factory.connect(verifierAddress, owner);
-  const sciAuthorizer = SCIAuthorizer__factory.connect(sciAuthorizerAddress, owner);
-  const registry = Registry__factory.connect(registryAddress, owner);
-  const nameHash = NameHash__factory.connect(nameHashAddress, owner);
+  const deployedAddresses = await getDeployedContractAddress();
+
+  const publicListVerifier = PublicListVerifier__factory.connect(deployedAddresses["PublicListVerifier#PublicListVerifier"], owner);
+  const sciRegistrar = SciRegistrar__factory.connect(deployedAddresses["SciRegstrar#SciRegistrar"], owner);
+  const sciRegistry = SciRegistry__factory.connect(deployedAddresses["SciRegistry#SciRegistry"], owner);
 
   const txs: ContractTransaction[] = [];
 
   // Add the pk as domain owner
-  if (!(await sciAuthorizer.hasRole(IS_AUTHORIZED, safeAddress))) {
-    txs.push(await sciAuthorizer.grantRole.populateTransaction(IS_AUTHORIZED, safeAddress));
+  if (!(await sciRegistrar.hasRole(await sciRegistrar.REGISTER_DOMAIN_ROLE(), safeAddress))) {
+    txs.push(
+        await sciRegistrar.grantRole.populateTransaction(
+            await sciRegistrar.REGISTER_DOMAIN_ROLE(),
+            safeAddress
+        )
+    );
   }
 
   const addressEntries = Object.entries(ADDRESS_TO_VERIFY);
   for (let i = 0; i < addressEntries.length; i++) {
     const [domain, contracts] = addressEntries[i];
-    const domainHash = await nameHash.getDomainHash(domain);
+    const domainHash = namehash(domain);
 
-    if (!(await registry.isDomainOwner(domainHash, safeAddress))) {
+    if (!(await sciRegistry.isDomainOwner(domainHash, safeAddress))) {
       txs.push(
-        await registry.registerDomainWithVerifier.populateTransaction(
-          1,
-          domain,
-          false,
-          verifierAddress,
+        await sciRegistrar.registerDomainWithVerifier.populateTransaction(
+          safeAddress,
+          domainHash,
+          publicListVerifier.target,
         ),
       );
     }
@@ -54,7 +49,7 @@ async function main() {
       ),
     );
 
-    console.log(`Finish ${domain}`);
+    console.log(`Finish ${domainHash}`);
   }
 
   await sendTransactionsViaSafe(txs, safeAddress);
