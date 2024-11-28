@@ -47,16 +47,42 @@ nvm use
 pnpm install
 ```
 
-Compile the Solidity contracts:
+## Scripts
+
+### Compile Solidity contracts:
 
 ```bash
 pnpm compile
 ```
 
-Run the test:
+### Run tests:
 
 ```bash
 pnpm test
+```
+
+### Deploy:
+
+For the deployments we use hardhat ignition
+
+```bash
+pnpm deploy:<network>
+```
+
+To add a new chain you need to add a new configuration inside [parameters](ignition%2Fparameters)
+and add a new script in the package.json
+
+You can deploy specific modules using hardhat ignition
+
+### Development:
+
+You can execute the following commands to run a local node and deploy
+the ENS Registry with the contracts from the protocol
+
+```bash
+pnpm node
+// In another terminal
+pnpm dev
 ```
 
 ## Contributing
