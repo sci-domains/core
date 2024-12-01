@@ -32,6 +32,10 @@
     "prepare:package": "pnpm clean; pnpm compile; pnpm build; ts-node scripts/build-publish.ts",
     "publish:package": "pnpm prepare:package; cd publish && npm publish"
   },
+  "engines": {
+    "node": "20",
+    "pnpm": "9"
+  },
   "dependencies": {
     "@ensdomains/ens-contracts": "1.2.2",
     "@openzeppelin/contracts": "5.1.0",
