@@ -1,49 +1,51 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity 0.8.25;
+pragma solidity 0.8.28;
 
-import {SCI} from '../SCI.sol';
-import {Context} from '@openzeppelin/contracts/utils/Context.sol';
+import {ISciRegistry} from '../SciRegistry/ISciRegistry.sol';
 
 /**
- * @dev Contract module that allows children to implement access
- * control only to owners of a domain.
+ * @title DomainManager
+ * @dev Contract module that implement access
+ * control only to owners of a domain in the SCI Registry.
  * @custom:security-contact security@sci.domains
  */
-abstract contract DomainManager is Context {
-    SCI public immutable sci;
+abstract contract DomainManager {
+    ISciRegistry public immutable registry;
 
     /**
-     * @dev The caller account is not the owner of the domain.
+     * @dev Thrown when the `account` is not the owner of the domainhash.
      */
     error AccountIsNotDomainOwner(address account, bytes32 domainHash);
 
     /**
-     * @dev Initializes the contract setting the address
-     * provided by the deployer as the SCI contract.
+     * @dev Modifier that checks if the provided address is the owner of the SCI domain.
+     * @param domainHash The namehash of the domain.
+     *
+     * Note: Reverts with `AccountIsNotDomainOwner` error if the check fails.
      */
-    constructor(address _sciAddress) {
-        sci = SCI(_sciAddress);
-    }
-
-    /**
-     * @dev Modifier that checks that only the owner of the domain hash is able to call
-     * the function.
-     * Reverts with an {AccountIsNotDomainOwner} error including the account
-     * and the domain hash.
-     */
-    modifier onlyDomainOwner(bytes32 domainHash) {
-        _checkDomainOwner(domainHash);
+    modifier onlyDomainOwner(address account, bytes32 domainHash) {
+        _checkDomainOwner(account, domainHash);
         _;
     }
 
     /**
-     * @dev Reverts with an {AccountIsNotDomainOwner} error if `_msgSender()`
-     * is not the owner of the domain.
-     * Overriding this function changes the behavior of the {onlyDomainOwner} modifier.
+     * @dev Initializes the contract with references to the SCI Registry.
+     * @param _sciRegistryAddress Address of the SCI Registry contract.
      */
-    function _checkDomainOwner(bytes32 domainHash) private view {
-        if (sci.domainOwner(domainHash) != _msgSender()) {
-            revert AccountIsNotDomainOwner(_msgSender(), domainHash);
+    constructor(address _sciRegistryAddress) {
+        registry = ISciRegistry(_sciRegistryAddress);
+    }
+
+    /**
+     * @dev Reverts with an {AccountIsNotDomainOwner} error if the caller
+     * is not the owner of the domain.
+     * @param domainHash The namehash of the domain.
+     *
+     * Note: Overriding this function changes the behavior of the {onlyDomainOwner} modifier.
+     */
+    function _checkDomainOwner(address account, bytes32 domainHash) private view {
+        if (registry.domainOwner(domainHash) != account) {
+            revert AccountIsNotDomainOwner(account, domainHash);
         }
     }
 }

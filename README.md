@@ -18,7 +18,7 @@ For more information you can read the [Whitepaper](Whitepaper.pdf)
 ### Prerequisites
 
 - [NVM installed](https://github.com/nvm-sh/nvm)
-- [Yarn package manager installed](https://classic.yarnpkg.com/lang/en/docs/install/)
+- [pnpm package manager installed](https://pnpm.io/installation)
 
 ### Steps
 
@@ -26,7 +26,7 @@ For more information you can read the [Whitepaper](Whitepaper.pdf)
 
 ```bash
 git clone https://github.com/your-username/sci-protocol.git
-````
+```
 
 2. Navigate to the project directory:
 
@@ -41,20 +41,48 @@ nvm install
 nvm use
 ```
 
-4. Install dependencies using Yarn:
+4. Install dependencies using Pnpm:
 
 ```bash
-yarn install
+pnpm install
 ```
 
-Compile the Solidity contracts:
-```bash 
-yarn compile
+## Scripts
+
+### Compile Solidity contracts:
+
+```bash
+pnpm compile
 ```
 
-Run the test:
-```bash 
-yarn compile
+### Run tests:
+
+```bash
+pnpm test
+```
+
+### Deploy:
+
+For the deployments we use hardhat ignition
+
+```bash
+pnpm deploy:<network>
+```
+
+To add a new chain you need to add a new configuration inside [parameters](ignition%2Fparameters)
+and add a new script in the package.json
+
+You can deploy specific modules using hardhat ignition
+
+### Development:
+
+You can execute the following commands to run a local node and deploy
+the ENS Registry with the contracts from the protocol
+
+```bash
+pnpm node
+// In another terminal
+pnpm dev
 ```
 
 ## Contributing
@@ -62,6 +90,7 @@ yarn compile
 Please see our contribution [guidelines](CONTRIBUTING.md).
 
 ## Maintainers
+
 SCI is an open-source community project governed by a core team.
 
 ## License
