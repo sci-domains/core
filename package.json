@@ -22,20 +22,21 @@
   ],
   "homepage": "https://sci.domains/",
   "scripts": {
-    "prepublish": "pnpm build; pnpm lint; pnpm test:cov",
+    "prepublish": "pnpm build; pnpm lint; pnpm test:cov; ",
     "build": "pnpm compile; tsc",
     "compile": "hardhat compile",
     "node": "hardhat node",
-    "clean": "rm -r artifacts cache types dist publish",
+    "clean": "rm -r artifacts cache types dist",
     "test": "hardhat test",
     "test:cov": "hardhat coverage",
     "lint": "hardhat check; lint --fix .; prettier --write .",
     "dev": "pnpm setup:localhost; pnpm deploy:localhost",
     "setup:localhost": "hardhat run scripts/setup-localhost.ts --network localhost",
     "deploy": "hardhat ignition deploy ignition/modules/ProtocolModule.ts",
+    "save:deployments": "hardhat run scripts/build-deployment-address.ts",
     "deploy:sepolia": "pnpm run deploy --verify --network sepolia --parameters ignition/parameters/sepolia.json5",
     "deploy:localhost": "pnpm run deploy --network localhost --parameters ignition/parameters/sepolia.json5",
-    "prepare:package": "pnpm clean; pnpm compile; pnpm build; ts-node scripts/build-publish.ts"
+    "prepare:package": "pnpm clean; pnpm build; pnpm save:deployments"
   },
   "engines": {
     "node": ">=20",

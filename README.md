@@ -74,6 +74,12 @@ and add a new script in the package.json
 
 You can deploy specific modules using hardhat ignition
 
+After running the deployment, make sure to add the addresses to the deployment.json file
+
+```shell
+pnpm save:deployments
+```
+
 ### Development:
 
 You can execute the following commands to run a local node and deploy
