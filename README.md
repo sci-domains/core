@@ -25,13 +25,13 @@ For more information you can read the [Whitepaper](Whitepaper.pdf)
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/sci-protocol.git
+git clone git@github.com:sci-domains/core.git
 ```
 
 2. Navigate to the project directory:
 
 ```bash
-cd sci-protocol
+cd core
 ```
 
 3. Install and use node with nvm:
