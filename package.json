@@ -22,7 +22,7 @@
   ],
   "homepage": "https://sci.domains/",
   "scripts": {
-    "prepublish": "pnpm build; pnpm lint; pnpm test",
+    "prepublish": "pnpm build; pnpm lint; pnpm test:cov",
     "build": "pnpm compile; tsc",
     "compile": "hardhat compile",
     "node": "hardhat node",
