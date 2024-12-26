@@ -80,6 +80,20 @@ After running the deployment, make sure to add the addresses to the deployments.
 pnpm save:deployments
 ```
 
+### Publish:
+
+We use [changesets](https://www.npmjs.com/package/@changesets/cli) to manage the versioning and publishing of the packages
+
+First you need to create the changeset and then apply it
+```bash
+// Create a new changeset
+pnpm changeset
+// Apply the changeset
+pnpm changeset version
+```
+
+After the PR with the changes is merge we create a release in GitHub and the workflow will publish the package
+
 ### Development:
 
 You can execute the following commands to run a local node and deploy
