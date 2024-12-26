@@ -69,7 +69,7 @@ For the deployments we use hardhat ignition
 pnpm deploy:<network>
 ```
 
-To add a new chain you need to add a new configuration inside [parameters](ignition%2Fparameters)
+To add a new chain you need to add a new configuration inside [parameters](ignition/parameters)
 and add a new script in the package.json
 
 You can deploy specific modules using hardhat ignition
