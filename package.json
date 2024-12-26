@@ -26,7 +26,7 @@
     "build": "corepack pnpm compile; tsc",
     "compile": "hardhat compile",
     "node": "hardhat node",
-    "clean": "rm -r artifacts cache types dist",
+    "clean": "rm -rf artifacts cache types dist",
     "test": "hardhat test",
     "test:cov": "hardhat coverage",
     "lint:fail": "hardhat check; prettier --check .",
