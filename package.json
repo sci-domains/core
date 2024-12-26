@@ -7,7 +7,7 @@
     "./contracts/**/*.sol",
     "./artifacts/**/*.json",
     "./dist/types/**",
-    "deployments.json",
+    "deployments.ts",
     "README.md",
     "LICENSE.txt"
   ],

@@ -1,4 +1,4 @@
-import { readJson, writeJson, readdir } from 'fs-extra';
+import { readJson, writeFile, readdir } from 'fs-extra';
 import path from 'path';
 
 const EXCLUDE_CHAINS = ['31337'];
@@ -14,7 +14,7 @@ async function main() {
       .map((file) => file.split('-')[1]) // Extract the chain number
       .filter((chain) => !EXCLUDE_CHAINS.includes(chain)); // Exclude chains
 
-    const outputJson: { [key: string]: Object } = {};
+    const outputData: { [key: string]: Object } = {};
 
     for (const chain of validChains) {
       const deployedAddressesPath = path.join(
@@ -24,14 +24,18 @@ async function main() {
       );
 
       try {
-        outputJson[chain] = await readJson(deployedAddressesPath);
+        outputData[chain] = await readJson(deployedAddressesPath);
       } catch (error) {
         console.warn(`Skipping chain-${chain}: Failed to read deployed_addresses.json.`);
       }
     }
 
-    await writeJson('deployments.json', outputJson, { spaces: 2 });
-    console.log(`Created`);
+    // Convert the output data into a TypeScript file
+    const tsContent = `export const deployments = ${JSON.stringify(outputData, null, 2)};`;
+
+    // Write the TypeScript file
+    await writeFile('deployments.ts', tsContent);
+    console.log('Created deployments.ts');
   } catch (error) {
     console.error('An error occurred:', error);
   }
