@@ -31,7 +31,9 @@ async function main() {
     }
 
     // Convert the output data into a TypeScript file
-    const tsContent = `export const deployments = ${JSON.stringify(outputData, null, 2)};`;
+    const tsContent = `export const deployments = ${JSON.stringify(outputData, null, 2)
+      .replace(/"/g, "'")
+      .replace(/(?<=['}\]]),?\n/g, ',\n')};\n`;
 
     // Write the TypeScript file
     await writeFile('deployments.ts', tsContent);
