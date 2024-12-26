@@ -22,7 +22,7 @@
   ],
   "homepage": "https://sci.domains/",
   "scripts": {
-    "prepublish": "corepack pnpm prepare:publish; [[ -z $(git status --porcelain) ]] || exit 1",
+    "prepublish": "corepack pnpm clean; corepack pnpm build; corepack pnpm lint:fail; corepack pnpm test; corepack pnpm save:deployments",
     "build": "corepack pnpm compile; tsc",
     "compile": "hardhat compile",
     "node": "hardhat node",
@@ -36,8 +36,7 @@
     "deploy": "hardhat ignition deploy ignition/modules/ProtocolModule.ts",
     "save:deployments": "hardhat run scripts/build-deployment-address.ts",
     "deploy:sepolia": "corepack pnpm run deploy --verify --network sepolia --parameters ignition/parameters/sepolia.json5",
-    "deploy:localhost": "corepack pnpm run deploy --network localhost --parameters ignition/parameters/sepolia.json5",
-    "prepare:publish": "corepack pnpm clean; corepack pnpm build; corepack pnpm lint:fail; corepack pnpm test; corepack pnpm save:deployments"
+    "deploy:localhost": "corepack pnpm run deploy --network localhost --parameters ignition/parameters/sepolia.json5"
   },
   "engines": {
     "node": ">=20",
