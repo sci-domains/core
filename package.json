@@ -10,7 +10,9 @@
     "./contracts/**/*.sol",
     "./artifacts/**/*.json",
     "./dist/types/**",
-    "deployments.ts",
+    "./dist/deployments.js",
+    "./dist/deployments.d.ts.map",
+    "./dist/deployments.d.ts",
     "README.md",
     "LICENSE.txt"
   ],

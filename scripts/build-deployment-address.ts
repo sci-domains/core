@@ -32,14 +32,14 @@ async function main() {
 
     // Convert the output data into a TypeScript file
     const tsContent = `type DeploymentKeys =
-| 'ProxyModule#SCI'
-| 'SciRegistry#SciRegistry'
-| 'EnsRegistrar#EnsRegistrar'
-| 'PublicListVerifier#PublicListVerifier'
-| 'ProxyModule#TransparentUpgradeableProxy'
-| 'ProxyModule#ProxyAdmin'
-| 'SciModule#SCI'
-| 'SciRegstrar#SciRegistrar';
+  | 'ProxyModule#SCI'
+  | 'SciRegistry#SciRegistry'
+  | 'EnsRegistrar#EnsRegistrar'
+  | 'PublicListVerifier#PublicListVerifier'
+  | 'ProxyModule#TransparentUpgradeableProxy'
+  | 'ProxyModule#ProxyAdmin'
+  | 'SciModule#SCI'
+  | 'SciRegstrar#SciRegistrar';
 
 export const deployments: { [key: string]: { [key in DeploymentKeys]: string } } = ${JSON.stringify(
       outputData,
