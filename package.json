@@ -1,7 +1,7 @@
 {
   "name": "@secure-ci/core",
   "description": "Smart contracts for the Secure Contract Interaction protocol",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "license": "AGPL-3.0",
   "repository": {
     "url": "https://github.com/sci-domains/core"
