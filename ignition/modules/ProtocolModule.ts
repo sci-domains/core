@@ -3,7 +3,7 @@ import sciRegistryModule from './registry/SciRegistryModule';
 import ensRegistrarModule from './registrars/EnsRegistrarModule';
 import publicListVerifierModule from './verifiers/PublicListVerifierModule';
 import sciModule from './sci/SciModule';
-import sciRegistrarModule from "./registrars/SciRegistrarModule";
+import sciRegistrarModule from './registrars/SciRegistrarModule';
 
 /**
  * This is the second module that will be run, and it is also the only module exported from this file.
