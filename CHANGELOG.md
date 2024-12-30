@@ -1,5 +1,11 @@
 # @secure-ci/core
 
+## 0.0.20
+
+### Patch Changes
+
+- 05c9324: Fix deployment.ts build
+
 ## 0.0.19
 
 ### Patch Changes
