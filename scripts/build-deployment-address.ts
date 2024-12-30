@@ -31,8 +31,7 @@ async function main() {
     }
 
     // Convert the output data into a TypeScript file
-    const tsContent =
-`type DeploymentKeys =
+    const tsContent = `type DeploymentKeys =
 | 'ProxyModule#SCI'
 | 'SciRegistry#SciRegistry'
 | 'EnsRegistrar#EnsRegistrar'
