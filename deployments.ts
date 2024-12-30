@@ -1,4 +1,14 @@
-export const deployments = {
+type DeploymentKeys =
+| 'ProxyModule#SCI'
+| 'SciRegistry#SciRegistry'
+| 'EnsRegistrar#EnsRegistrar'
+| 'PublicListVerifier#PublicListVerifier'
+| 'ProxyModule#TransparentUpgradeableProxy'
+| 'ProxyModule#ProxyAdmin'
+| 'SciModule#SCI'
+| 'SciRegstrar#SciRegistrar';
+
+export const deployments: { [key: string]: { [key: DeploymentKeys]: string } } = {
   '10': {
     'ProxyModule#SCI': '0xe324A37594561b3Bfe3f535Aa7108224a703710F',
     'SciRegistry#SciRegistry': '0xaDD75Aecd98f0ADAD899729c88BfED4f8951c02A',
