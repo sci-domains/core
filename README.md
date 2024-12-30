@@ -1,4 +1,4 @@
-# Secure Contract Interaction V1 (SCI)
+# Secure Contract Interaction (SCI)
 
 The Secure Contract Interaction (SCI) Protocol is an open-source initiative aimed at enhancing security within the web3 ecosystem. It introduces a decentralized verification system allowing domain owners to authorize specific smart contracts to interact with their domains, thus minimizing risks associated with malicious contracts.
 
