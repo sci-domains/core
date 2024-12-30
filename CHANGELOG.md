@@ -1,5 +1,12 @@
 # @secure-ci/core
 
+## 0.0.19
+
+### Patch Changes
+
+- e7e912b: Deploy Sepolia
+- f2179c0: Fix dpeloyment type
+
 ## 0.0.18
 
 ### Patch Changes
