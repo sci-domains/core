@@ -84,16 +84,7 @@ pnpm save:deployments
 
 We use [changesets](https://www.npmjs.com/package/@changesets/cli) to manage the versioning and publishing of the packages
 
-First you need to create the changeset and then apply it
-
-```bash
-// Create a new changeset
-pnpm changeset
-// Apply the changeset
-pnpm changeset version
-```
-
-After the PR with the changes is merge we create a release in GitHub and the workflow will publish the package
+Publishing and versioning is done automatically by the CI/CD pipeline
 
 ### Development:
 

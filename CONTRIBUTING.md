@@ -16,4 +16,6 @@ You can run `pnpm lint` for the linter and check the [solidity style guides](htt
 Also, even though we do CI testing,
 please test your code and ensure that it builds locally before submitting a pull request.
 
+After you create your change you can run `pnpm changeset` to create the changelog
+
 Thank you for your help!
