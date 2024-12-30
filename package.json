@@ -46,6 +46,10 @@
     "node": ">=20",
     "pnpm": "9"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
     "@ensdomains/ens-contracts": "1.2.2",
     "@openzeppelin/contracts": "5.1.0",
