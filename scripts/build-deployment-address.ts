@@ -41,7 +41,7 @@ async function main() {
 | 'SciModule#SCI'
 | 'SciRegstrar#SciRegistrar';
 
-export const deployments: { [key: string]: { [key: DeploymentKeys]: string } } = ${JSON.stringify(
+export const deployments: { [key: string]: { [key in DeploymentKeys]: string } } = ${JSON.stringify(
       outputData,
       null,
       2,
