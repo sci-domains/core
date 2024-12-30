@@ -1,11 +1,16 @@
-name: Publish Package to npmjs
+name: Pre release NPM package
 on:
   release:
-    types: [released]
+    types: [prereleased]
 
 jobs:
-  release:
-    name: Release
+  prereleased:
+    name: Pre released
+
+    permissions:
+      contents: write
+      pull-requests: write
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,8 +28,7 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-
-      - run: npm publish --provenance --access public
-        name: Publish to npm
+      - name: Changeset PR
+        uses: changesets/action@v1
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
