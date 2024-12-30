@@ -31,12 +31,10 @@ async function main() {
 
   // Add the pk as domain owner
   if (!(await sciRegistrar.hasRole(await sciRegistrar.REGISTER_DOMAIN_ROLE(), safeAddress))) {
-    txs.push(
-      await sciRegistrar.grantRole.populateTransaction(
+    await sciRegistrar.grantRole(
         await sciRegistrar.REGISTER_DOMAIN_ROLE(),
         safeAddress,
-      ),
-    );
+    )
   }
 
   const addressEntries = Object.entries(ADDRESS_TO_VERIFY);
