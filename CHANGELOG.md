@@ -1,5 +1,12 @@
 # @secure-ci/core
 
+## 0.0.18
+
+### Patch Changes
+
+- f1df33e: Fix deployments types
+- f73719e: Fix linting
+
 ## 0.0.17
 
 ### Patch Changes
