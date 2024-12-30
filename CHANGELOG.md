@@ -1,5 +1,11 @@
 # @secure-ci/core
 
+## 0.0.17
+
+### Patch Changes
+
+- 2f8fe61: Use changeset publish
+
 ## 0.0.16
 
 ### Patch Changes
