@@ -3,6 +3,9 @@
   "description": "Smart contracts for the Secure Contract Interaction protocol",
   "version": "0.0.15",
   "license": "AGPL-3.0",
+  "repository": {
+    "url": "https://github.com/sci-domains/core"
+  },
   "files": [
     "./contracts/**/*.sol",
     "./artifacts/**/*.json",
