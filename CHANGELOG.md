@@ -1,5 +1,11 @@
 # @secure-ci/core
 
+## 0.0.16
+
+### Patch Changes
+
+- ba0970b: Publish with pnpm instead of npm
+
 ## 0.0.15
 
 ### Patch Changes
