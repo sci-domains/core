@@ -1,0 +1,6 @@
+{
+  EnsRegistrar: {
+    // Optimism doesn't have an ENS Registry
+    ensRegistryAddress: '0x0000000000000000000000000000000000000000',
+  },
+}
