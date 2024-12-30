@@ -3,6 +3,7 @@ import sciRegistryModule from './registry/SciRegistryModule';
 import ensRegistrarModule from './registrars/EnsRegistrarModule';
 import publicListVerifierModule from './verifiers/PublicListVerifierModule';
 import sciModule from './sci/SciModule';
+import sciRegistrarModule from "./registrars/SciRegistrarModule";
 
 /**
  * This is the second module that will be run, and it is also the only module exported from this file.
@@ -11,7 +12,7 @@ import sciModule from './sci/SciModule';
 export const ProtocolModule = buildModule('ProtocolModule', (m) => {
   m.useModule(sciRegistryModule);
   m.useModule(ensRegistrarModule);
-  m.useModule(sciRegistryModule);
+  m.useModule(sciRegistrarModule);
   m.useModule(publicListVerifierModule);
   m.useModule(sciModule);
   return {};

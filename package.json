@@ -36,6 +36,7 @@
     "deploy": "hardhat ignition deploy ignition/modules/ProtocolModule.ts",
     "save:deployments": "hardhat run scripts/build-deployment-address.ts",
     "deploy:sepolia": "corepack pnpm run deploy --verify --network sepolia --parameters ignition/parameters/sepolia.json5",
+    "deploy:optimsim": "corepack pnpm run deploy --verify --network optimism --parameters ignition/parameters/optimism.json5",
     "deploy:localhost": "corepack pnpm run deploy --network localhost --parameters ignition/parameters/sepolia.json5"
   },
   "engines": {

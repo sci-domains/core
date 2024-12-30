@@ -30,6 +30,11 @@ const config: HardhatUserConfig = {
       chainId: 1,
       url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL),
     },
+    optimism: {
+      chainId: 10,
+      url: getUrl(process.env.OPTIMISM_PROVIDER_URL),
+      ledgerAccounts: [process.env.ADDRESS!],
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY!,
