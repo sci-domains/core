@@ -23,7 +23,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-
       - run: npm publish --provenance --access public
         name: Publish to npm
         env:
