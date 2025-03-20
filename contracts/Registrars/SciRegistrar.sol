@@ -29,7 +29,7 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
     constructor(
         address _sciRegistryAddress,
         uint48 initialDelay
-    ) AccessControlDefaultAdminRules(initialDelay, _msgSender()) {
+    ) AccessControlDefaultAdminRules(initialDelay, msg.sender) {
         registry = ISciRegistry(_sciRegistryAddress);
     }
 

@@ -3,7 +3,6 @@ pragma solidity 0.8.28;
 
 import {IVerifier} from './IVerifier.sol';
 import {DomainManager} from '../DomainMangager/DomainManager.sol';
-import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
 /**
  * @title PublicListVerifier
@@ -14,7 +13,7 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
  * this contract is verified for all chains for that domain.
  * @custom:security-contact security@sci.domains
  */
-contract PublicListVerifier is IVerifier, Context, DomainManager {
+contract PublicListVerifier is IVerifier, DomainManager {
     uint256 private constant MAX_INT = 2 ** 256 - 1;
 
     // Domain hash -> contract address -> chain id -> true/false.
@@ -54,12 +53,12 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
         bytes32 domainHash,
         address[] calldata contractAddresses,
         uint256[][] calldata chainIds
-    ) external onlyDomainOwner(_msgSender(), domainHash) {
+    ) external onlyDomainOwner(msg.sender, domainHash) {
         for (uint256 i; i < contractAddresses.length; ) {
             for (uint256 j; j < chainIds[i].length; ) {
                 verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = block
                     .timestamp;
-                emit AddressAdded(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
+                emit AddressAdded(domainHash, chainIds[i][j], contractAddresses[i], msg.sender);
                 unchecked {
                     ++j;
                 }
@@ -81,11 +80,11 @@ contract PublicListVerifier is IVerifier, Context, DomainManager {
         bytes32 domainHash,
         address[] calldata contractAddresses,
         uint256[][] calldata chainIds
-    ) external onlyDomainOwner(_msgSender(), domainHash) {
+    ) external onlyDomainOwner(msg.sender, domainHash) {
         for (uint256 i; i < contractAddresses.length; ) {
             for (uint256 j; j < chainIds[i].length; ++j) {
                 verifiedContracts[domainHash][contractAddresses[i]][chainIds[i][j]] = 0;
-                emit AddressRemoved(domainHash, chainIds[i][j], contractAddresses[i], _msgSender());
+                emit AddressRemoved(domainHash, chainIds[i][j], contractAddresses[i], msg.sender);
                 unchecked {
                     ++j;
                 }

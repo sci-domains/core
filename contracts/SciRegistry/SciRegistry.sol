@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.28;
 
-import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 import {Pausable} from '@openzeppelin/contracts/utils/Pausable.sol';
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
@@ -15,7 +14,6 @@ import {DomainManager} from '../DomainMangager/DomainManager.sol';
  */
 contract SciRegistry is
     ISciRegistry,
-    Context,
     AccessControlDefaultAdminRules,
     DomainManager,
     Pausable
@@ -53,7 +51,7 @@ contract SciRegistry is
      */
     constructor(
         uint48 initialDelay
-    ) AccessControlDefaultAdminRules(initialDelay, _msgSender()) DomainManager(address(this)) {
+    ) AccessControlDefaultAdminRules(initialDelay, msg.sender) DomainManager(address(this)) {
         _setRoleAdmin(REGISTRAR_ROLE, REGISTRAR_MANAGER_ROLE);
     }
 
@@ -106,7 +104,7 @@ contract SciRegistry is
     function setVerifier(
         bytes32 domainHash,
         IVerifier verifier
-    ) external onlyDomainOwner(_msgSender(), domainHash) {
+    ) external onlyDomainOwner(msg.sender, domainHash) {
         _setVerifier(domainHash, verifier);
     }
 
@@ -161,7 +159,7 @@ contract SciRegistry is
         bytes32 domainHash
     ) private onlyRole(REGISTRAR_ROLE) whenNotPaused {
         _setDomainOwner(domainHash, owner);
-        emit DomainRegistered(_msgSender(), owner, domainHash);
+        emit DomainRegistered(msg.sender, owner, domainHash);
     }
 
     /**
@@ -177,7 +175,7 @@ contract SciRegistry is
         IVerifier oldVerifier = domainHashToRecord[domainHash].verifier;
         domainHashToRecord[domainHash].verifier = verifier;
         domainHashToRecord[domainHash].verifierSetTime = block.timestamp;
-        emit VerifierSet(_msgSender(), domainHash, oldVerifier, verifier);
+        emit VerifierSet(msg.sender, domainHash, oldVerifier, verifier);
     }
 
     /**
@@ -188,6 +186,6 @@ contract SciRegistry is
         address oldOwner = domainHashToRecord[domainHash].owner;
         domainHashToRecord[domainHash].owner = owner;
         domainHashToRecord[domainHash].ownerSetTime = block.timestamp;
-        emit OwnerSet(_msgSender(), domainHash, oldOwner, owner);
+        emit OwnerSet(msg.sender, domainHash, oldOwner, owner);
     }
 }

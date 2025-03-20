@@ -4,7 +4,6 @@ pragma solidity 0.8.28;
 import {ENS} from '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
 import {ISciRegistry} from '../SciRegistry/ISciRegistry.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
-import {Context} from '@openzeppelin/contracts/utils/Context.sol';
 
 /**
  * @title EnsRegistrar
@@ -14,7 +13,7 @@ import {Context} from '@openzeppelin/contracts/utils/Context.sol';
  * by verifying the domain ownership through the ENS contract.
  * @custom:security-contact security@sci.domains
  */
-contract EnsRegistrar is Context {
+contract EnsRegistrar {
     ENS public immutable ensRegistry;
     ISciRegistry public immutable registry;
 
@@ -73,8 +72,8 @@ contract EnsRegistrar is Context {
     function registerDomainWithVerifier(
         bytes32 domainHash,
         IVerifier verifier
-    ) external onlyEnsOwner(_msgSender(), domainHash) {
-        registry.registerDomainWithVerifier(_msgSender(), domainHash, verifier);
+    ) external onlyEnsOwner(msg.sender, domainHash) {
+        registry.registerDomainWithVerifier(msg.sender, domainHash, verifier);
     }
 
     /**
