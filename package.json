@@ -38,11 +38,15 @@
     "lint": "hardhat check; prettier --write .",
     "dev": "corepack pnpm setup:localhost; pnpm deploy:localhost",
     "setup:localhost": "hardhat run scripts/setup-localhost.ts --network localhost",
-    "deploy": "hardhat ignition deploy ignition/modules/ProtocolModule.ts",
+    "deploy:protocol": "hardhat ignition deploy ignition/modules/ProtocolModule.ts",
+    "deploy:satelite": "hardhat ignition deploy ignition/modules/SateliteModule.ts",
     "save:deployments": "hardhat run scripts/build-deployment-address.ts",
-    "deploy:sepolia": "corepack pnpm run deploy --verify --network sepolia --parameters ignition/parameters/sepolia.json5",
-    "deploy:optimsim": "corepack pnpm run deploy --verify --network optimism --parameters ignition/parameters/optimism.json5",
-    "deploy:localhost": "corepack pnpm run deploy --network localhost --parameters ignition/parameters/sepolia.json5"
+    "deploy:sepolia": "corepack pnpm run deploy:satelite --verify --network sepolia --parameters ignition/parameters/sepolia.json5",
+    "deploy:ethereum": "corepack pnpm run deploy:satelite --verify --network ethereum --parameters ignition/parameters/ethereum.json5",
+    "deploy:optimsim": "corepack pnpm run deploy:protocol --verify --network optimism --parameters ignition/parameters/optimism.json5",
+    "deploy:sepolia-optimsim": "corepack pnpm run deploy:protocol --verify --network optimism-sepolia --parameters ignition/parameters/optimism-sepolia.json5",
+    "deploy:localhost:protocol": "corepack pnpm run deploy:protocol --network localhost --parameters ignition/parameters/sepolia.json5",
+    "deploy:localhost:satelite": "corepack pnpm run deploy:protocol --network localhost --parameters ignition/parameters/sepolia.json5"
   },
   "engines": {
     "node": ">=20",

@@ -2,5 +2,12 @@
   EnsRegistrar: {
     // The address of the ENS Registry after running setup-localhost.ts in a new node
     ensRegistryAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+    // The address of the Mock
+    l1CrossDomainMessangerAddress: '',
+    sciRegistryAddress: '',
+  },
+  SuperChainTargetRegistrar: {
+    // The address of the Mock
+    l2CrossDomainMessangerAddress: '',
   },
 }

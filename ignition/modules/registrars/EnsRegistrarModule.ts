@@ -4,20 +4,17 @@ import { EnsRegistrar, SciRegistry } from '../../../types';
 import { IgnitionModuleBuilder } from '@nomicfoundation/ignition-core';
 
 export const EnsRegistrarModule = buildModule('EnsRegistrar', (m: IgnitionModuleBuilder) => {
-  const { sciRegistry } = m.useModule(SciRegistryModule);
-
   const ensRegistry = m.getParameter('ensRegistryAddress');
+  const l1CrossDomainMessangerAddress = m.getParameter('l1CrossDomainMessangerAddress');
+  const sciRegistryAddress = m.getParameter('sciRegistryAddress');
 
-  const ensRegistrar = m.contract('EnsRegistrar', [ensRegistry, sciRegistry]);
+  const ensRegistrar = m.contract('EnsRegistrar', [ensRegistry, sciRegistryAddress, l1CrossDomainMessangerAddress]);
 
-  m.call(sciRegistry, 'grantRole', [m.staticCall(sciRegistry, 'REGISTRAR_ROLE'), ensRegistrar]);
-
-  return { ensRegistrar, sciRegistry };
+  return { ensRegistrar };
 });
 
 export type EnsRegistrarModuleReturnType = Promise<{
   ensRegistrar: EnsRegistrar;
-  sciRegistry: SciRegistry;
 }>;
 
 export default EnsRegistrarModule;
