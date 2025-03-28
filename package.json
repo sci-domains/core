@@ -33,7 +33,7 @@
     "node": "hardhat node",
     "clean": "rm -rf artifacts cache types dist",
     "test": "hardhat test",
-    "test:cov": "hardhat coverage",
+    "test:cov": " hardhat clean && hardhat coverage",
     "lint:fail": "hardhat check; prettier --check .",
     "lint": "hardhat check; prettier --write .",
     "dev": "corepack pnpm setup:localhost; pnpm deploy:localhost",

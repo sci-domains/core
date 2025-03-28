@@ -8,9 +8,17 @@ contract SuperChainAccessControlDefaultAdminRules is AccessControlDefaultAdminRu
 
     ICrossDomainMessanger public immutable crossDomainMessanger;
 
+    error InvalidMessageSender(address account);
+
     modifier onlyCrossChainRole(bytes32 role) {
-        require(msg.sender == address(crossDomainMessanger), 'SuperChainRegistrar: sender must be the OP Bridge');
-        require(hasRole(role, crossDomainMessanger.xDomainMessageSender()), 'SuperChainRegistrar: cross domain sender must be an admin to grant');
+        if(msg.sender != address(crossDomainMessanger)) {
+            revert InvalidMessageSender(msg.sender);
+        }
+        
+        address account = crossDomainMessanger.xDomainMessageSender();
+        if (!hasRole(role, account)) {
+            revert AccessControlUnauthorizedAccount(account, role);
+        }
         _;
     }
 

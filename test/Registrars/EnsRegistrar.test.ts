@@ -3,12 +3,12 @@ import { expect } from 'chai';
 import { ethers, ignition } from 'hardhat';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { keccak256, namehash, toUtf8Bytes } from 'ethers';
-import { EnsRegistrar, SciRegistry } from '../../types';
+import { EnsRegistrar, SuperChainTargetRegistrar__factory } from '../../types';
 import {
   EnsRegistrarModule,
   EnsRegistrarModuleReturnType,
 } from '../../ignition/modules/registrars/EnsRegistrarModule';
-import SciRegistrarModule, { SciRegistrarModuleReturnType } from '../../ignition/modules/registrars/SciRegistrarModule';
+import { SuperChainTargetRegistrarInterface } from '../../types/contracts/Registrars/SuperChainTargetRegistrar';
 
 const NON_EXISTING_DOMAIN_HASH =
   '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
@@ -17,13 +17,14 @@ const DOMAIN_HASH = '0xfcec0ff58c10be0e399a3a51186968513cc3a4c572a51d688ff338b3f
 describe('EnsRegistrar', function () {
   let owner: HardhatEthersSigner;
   let xDomainMessageSender: HardhatEthersSigner;
+  let superChainTargetRegistrar: HardhatEthersSigner;
+  let superChainTargetRegistrarInterface: SuperChainTargetRegistrarInterface;
   let addresses: HardhatEthersSigner[];
   let ensRegistrar: EnsRegistrar;
   let mockCrossDomainMessanger: MockCrossDomainMessanger;
-  let sciRegistry: SciRegistry;
 
   beforeEach(async () => {
-    [owner, xDomainMessageSender, ...addresses] = await ethers.getSigners();
+    [owner, superChainTargetRegistrar, xDomainMessageSender, ...addresses] = await ethers.getSigners();
 
     // ENS Contracts Deployment
     const EnsFactory = await ethers.getContractFactory('ENSRegistry');
@@ -33,6 +34,8 @@ describe('EnsRegistrar', function () {
     const MockCrossDomainMessangerFactory = await ethers.getContractFactory('MockCrossDomainMessanger');
     mockCrossDomainMessanger = await MockCrossDomainMessangerFactory.deploy(xDomainMessageSender, false);
 
+    superChainTargetRegistrarInterface = SuperChainTargetRegistrar__factory.createInterface();
+
     // Set ENS nodes for testing
     await ens.setSubnodeOwner(
       '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -41,15 +44,12 @@ describe('EnsRegistrar', function () {
     );
     await ens.setSubnodeOwner(namehash('eth'), keccak256(toUtf8Bytes('a')), owner.address);
 
-    // SCI Contracts
-    ({ sciRegistry } = await (ignition.deploy(SciRegistrarModule, {}) as unknown as SciRegistrarModuleReturnType));
-
     ({ ensRegistrar } = await (ignition.deploy(EnsRegistrarModule, {
       parameters: {
         EnsRegistrar: {
           ensRegistryAddress: ens.target as string,
           l1CrossDomainMessangerAddress: mockCrossDomainMessanger.target as string,
-          sciRegistryAddress: sciRegistry.target as string,
+          sciRegistryAddress: superChainTargetRegistrar.address,
         },
       },
     }) as unknown as EnsRegistrarModuleReturnType));
@@ -88,8 +88,8 @@ describe('EnsRegistrar', function () {
         mockCrossDomainMessanger, 
         'MessageSent'
       ).withArgs(
-        sciRegistry.target,
-        sciRegistry.interface.encodeFunctionData("registerDomain", [owner.address, DOMAIN_HASH]), 
+        superChainTargetRegistrar.address,
+        superChainTargetRegistrarInterface.encodeFunctionData("registerDomain", [owner.address, DOMAIN_HASH]), 
         ensRegistrar.REGISTER_DOMAIN_GAS_LIMIT()
       );
     });
@@ -100,8 +100,8 @@ describe('EnsRegistrar', function () {
         mockCrossDomainMessanger, 
         'MessageSent'
       ).withArgs(
-        sciRegistry.target, 
-        sciRegistry.interface.encodeFunctionData("registerDomainWithVerifier", [owner.address, DOMAIN_HASH, verifier]), 
+        superChainTargetRegistrar.address, 
+        superChainTargetRegistrarInterface.encodeFunctionData("registerDomainWithVerifier", [owner.address, DOMAIN_HASH, verifier]), 
         ensRegistrar.REGISTER_DOMAIN_WITH_VERIFIER_GAS_LIMIT()
       );
     });

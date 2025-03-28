@@ -1,6 +1,6 @@
 import { buildModule } from '@nomicfoundation/hardhat-ignition/modules';
 import { SciRegistryModule } from '../registry/SciRegistryModule';
-import { EnsRegistrar, SciRegistry } from '../../../types';
+import { EnsRegistrar, SciRegistry, SuperChainTargetRegistrar } from '../../../types';
 import { IgnitionModuleBuilder } from '@nomicfoundation/ignition-core';
 
 export const SuperChainTargetRegistrarModule = buildModule('SuperChainTargetRegistrar', (m: IgnitionModuleBuilder) => {
@@ -15,8 +15,8 @@ export const SuperChainTargetRegistrarModule = buildModule('SuperChainTargetRegi
   return { superChainTargetRegistrar, sciRegistry };
 });
 
-export type EnsRegistrarModuleReturnType = Promise<{
-  ensRegistrar: EnsRegistrar;
+export type SuperChainTargetRegistrarModuleReturnType = Promise<{
+  superChainTargetRegistrar: SuperChainTargetRegistrar;
   sciRegistry: SciRegistry;
 }>;
 

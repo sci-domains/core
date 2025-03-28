@@ -17,8 +17,20 @@ contract MockCrossDomainMessanger is ICrossDomainMessanger {
 
     function sendMessage(address target, bytes calldata _message, int32 gasLimit) external {
         if(shouldSendMessage) {
-            (bool success, ) = target.call{gas: uint256(uint32(gasLimit))}(_message);
-            require(success, "Call failed");
+            (bool success, bytes memory result) = target.call{gas: uint256(uint32(gasLimit))}(_message);
+
+            if (!success) {
+                // Bubble up the original revert reason if present
+                if (result.length > 0) {
+                    // The easiest way to bubble the reason is using assembly
+                    assembly {
+                        let returndata_size := mload(result)
+                        revert(add(result, 32), returndata_size)
+                    }
+                } else {
+                    revert("Call failed without reason");
+                }
+            }
         }
         emit MessageSent(target, _message, gasLimit);
     }
