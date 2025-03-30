@@ -2,7 +2,6 @@
 pragma solidity 0.8.28;
 
 import {ENS} from '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
-import {ISciRegistry} from '../SciRegistry/ISciRegistry.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
 import {SuperChainSourceRegistrar} from './SuperChainSourceRegistrar.sol';
 
@@ -41,7 +40,11 @@ contract EnsRegistrar is SuperChainSourceRegistrar {
      * @param _ensRegistryAddress Address of the ENS Registry contract.
      * @param _sciRegistryAddress Address of the SCI Registry contract.
      */
-    constructor(address _ensRegistryAddress, address _sciRegistryAddress, address _crossChainDomainMessagnger) SuperChainSourceRegistrar(_crossChainDomainMessagnger, _sciRegistryAddress) {
+    constructor(
+        address _ensRegistryAddress,
+        address _sciRegistryAddress,
+        address _crossChainDomainMessagnger
+    ) SuperChainSourceRegistrar(_crossChainDomainMessagnger, _sciRegistryAddress) {
         ensRegistry = ENS(_ensRegistryAddress);
     }
 

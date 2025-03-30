@@ -33,7 +33,6 @@ describe('SciRegistrar', function () {
 
       expect(await sciRegistry.isDomainOwner(DOMAIN_HASH, domainOwner.address)).to.be.true;
       expect(await sciRegistry.domainVerifier(DOMAIN_HASH)).to.equal(verifier);
-
     });
 
     it('It should register a domain if it has the REGISTER_DOMAIN_ROLE role', async function () {
@@ -44,12 +43,18 @@ describe('SciRegistrar', function () {
 
     it("It should reveret with AccessControlUnauthorizedAccount if it doesn't have the REGISTER_DOMAIN_ROLE role", async function () {
       await sciRegistrar.revokeRole(await sciRegistrar.REGISTER_DOMAIN_ROLE(), user.address);
-      
+
       await expect(sciRegistrar.connect(user).registerDomain(domainOwner.address, DOMAIN_HASH))
         .to.revertedWithCustomError(sciRegistrar, 'AccessControlUnauthorizedAccount')
         .withArgs(user.address, await sciRegistrar.REGISTER_DOMAIN_ROLE());
 
-      await expect(sciRegistrar.registerDomainWithVerifier(domainOwner.address, DOMAIN_HASH, ethers.ZeroAddress))
+      await expect(
+        sciRegistrar.registerDomainWithVerifier(
+          domainOwner.address,
+          DOMAIN_HASH,
+          ethers.ZeroAddress,
+        ),
+      )
         .to.revertedWithCustomError(sciRegistrar, 'AccessControlUnauthorizedAccount')
         .withArgs(user.address, await sciRegistrar.REGISTER_DOMAIN_ROLE());
     });

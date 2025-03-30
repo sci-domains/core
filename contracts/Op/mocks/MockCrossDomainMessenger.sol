@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.28;
 
-import {ICrossDomainMessanger} from "../ICrossDomainMessanger.sol";
+import {ICrossDomainMessanger} from '../ICrossDomainMessanger.sol';
 
-contract MockCrossDomainMessanger is ICrossDomainMessanger {
+contract MockCrossDomainMessenger is ICrossDomainMessanger {
     address private xDomainMessageSenderAddress;
 
     bool public shouldSendMessage;
@@ -16,8 +16,10 @@ contract MockCrossDomainMessanger is ICrossDomainMessanger {
     }
 
     function sendMessage(address target, bytes calldata _message, int32 gasLimit) external {
-        if(shouldSendMessage) {
-            (bool success, bytes memory result) = target.call{gas: uint256(uint32(gasLimit))}(_message);
+        if (shouldSendMessage) {
+            (bool success, bytes memory result) = target.call{gas: uint256(uint32(gasLimit))}(
+                _message
+            );
 
             if (!success) {
                 // Bubble up the original revert reason if present
@@ -28,7 +30,7 @@ contract MockCrossDomainMessanger is ICrossDomainMessanger {
                         revert(add(result, 32), returndata_size)
                     }
                 } else {
-                    revert("Call failed without reason");
+                    revert('Call failed without reason');
                 }
             }
         }

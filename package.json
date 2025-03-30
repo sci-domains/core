@@ -45,8 +45,8 @@
     "deploy:ethereum": "corepack pnpm run deploy:satelite --verify --network ethereum --parameters ignition/parameters/ethereum.json5",
     "deploy:optimsim": "corepack pnpm run deploy:protocol --verify --network optimism --parameters ignition/parameters/optimism.json5",
     "deploy:sepolia-optimsim": "corepack pnpm run deploy:protocol --verify --network optimism-sepolia --parameters ignition/parameters/optimism-sepolia.json5",
-    "deploy:localhost:protocol": "corepack pnpm run deploy:protocol --network localhost --parameters ignition/parameters/sepolia.json5",
-    "deploy:localhost:satelite": "corepack pnpm run deploy:protocol --network localhost --parameters ignition/parameters/sepolia.json5"
+    "deploy:localhost:protocol": "corepack pnpm run deploy:protocol --network localhost --parameters ignition/parameters/localhost.json5",
+    "deploy:localhost:satelite": "corepack pnpm run deploy:satelite --network localhost --parameters ignition/parameters/localhost.json5"
   },
   "engines": {
     "node": ">=20",

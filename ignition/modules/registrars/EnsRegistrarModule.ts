@@ -8,7 +8,11 @@ export const EnsRegistrarModule = buildModule('EnsRegistrar', (m: IgnitionModule
   const l1CrossDomainMessangerAddress = m.getParameter('l1CrossDomainMessangerAddress');
   const sciRegistryAddress = m.getParameter('sciRegistryAddress');
 
-  const ensRegistrar = m.contract('EnsRegistrar', [ensRegistry, sciRegistryAddress, l1CrossDomainMessangerAddress]);
+  const ensRegistrar = m.contract('EnsRegistrar', [
+    ensRegistry,
+    sciRegistryAddress,
+    l1CrossDomainMessangerAddress,
+  ]);
 
   return { ensRegistrar };
 });

@@ -6,33 +6,22 @@ import {IVerifier} from '../Verifiers/IVerifier.sol';
 import {ICrossDomainMessanger} from '../Op//ICrossDomainMessanger.sol';
 
 abstract contract SuperChainSourceRegistrar {
-
     ICrossDomainMessanger public immutable crossDomainMessanger;
     address public targetRegistrar;
-    
+
     // TODO: Verify gas limit
     int32 public constant REGISTER_DOMAIN_GAS_LIMIT = 1000000;
     int32 public constant REGISTER_DOMAIN_WITH_VERIFIER_GAS_LIMIT = 1500000;
 
-    constructor(
-        address _crossDomainMessanger,
-        address _targetRegistrar
-    ) {
+    constructor(address _crossDomainMessanger, address _targetRegistrar) {
         crossDomainMessanger = ICrossDomainMessanger(_crossDomainMessanger);
         targetRegistrar = _targetRegistrar;
     }
 
-    function _registerDomainCrossChain(
-        address owner,
-        bytes32 domainHash
-    ) internal {
+    function _registerDomainCrossChain(address owner, bytes32 domainHash) internal {
         crossDomainMessanger.sendMessage(
             targetRegistrar,
-            abi.encodeWithSelector(
-                ISciRegistry.registerDomain.selector,
-                owner,
-                domainHash
-            ),
+            abi.encodeWithSelector(ISciRegistry.registerDomain.selector, owner, domainHash),
             REGISTER_DOMAIN_GAS_LIMIT
         );
     }

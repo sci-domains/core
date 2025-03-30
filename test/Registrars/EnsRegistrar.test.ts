@@ -1,4 +1,4 @@
-import { MockCrossDomainMessanger } from './../../types/contracts/Op/mocks/MockCrossDomainMessanger';
+import { MockCrossDomainMessenger } from '../../types';
 import { expect } from 'chai';
 import { ethers, ignition } from 'hardhat';
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
@@ -21,18 +21,24 @@ describe('EnsRegistrar', function () {
   let superChainTargetRegistrarInterface: SuperChainTargetRegistrarInterface;
   let addresses: HardhatEthersSigner[];
   let ensRegistrar: EnsRegistrar;
-  let mockCrossDomainMessanger: MockCrossDomainMessanger;
+  let MockCrossDomainMessenger: MockCrossDomainMessenger;
 
   beforeEach(async () => {
-    [owner, superChainTargetRegistrar, xDomainMessageSender, ...addresses] = await ethers.getSigners();
+    [owner, superChainTargetRegistrar, xDomainMessageSender, ...addresses] =
+      await ethers.getSigners();
 
     // ENS Contracts Deployment
     const EnsFactory = await ethers.getContractFactory('ENSRegistry');
     const ens = await EnsFactory.deploy();
 
     // ENS Contracts Deployment
-    const MockCrossDomainMessangerFactory = await ethers.getContractFactory('MockCrossDomainMessanger');
-    mockCrossDomainMessanger = await MockCrossDomainMessangerFactory.deploy(xDomainMessageSender, false);
+    const MockCrossDomainMessengerFactory = await ethers.getContractFactory(
+      'MockCrossDomainMessenger',
+    );
+    MockCrossDomainMessenger = await MockCrossDomainMessengerFactory.deploy(
+      xDomainMessageSender,
+      false,
+    );
 
     superChainTargetRegistrarInterface = SuperChainTargetRegistrar__factory.createInterface();
 
@@ -48,7 +54,7 @@ describe('EnsRegistrar', function () {
       parameters: {
         EnsRegistrar: {
           ensRegistryAddress: ens.target as string,
-          l1CrossDomainMessangerAddress: mockCrossDomainMessanger.target as string,
+          l1CrossDomainMessangerAddress: MockCrossDomainMessenger.target as string,
           sciRegistryAddress: superChainTargetRegistrar.address,
         },
       },
@@ -84,26 +90,31 @@ describe('EnsRegistrar', function () {
     });
 
     it('It should register a domain if it is the domain owner', async function () {
-      await expect(ensRegistrar.registerDomain(owner, DOMAIN_HASH)).to.emit(
-        mockCrossDomainMessanger, 
-        'MessageSent'
-      ).withArgs(
-        superChainTargetRegistrar.address,
-        superChainTargetRegistrarInterface.encodeFunctionData("registerDomain", [owner.address, DOMAIN_HASH]), 
-        ensRegistrar.REGISTER_DOMAIN_GAS_LIMIT()
-      );
+      await expect(ensRegistrar.registerDomain(owner, DOMAIN_HASH))
+        .to.emit(MockCrossDomainMessenger, 'MessageSent')
+        .withArgs(
+          superChainTargetRegistrar.address,
+          superChainTargetRegistrarInterface.encodeFunctionData('registerDomain', [
+            owner.address,
+            DOMAIN_HASH,
+          ]),
+          ensRegistrar.REGISTER_DOMAIN_GAS_LIMIT(),
+        );
     });
 
     it('It should register a domain with verifier if it is the domain owner', async function () {
       const verifier = addresses[0].address;
-      await expect(ensRegistrar.connect(owner).registerDomainWithVerifier(DOMAIN_HASH, verifier)).to.emit(
-        mockCrossDomainMessanger, 
-        'MessageSent'
-      ).withArgs(
-        superChainTargetRegistrar.address, 
-        superChainTargetRegistrarInterface.encodeFunctionData("registerDomainWithVerifier", [owner.address, DOMAIN_HASH, verifier]), 
-        ensRegistrar.REGISTER_DOMAIN_WITH_VERIFIER_GAS_LIMIT()
-      );
+      await expect(ensRegistrar.connect(owner).registerDomainWithVerifier(DOMAIN_HASH, verifier))
+        .to.emit(MockCrossDomainMessenger, 'MessageSent')
+        .withArgs(
+          superChainTargetRegistrar.address,
+          superChainTargetRegistrarInterface.encodeFunctionData('registerDomainWithVerifier', [
+            owner.address,
+            DOMAIN_HASH,
+            verifier,
+          ]),
+          ensRegistrar.REGISTER_DOMAIN_WITH_VERIFIER_GAS_LIMIT(),
+        );
     });
   });
 });

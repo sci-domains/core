@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.28;
 
-import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
 import {ISciRegistry} from '../SciRegistry/ISciRegistry.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
 import {SuperChainAccessControlDefaultAdminRules} from '../Op/SuperChainAccessControlDefaultAdminRules.sol';
@@ -22,7 +21,13 @@ contract SuperChainTargetRegistrar is SuperChainAccessControlDefaultAdminRules {
         address _sciRegistryAddress,
         address _crossDomainMessangerAddress,
         uint48 initialDelay
-    ) SuperChainAccessControlDefaultAdminRules(_crossDomainMessangerAddress, initialDelay, msg.sender) {
+    )
+        SuperChainAccessControlDefaultAdminRules(
+            _crossDomainMessangerAddress,
+            initialDelay,
+            msg.sender
+        )
+    {
         registry = ISciRegistry(_sciRegistryAddress);
     }
 

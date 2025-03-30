@@ -2,12 +2,13 @@
   EnsRegistrar: {
     // The address of the ENS Registry after running setup-localhost.ts in a new node
     ensRegistryAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-    // The address of the Mock
-    l1CrossDomainMessangerAddress: '',
-    sciRegistryAddress: '',
+    // The address of the Mock after running setup-localhost.ts in a new node
+    l1CrossDomainMessangerAddress: '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
+    // The address of the Registry after running pnpm deploy:localhost:protocols in a new node
+    sciRegistryAddress: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707',
   },
   SuperChainTargetRegistrar: {
-    // The address of the Mock
-    l2CrossDomainMessangerAddress: '',
+    // The address of the Mock after running setup-localhost.ts in a new node
+    l2CrossDomainMessangerAddress: '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
   },
 }
