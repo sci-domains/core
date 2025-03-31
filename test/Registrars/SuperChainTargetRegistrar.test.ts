@@ -4,7 +4,7 @@ import { SuperChainTargetRegistrar, SciRegistry, MockCrossDomainMessenger } from
 import { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import SuperChainTargetRegistrarModule, {
   SuperChainTargetRegistrarModuleReturnType,
-} from '../../ignition/modules/registrars/SuperchainTargetRegistrarModule';
+} from '../../ignition/modules/registrars/SuperChainTargetRegistrarModule';
 const DOMAIN_HASH = '0x77ebf9a801c579f50495cbb82e12145b476276f47b480b84c367a30b04d18e15';
 
 const GAS_FOR_DOMAIN = 1000000;

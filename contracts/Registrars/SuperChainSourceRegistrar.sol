@@ -9,9 +9,8 @@ abstract contract SuperChainSourceRegistrar {
     ICrossDomainMessanger public immutable crossDomainMessanger;
     address public targetRegistrar;
 
-    // TODO: Verify gas limit
-    int32 public constant REGISTER_DOMAIN_GAS_LIMIT = 1000000;
-    int32 public constant REGISTER_DOMAIN_WITH_VERIFIER_GAS_LIMIT = 1500000;
+    uint32 public constant REGISTER_DOMAIN_GAS_LIMIT = 200000;
+    uint32 public constant REGISTER_DOMAIN_WITH_VERIFIER_GAS_LIMIT = 300000;
 
     constructor(address _crossDomainMessanger, address _targetRegistrar) {
         crossDomainMessanger = ICrossDomainMessanger(_crossDomainMessanger);

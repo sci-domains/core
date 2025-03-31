@@ -8,16 +8,16 @@ contract MockCrossDomainMessenger is ICrossDomainMessanger {
 
     bool public shouldSendMessage;
 
-    event MessageSent(address target, bytes message, int32 gasLimit);
+    event MessageSent(address target, bytes message, uint32 gasLimit);
 
     constructor(address _xDomainMessageSenderAddress, bool _shouldSendMessage) {
         xDomainMessageSenderAddress = _xDomainMessageSenderAddress;
         shouldSendMessage = _shouldSendMessage;
     }
 
-    function sendMessage(address target, bytes calldata _message, int32 gasLimit) external {
+    function sendMessage(address target, bytes calldata _message, uint32 gasLimit) external {
         if (shouldSendMessage) {
-            (bool success, bytes memory result) = target.call{gas: uint256(uint32(gasLimit))}(
+            (bool success, bytes memory result) = target.call{gas: uint256(gasLimit)}(
                 _message
             );
 
