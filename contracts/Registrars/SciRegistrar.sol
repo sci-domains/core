@@ -36,7 +36,7 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
     /**
      * @dev Registers a domain in the SCI Registry contract.
      * @param owner Address expected to be the domain owner.
-     * @param domainHash Namehash of the domain.
+     * @param domainHash The namehash of the domain to be registered.
      *
      * Requirements:
      *
@@ -52,7 +52,7 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
     /**
      * @dev Registers a domain with a verifier in the SCI Registry contract.
      * @param owner Address expected to be the domain owner.
-     * @param domainHash Namehash of the domain.
+     * @param domainHash The namehash of the domain to be registered.
      * @param verifier Address of the verifier contract.
      *
      * Requirements:

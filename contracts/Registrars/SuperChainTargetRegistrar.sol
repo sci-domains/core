@@ -5,6 +5,13 @@ import {ISciRegistry} from '../SciRegistry/ISciRegistry.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
 import {SuperChainAccessControlDefaultAdminRules} from '../Op/SuperChainAccessControlDefaultAdminRules.sol';
 
+/**
+ * @title SuperChainTargetRegistrar
+ * @dev This contract allows addresses from the source chain with REGISTER_DOMAIN_ROLE role to register a domain.
+ * It uses the superchain cross-domain messaging to "listen" for domain registration requests from the source chain.
+ * 
+ * @custom:security-contact security@sci.domains
+*/
 contract SuperChainTargetRegistrar is SuperChainAccessControlDefaultAdminRules {
     // Role that allows registering domains
     bytes32 public constant REGISTER_DOMAIN_ROLE = keccak256('REGISTER_DOMAIN_ROLE');
@@ -31,6 +38,16 @@ contract SuperChainTargetRegistrar is SuperChainAccessControlDefaultAdminRules {
         registry = ISciRegistry(_sciRegistryAddress);
     }
 
+    /**
+     * @dev Registers a domain in the SCI Registry contract.
+     * @param owner Address expected to be the domain owner.
+     * @param domainHash The namehash of the domain to be registered.
+     *
+     * Requirements:
+     *
+     * - The xDomainMessageSender must have the REGISTER_DOMAIN_ROLE role.
+     * - The caller must be the superchain cross domain messanger
+     */
     function registerDomain(
         address owner,
         bytes32 domainHash
@@ -38,6 +55,17 @@ contract SuperChainTargetRegistrar is SuperChainAccessControlDefaultAdminRules {
         registry.registerDomain(owner, domainHash);
     }
 
+    /**
+     * @dev Registers a domain with a verifier in the SCI Registry contract.
+     * @param owner Address expected to be the domain owner.
+     * @param domainHash The namehash of the domain to be registered.
+     * @param verifier Address of the verifier contract.
+     *
+     * Requirements:
+     *
+     * - The xDomainMessageSender must have the REGISTER_DOMAIN_ROLE role.
+     * - The caller must be the superchain cross domain messanger
+     */
     function registerDomainWithVerifier(
         address owner,
         bytes32 domainHash,

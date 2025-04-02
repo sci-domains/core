@@ -33,12 +33,12 @@ contract EnsRegistrar is SuperChainSourceRegistrar {
         _;
     }
 
-    // TODO: Add new variables and comments
     // TODO: Remove address in the name of the variables
     /**
      * @dev Initializes the contract with references to the ENS and the SCI Registry.
      * @param _ensRegistryAddress Address of the ENS Registry contract.
      * @param _sciRegistryAddress Address of the SCI Registry contract.
+     * @param _crossChainDomainMessagnger Address of the cross-chain domain messenger contract.
      */
     constructor(
         address _ensRegistryAddress,
@@ -51,7 +51,7 @@ contract EnsRegistrar is SuperChainSourceRegistrar {
     /**
      * @dev Registers a domain in the SCI Registry contract.
      * @param owner Address of the domain owner.
-     * @param domainHash Namehash of domain.
+     * @param domainHash The namehash of the domain to be registered.
      *
      * Requirements:
      *
@@ -66,7 +66,7 @@ contract EnsRegistrar is SuperChainSourceRegistrar {
 
     /**
      * @dev Registers a domain with a verifier in the SCI Registry contract.
-     * @param domainHash Namehash of the domain.
+     * @param domainHash The namehash of the domain to be registered.
      * @param verifier Address of the verifier contract.
      *
      * Requirements:
