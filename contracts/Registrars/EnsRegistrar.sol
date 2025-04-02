@@ -2,8 +2,8 @@
 pragma solidity 0.8.28;
 
 import {ENS} from '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
-import {ISciRegistry} from '../SciRegistry/ISciRegistry.sol';
 import {IVerifier} from '../Verifiers/IVerifier.sol';
+import {SuperChainSourceRegistrar} from './SuperChainSourceRegistrar.sol';
 
 /**
  * @title EnsRegistrar
@@ -13,9 +13,8 @@ import {IVerifier} from '../Verifiers/IVerifier.sol';
  * by verifying the domain ownership through the ENS contract.
  * @custom:security-contact security@sci.domains
  */
-contract EnsRegistrar {
+contract EnsRegistrar is SuperChainSourceRegistrar {
     ENS public immutable ensRegistry;
-    ISciRegistry public immutable registry;
 
     /**
      * @dev Thrown when the `account` is not the owner of the ENS `domainhash`.
@@ -36,18 +35,22 @@ contract EnsRegistrar {
 
     /**
      * @dev Initializes the contract with references to the ENS and the SCI Registry.
-     * @param _ensRegistryAddress Address of the ENS Registry contract.
-     * @param _sciRegistryAddress Address of the SCI Registry contract.
+     * @param _ensRegistry Address of the ENS Registry contract.
+     * @param _sciRegistry Address of the SCI Registry contract.
+     * @param _crossChainDomainMessagnger Address of the cross-chain domain messenger contract.
      */
-    constructor(address _ensRegistryAddress, address _sciRegistryAddress) {
-        ensRegistry = ENS(_ensRegistryAddress);
-        registry = ISciRegistry(_sciRegistryAddress);
+    constructor(
+        address _ensRegistry,
+        address _sciRegistry,
+        address _crossChainDomainMessagnger
+    ) SuperChainSourceRegistrar(_crossChainDomainMessagnger, _sciRegistry) {
+        ensRegistry = ENS(_ensRegistry);
     }
 
     /**
      * @dev Registers a domain in the SCI Registry contract.
      * @param owner Address of the domain owner.
-     * @param domainHash Namehash of domain.
+     * @param domainHash The namehash of the domain to be registered.
      *
      * Requirements:
      *
@@ -57,12 +60,12 @@ contract EnsRegistrar {
         address owner,
         bytes32 domainHash
     ) external onlyEnsOwner(owner, domainHash) {
-        registry.registerDomain(owner, domainHash);
+        _registerDomainCrossChain(owner, domainHash);
     }
 
     /**
      * @dev Registers a domain with a verifier in the SCI Registry contract.
-     * @param domainHash Namehash of the domain.
+     * @param domainHash The namehash of the domain to be registered.
      * @param verifier Address of the verifier contract.
      *
      * Requirements:
@@ -73,7 +76,7 @@ contract EnsRegistrar {
         bytes32 domainHash,
         IVerifier verifier
     ) external onlyEnsOwner(msg.sender, domainHash) {
-        registry.registerDomainWithVerifier(msg.sender, domainHash, verifier);
+        _registerDomainWithVerifierCrossChain(msg.sender, domainHash, verifier);
     }
 
     /**

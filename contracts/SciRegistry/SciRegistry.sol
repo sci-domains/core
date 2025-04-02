@@ -12,12 +12,7 @@ import {DomainManager} from '../DomainMangager/DomainManager.sol';
  * @dev See {ISciRegistry}.
  * @custom:security-contact security@sci.domains
  */
-contract SciRegistry is
-    ISciRegistry,
-    AccessControlDefaultAdminRules,
-    DomainManager,
-    Pausable
-{
+contract SciRegistry is ISciRegistry, AccessControlDefaultAdminRules, DomainManager, Pausable {
     /**
      * @dev Structure to hold domain record details, including:
      * - owner: Address of the domain owner.

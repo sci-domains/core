@@ -1,6 +1,6 @@
 {
-  EnsRegistrar: {
-    // Optimism doesn't have an ENS Registry
-    ensRegistryAddress: '0x0000000000000000000000000000000000000000',
+  SuperChainTargetRegistrar: {
+    // https://docs.optimism.io/superchain/addresses
+    l2CrossDomainMessangerAddress: '0x4200000000000000000000000000000000000007',
   },
 }

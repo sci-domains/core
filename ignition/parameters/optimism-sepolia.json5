@@ -1,0 +1,9 @@
+{
+  SuperChainTargetRegistrar: {
+    // https://docs.optimism.io/superchain/addresses
+    l2CrossDomainMessangerAddress: '0x4200000000000000000000000000000000000007',
+  },
+  CleanupModule: {
+    ensRegistrarAddress: '0xb92E9C1332bd8e0Feb8Dc0983f71d1b1EB750555',
+  },
+}

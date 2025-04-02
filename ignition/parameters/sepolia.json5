@@ -2,5 +2,9 @@
   EnsRegistrar: {
     // https://docs.ens.domains/learn/deployments
     ensRegistryAddress: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    // https://docs.optimism.io/superchain/addresses
+    l1CrossDomainMessangerAddress: '0x58Cc85b8D04EA49cC6DBd3CbFFd00B4B8D6cb3ef',
+    // Complete once the protocol is deployed
+    superChainTargetRegistrar: '0x9a33cD737a74939830e7a0bF6B3bFd67219d61E6',
   },
 }

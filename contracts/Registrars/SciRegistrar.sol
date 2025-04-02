@@ -23,20 +23,20 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
 
     /**
      * @dev Initializes the contract by setting up the SCI Registry reference and defining the admin rules.
-     * @param _sciRegistryAddress Address of the custom domain registry contract.
+     * @param _sciRegistry Address of the custom domain registry contract.
      * @param initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information.
      */
     constructor(
-        address _sciRegistryAddress,
+        address _sciRegistry,
         uint48 initialDelay
     ) AccessControlDefaultAdminRules(initialDelay, msg.sender) {
-        registry = ISciRegistry(_sciRegistryAddress);
+        registry = ISciRegistry(_sciRegistry);
     }
 
     /**
      * @dev Registers a domain in the SCI Registry contract.
      * @param owner Address expected to be the domain owner.
-     * @param domainHash Namehash of the domain.
+     * @param domainHash The namehash of the domain to be registered.
      *
      * Requirements:
      *
@@ -52,7 +52,7 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
     /**
      * @dev Registers a domain with a verifier in the SCI Registry contract.
      * @param owner Address expected to be the domain owner.
-     * @param domainHash Namehash of the domain.
+     * @param domainHash The namehash of the domain to be registered.
      * @param verifier Address of the verifier contract.
      *
      * Requirements:

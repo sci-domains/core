@@ -30,10 +30,10 @@ abstract contract DomainManager {
 
     /**
      * @dev Initializes the contract with references to the SCI Registry.
-     * @param _sciRegistryAddress Address of the SCI Registry contract.
+     * @param _sciRegistry Address of the SCI Registry contract.
      */
-    constructor(address _sciRegistryAddress) {
-        registry = ISciRegistry(_sciRegistryAddress);
+    constructor(address _sciRegistry) {
+        registry = ISciRegistry(_sciRegistry);
     }
 
     /**

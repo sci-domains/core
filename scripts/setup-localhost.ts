@@ -2,7 +2,7 @@ import { ethers } from 'hardhat';
 import { keccak256, namehash, toUtf8Bytes } from 'ethers';
 
 async function main() {
-  const [owner] = await ethers.getSigners();
+  const [owner, xDomainMessegeSender] = await ethers.getSigners();
 
   // ENS Contracts Deployment
   const EnsFactory = await ethers.getContractFactory('ENSRegistry');
@@ -16,6 +16,16 @@ async function main() {
   );
   await ens.setSubnodeOwner(namehash('eth'), keccak256(toUtf8Bytes('a')), owner.address);
   console.log('Deployed ENS to:', await ens.getAddress());
+
+  const MockCrossDomainMessengerFactory = await ethers.getContractFactory(
+    'MockCrossDomainMessenger',
+  );
+  const mockCrossDomainMessenger = await MockCrossDomainMessengerFactory.deploy(
+    xDomainMessegeSender,
+    true,
+  );
+
+  console.log('Deployed MockCrossDomainMessenger to:', mockCrossDomainMessenger.target);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
