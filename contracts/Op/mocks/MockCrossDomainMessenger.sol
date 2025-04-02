@@ -17,9 +17,7 @@ contract MockCrossDomainMessenger is ICrossDomainMessanger {
 
     function sendMessage(address target, bytes calldata _message, uint32 gasLimit) external {
         if (shouldSendMessage) {
-            (bool success, bytes memory result) = target.call{gas: uint256(gasLimit)}(
-                _message
-            );
+            (bool success, bytes memory result) = target.call{gas: uint256(gasLimit)}(_message);
 
             if (!success) {
                 // Bubble up the original revert reason if present

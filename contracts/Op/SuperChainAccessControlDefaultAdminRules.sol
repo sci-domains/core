@@ -6,7 +6,7 @@ import {ICrossDomainMessanger} from './ICrossDomainMessanger.sol';
 
 /**
  * @title SuperChainAccessControlDefaultAdminRules
- * @dev This contract extends the OpenZeppelin AccessControlDefaultAdminRules contract to include cross-chain role management. 
+ * @dev This contract extends the OpenZeppelin AccessControlDefaultAdminRules contract to include cross-chain role management.
  * @custom:security-contact security@sci.domains
  */
 contract SuperChainAccessControlDefaultAdminRules is AccessControlDefaultAdminRules {
@@ -36,7 +36,7 @@ contract SuperChainAccessControlDefaultAdminRules is AccessControlDefaultAdminRu
     /**
      * @param _crossDomainMessanger Address of the cross-domain messenger contract.
      * @dev See {AccessControlDefaultAdminRules-constructor}.
-    */ 
+     */
     constructor(
         address _crossDomainMessanger,
         uint48 initialDelay,

@@ -9,9 +9,9 @@ import {SuperChainAccessControlDefaultAdminRules} from '../Op/SuperChainAccessCo
  * @title SuperChainTargetRegistrar
  * @dev This contract allows addresses from the source chain with REGISTER_DOMAIN_ROLE role to register a domain.
  * It uses the superchain cross-domain messaging to "listen" for domain registration requests from the source chain.
- * 
+ *
  * @custom:security-contact security@sci.domains
-*/
+ */
 contract SuperChainTargetRegistrar is SuperChainAccessControlDefaultAdminRules {
     // Role that allows registering domains
     bytes32 public constant REGISTER_DOMAIN_ROLE = keccak256('REGISTER_DOMAIN_ROLE');
@@ -28,13 +28,7 @@ contract SuperChainTargetRegistrar is SuperChainAccessControlDefaultAdminRules {
         address _sciRegistry,
         address _crossDomainMessanger,
         uint48 initialDelay
-    )
-        SuperChainAccessControlDefaultAdminRules(
-            _crossDomainMessanger,
-            initialDelay,
-            msg.sender
-        )
-    {
+    ) SuperChainAccessControlDefaultAdminRules(_crossDomainMessanger, initialDelay, msg.sender) {
         registry = ISciRegistry(_sciRegistry);
     }
 

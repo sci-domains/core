@@ -4,7 +4,6 @@ import SuperChainTargetRegistrarModule from './registrars/SuperChainTargetRegist
 
 export const CleanupModule = buildModule('CleanupModule', (m: IgnitionModuleBuilder) => {
   const { superChainTargetRegistrar } = m.useModule(SuperChainTargetRegistrarModule);
-  
 
   m.call(superChainTargetRegistrar, 'grantRole', [
     m.staticCall(superChainTargetRegistrar, 'REGISTER_DOMAIN_ROLE'),

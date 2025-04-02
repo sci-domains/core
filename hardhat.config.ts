@@ -46,15 +46,14 @@ const config: HardhatUserConfig = {
     apiKey: process.env.ETHERSCAN_API_KEY!,
     customChains: [
       {
-        network: "optimism-sepolia",
+        network: 'optimism-sepolia',
         chainId: 11155420,
         urls: {
-          apiURL:
-            "https://api-sepolia-optimistic.etherscan.io/api",
-          browserURL: "https://sepolia-optimism.etherscan.io",
+          apiURL: 'https://api-sepolia-optimistic.etherscan.io/api',
+          browserURL: 'https://sepolia-optimism.etherscan.io',
         },
       },
-    ]
+    ],
   },
   sourcify: {
     enabled: false,
