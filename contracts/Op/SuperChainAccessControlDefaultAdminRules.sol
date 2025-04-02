@@ -4,6 +4,11 @@ pragma solidity 0.8.28;
 import {AccessControlDefaultAdminRules} from '@openzeppelin/contracts/access/extensions/AccessControlDefaultAdminRules.sol';
 import {ICrossDomainMessanger} from './ICrossDomainMessanger.sol';
 
+/**
+ * @title SuperChainAccessControlDefaultAdminRules
+ * @dev This contract extends the OpenZeppelin AccessControlDefaultAdminRules contract to include cross-chain role management. 
+ * @custom:security-contact security@sci.domains
+ */
 contract SuperChainAccessControlDefaultAdminRules is AccessControlDefaultAdminRules {
     ICrossDomainMessanger public immutable crossDomainMessanger;
 

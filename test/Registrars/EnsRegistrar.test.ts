@@ -55,7 +55,7 @@ describe('EnsRegistrar', function () {
         EnsRegistrar: {
           ensRegistryAddress: ens.target as string,
           l1CrossDomainMessangerAddress: MockCrossDomainMessenger.target as string,
-          sciRegistryAddress: superChainTargetRegistrar.address,
+          superChainTargetRegistrar: superChainTargetRegistrar.address,
         },
       },
     }) as unknown as EnsRegistrarModuleReturnType));
