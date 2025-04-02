@@ -40,7 +40,7 @@ abstract contract SuperChainSourceRegistrar {
     function _registerDomainCrossChain(address owner, bytes32 domainHash) internal {
         crossDomainMessanger.sendMessage(
             targetRegistrar,
-            abi.encodeWithSelector(ISciRegistry.registerDomain.selector, owner, domainHash),
+            abi.encodeCall(ISciRegistry.registerDomain, (owner, domainHash)),
             REGISTER_DOMAIN_GAS_LIMIT
         );
     }
@@ -58,12 +58,7 @@ abstract contract SuperChainSourceRegistrar {
     ) internal {
         crossDomainMessanger.sendMessage(
             targetRegistrar,
-            abi.encodeWithSelector(
-                ISciRegistry.registerDomainWithVerifier.selector,
-                owner,
-                domainHash,
-                verifier
-            ),
+            abi.encodeCall(ISciRegistry.registerDomainWithVerifier, (owner, domainHash, verifier)),
             REGISTER_DOMAIN_WITH_VERIFIER_GAS_LIMIT
         );
     }
