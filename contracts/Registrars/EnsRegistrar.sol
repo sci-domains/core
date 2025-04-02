@@ -33,7 +33,6 @@ contract EnsRegistrar is SuperChainSourceRegistrar {
         _;
     }
 
-    // TODO: Remove address in the name of the variables
     /**
      * @dev Initializes the contract with references to the ENS and the SCI Registry.
      * @param _ensRegistry Address of the ENS Registry contract.
