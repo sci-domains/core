@@ -10,8 +10,8 @@ contract MockCrossDomainMessenger is ICrossDomainMessanger {
 
     event MessageSent(address target, bytes message, uint32 gasLimit);
 
-    constructor(address _xDomainMessageSenderAddress, bool _shouldSendMessage) {
-        xDomainMessageSenderAddress = _xDomainMessageSenderAddress;
+    constructor(address _xDomainMessageSender, bool _shouldSendMessage) {
+        xDomainMessageSenderAddress = _xDomainMessageSender;
         shouldSendMessage = _shouldSendMessage;
     }
 

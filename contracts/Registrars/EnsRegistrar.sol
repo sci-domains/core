@@ -36,16 +36,16 @@ contract EnsRegistrar is SuperChainSourceRegistrar {
     // TODO: Remove address in the name of the variables
     /**
      * @dev Initializes the contract with references to the ENS and the SCI Registry.
-     * @param _ensRegistryAddress Address of the ENS Registry contract.
-     * @param _sciRegistryAddress Address of the SCI Registry contract.
+     * @param _ensRegistry Address of the ENS Registry contract.
+     * @param _sciRegistry Address of the SCI Registry contract.
      * @param _crossChainDomainMessagnger Address of the cross-chain domain messenger contract.
      */
     constructor(
-        address _ensRegistryAddress,
-        address _sciRegistryAddress,
+        address _ensRegistry,
+        address _sciRegistry,
         address _crossChainDomainMessagnger
-    ) SuperChainSourceRegistrar(_crossChainDomainMessagnger, _sciRegistryAddress) {
-        ensRegistry = ENS(_ensRegistryAddress);
+    ) SuperChainSourceRegistrar(_crossChainDomainMessagnger, _sciRegistry) {
+        ensRegistry = ENS(_ensRegistry);
     }
 
     /**

@@ -34,14 +34,14 @@ contract SuperChainAccessControlDefaultAdminRules is AccessControlDefaultAdminRu
     }
 
     /**
-     * @param _crossDomainMessangerAddress Address of the cross-domain messenger contract.
+     * @param _crossDomainMessanger Address of the cross-domain messenger contract.
      * @dev See {AccessControlDefaultAdminRules-constructor}.
     */ 
     constructor(
-        address _crossDomainMessangerAddress,
+        address _crossDomainMessanger,
         uint48 initialDelay,
         address initialDefaultAdmin
     ) AccessControlDefaultAdminRules(initialDelay, initialDefaultAdmin) {
-        crossDomainMessanger = ICrossDomainMessanger(_crossDomainMessangerAddress);
+        crossDomainMessanger = ICrossDomainMessanger(_crossDomainMessanger);
     }
 }
