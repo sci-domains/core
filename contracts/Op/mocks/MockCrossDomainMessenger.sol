@@ -2,7 +2,7 @@
 pragma solidity 0.8.28;
 
 import {ICrossDomainMessanger} from '../ICrossDomainMessanger.sol';
-
+/// @dev Mock contract for testing cross-domain messaging functionality.
 contract MockCrossDomainMessenger is ICrossDomainMessanger {
     address private xDomainMessageSenderAddress;
 

@@ -7,8 +7,15 @@ import {ICrossDomainMessanger} from './ICrossDomainMessanger.sol';
 contract SuperChainAccessControlDefaultAdminRules is AccessControlDefaultAdminRules {
     ICrossDomainMessanger public immutable crossDomainMessanger;
 
+    /**
+     * @dev Thrown when the caller is not the cross domain messanger.
+     */
     error InvalidMessageSender(address account);
 
+    /**
+     * @dev Modifier that checks that an account on a source chain has a specific role.
+     * Reverts with an {AccessControlUnauthorizedAccount} error including the required role.
+     */
     modifier onlyCrossChainRole(bytes32 role) {
         if (msg.sender != address(crossDomainMessanger)) {
             revert InvalidMessageSender(msg.sender);
@@ -21,6 +28,10 @@ contract SuperChainAccessControlDefaultAdminRules is AccessControlDefaultAdminRu
         _;
     }
 
+    /**
+     * @param _crossDomainMessangerAddress Address of the cross-domain messenger contract.
+     * @dev See {AccessControlDefaultAdminRules-constructor}.
+    */ 
     constructor(
         address _crossDomainMessangerAddress,
         uint48 initialDelay,
