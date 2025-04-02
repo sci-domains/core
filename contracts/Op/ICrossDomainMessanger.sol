@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.28;
 
- /**
-  * @title ICrossDomainMessanger
-  * @dev Interface for the Superchain Cross Domain Messenger 
-  * which facilitates sending messages between a source and a target chain.
-  */ 
+/**
+ * @title ICrossDomainMessanger
+ * @dev Interface for the Superchain Cross Domain Messenger
+ * which facilitates sending messages between a source and a target chain.
+ */
 interface ICrossDomainMessanger {
     /**
      * @dev Sends a message to a target contract on a different chain.
