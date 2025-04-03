@@ -20,6 +20,13 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: 'types',
   },
+  ignition: {
+    strategyConfig: {
+      create2: {
+        salt: "0x0000000000000000000000000000000000000000000000000000534349205632",
+      },
+    },
+  },
   networks: {
     sepolia: {
       chainId: 11155111,

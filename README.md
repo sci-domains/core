@@ -80,6 +80,30 @@ After running the deployment, make sure to add the addresses to the deployments.
 pnpm save:deployments
 ```
 
+#### Testnet deployment
+
+```shell
+// Make sure you have the API Key for optimism sepolia etherscan
+pnpm deploy:sepolia-optimsim
+// Change the superChainTargetRegistrar in ignition/parameters/sepolia.json5
+// Make sure you have the API Key for sepolia etherscan
+pnpm deploy:sepolia
+// Change the ensRegistrarAddress in ignition/paramters/optimism-sepolia.json
+pnpm deploy:cleanup:testnet
+```
+
+#### Production deployment
+
+````shell
+// Make sure you have the API Key for optimism etherscan
+pnpm deploy:optimism
+// Change the superChainTargetRegistrar in ignition/parameters/ethereum.json5
+// Make sure you have the API Key for etherscan
+pnpm deploy:ethereum
+// Change the ensRegistrarAddress in ignition/paramters/optimism.json
+pnpm deploy:cleanup:production
+
+
 ### Publish:
 
 We use [changesets](https://www.npmjs.com/package/@changesets/cli) to manage the versioning and publishing of the packages
@@ -95,7 +119,7 @@ the ENS Registry with the contracts from the protocol
 pnpm node
 // In another terminal
 pnpm dev
-```
+````
 
 ## Contributing
 
