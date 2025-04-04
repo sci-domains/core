@@ -18,9 +18,12 @@ describe('SciRegistrar', function () {
   beforeEach(async () => {
     [user, domainOwner, ...addresses] = await ethers.getSigners();
 
-    ({ sciRegistrar, sciRegistry } = await (ignition.deploy(
-      SciRegistrarModule,
-    ) as unknown as SciRegistrarModuleReturnType));
+    ({ sciRegistrar, sciRegistry } = await (ignition.deploy(SciRegistrarModule, {
+      strategy: 'create2',
+      strategyConfig: {
+        salt: ethers.hexlify(ethers.randomBytes(32)),
+      },
+    }) as unknown as SciRegistrarModuleReturnType));
   });
 
   describe('Register domains', function () {

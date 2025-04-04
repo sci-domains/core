@@ -38,6 +38,10 @@ describe('SuperChainTargetRegistrar', function () {
             l2CrossDomainMessangerAddress: mockCrossDomainMessenger.target as string,
           },
         },
+        strategy: 'create2',
+        strategyConfig: {
+          salt: ethers.hexlify(ethers.randomBytes(32)),
+        },
       },
     ) as unknown as SuperChainTargetRegistrarModuleReturnType));
 

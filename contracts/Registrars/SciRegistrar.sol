@@ -25,11 +25,13 @@ contract SciRegistrar is AccessControlDefaultAdminRules {
      * @dev Initializes the contract by setting up the SCI Registry reference and defining the admin rules.
      * @param _sciRegistry Address of the custom domain registry contract.
      * @param initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information.
+     * @param _initialDefaultAdmin The {initialDefaultAdmin}. See AccessControlDefaultAdminRules for more information.
      */
     constructor(
         address _sciRegistry,
-        uint48 initialDelay
-    ) AccessControlDefaultAdminRules(initialDelay, msg.sender) {
+        uint48 initialDelay,
+        address _initialDefaultAdmin
+    ) AccessControlDefaultAdminRules(initialDelay, _initialDefaultAdmin) {
         registry = ISciRegistry(_sciRegistry);
     }
 

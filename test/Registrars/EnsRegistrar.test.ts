@@ -58,6 +58,10 @@ describe('EnsRegistrar', function () {
           superChainTargetRegistrar: superChainTargetRegistrar.address,
         },
       },
+      strategy: 'create2',
+      strategyConfig: {
+        salt: ethers.hexlify(ethers.randomBytes(32)),
+      },
     }) as unknown as EnsRegistrarModuleReturnType));
   });
 

@@ -43,7 +43,7 @@ contract EnsRegistrar is SuperChainSourceRegistrar {
         address _ensRegistry,
         address _sciRegistry,
         address _crossChainDomainMessagnger
-    ) SuperChainSourceRegistrar(_crossChainDomainMessagnger, _sciRegistry) {
+    ) SuperChainSourceRegistrar(_sciRegistry, _crossChainDomainMessagnger) {
         ensRegistry = ENS(_ensRegistry);
     }
 

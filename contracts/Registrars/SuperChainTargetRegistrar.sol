@@ -22,13 +22,21 @@ contract SuperChainTargetRegistrar is SuperChainAccessControlDefaultAdminRules {
      * @dev Initializes the contract by setting up the SCI Registry reference and defining the admin rules.
      * @param _sciRegistry Address of the custom domain registry contract.
      * @param _crossDomainMessanger Address of the cross-domain messenger contract.
-     * @param initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information.
+     * @param _initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information.
+     * @param _initialDefaultAdmin The {initialDefaultAdmin}. See AccessControlDefaultAdminRules for more information.
      */
     constructor(
         address _sciRegistry,
         address _crossDomainMessanger,
-        uint48 initialDelay
-    ) SuperChainAccessControlDefaultAdminRules(_crossDomainMessanger, initialDelay, msg.sender) {
+        uint48 _initialDelay,
+        address _initialDefaultAdmin
+    )
+        SuperChainAccessControlDefaultAdminRules(
+            _crossDomainMessanger,
+            _initialDelay,
+            _initialDefaultAdmin
+        )
+    {
         registry = ISciRegistry(_sciRegistry);
     }
 
