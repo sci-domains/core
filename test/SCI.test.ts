@@ -55,7 +55,7 @@ describe('SCI', function () {
 
   describe('Initializable', function () {
     it("Should't be able to initialize a second time", async function () {
-      await expect(sci.initialize(owner.address, sciRegistry.target)).to.revertedWithCustomError(
+      await expect(sci.initialize(owner.address)).to.revertedWithCustomError(
         sci,
         'InvalidInitialization',
       );

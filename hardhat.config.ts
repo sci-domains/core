@@ -5,7 +5,7 @@ import '@openzeppelin/hardhat-upgrades';
 import '@nomicfoundation/hardhat-ledger';
 import '@nomicfoundation/hardhat-ignition-ethers';
 import 'dotenv/config';
-import { ethers } from 'hardhat';
+import { ethers } from 'ethers';
 
 function getUrl(url: string | undefined): string {
   return url ?? '';
