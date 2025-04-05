@@ -24,7 +24,7 @@ const config: HardhatUserConfig = {
   ignition: {
     strategyConfig: {
       create2: {
-        salt: ethers.keccak256('SCI'),
+        salt: ethers.keccak256(ethers.toUtf8Bytes('SCI')),
       },
     },
   },
