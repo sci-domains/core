@@ -1,6 +1,6 @@
 import { buildModule } from '@nomicfoundation/hardhat-ignition/modules';
 import sciRegistryModule from './registry/SciRegistryModule';
-import superChainTargetRegistrarModule from './registrars/SuperchainTargetRegistrarModule';
+import superChainTargetRegistrarModule from './registrars/SuperChainTargetRegistrarModule';
 import publicListVerifierModule from './verifiers/PublicListVerifierModule';
 import sciModule from './sci/SciModule';
 import sciRegistrarModule from './registrars/SciRegistrarModule';

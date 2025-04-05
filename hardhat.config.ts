@@ -5,6 +5,7 @@ import '@openzeppelin/hardhat-upgrades';
 import '@nomicfoundation/hardhat-ledger';
 import '@nomicfoundation/hardhat-ignition-ethers';
 import 'dotenv/config';
+import { ethers } from 'hardhat';
 
 function getUrl(url: string | undefined): string {
   return url ?? '';
@@ -23,7 +24,7 @@ const config: HardhatUserConfig = {
   ignition: {
     strategyConfig: {
       create2: {
-        salt: '0x0000000000000000000000000000000000000000000000000000000000534349',
+        salt: ethers.keccak256('SCI'),
       },
     },
   },
