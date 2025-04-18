@@ -29,7 +29,6 @@ async function main() {
 
   const txs: ContractTransaction[] = [];
 
-  // Add the pk as domain owner
   if (!(await sciRegistrar.hasRole(await sciRegistrar.REGISTER_DOMAIN_ROLE(), safeAddress))) {
     await sciRegistrar.grantRole(await sciRegistrar.REGISTER_DOMAIN_ROLE(), safeAddress);
   }

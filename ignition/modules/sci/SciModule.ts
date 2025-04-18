@@ -19,9 +19,7 @@ const proxyModule = buildModule('ProxyModule', (m: IgnitionModuleBuilder) => {
   // We will upgrade this contract with a new version later.
   const sci = m.contract('SCI');
 
-  const encodedFunctionCall = m.encodeFunctionCall(sci, 'initialize', [
-    proxyAdminOwner,
-  ]);
+  const encodedFunctionCall = m.encodeFunctionCall(sci, 'initialize', [proxyAdminOwner]);
 
   // The TransparentUpgradeableProxy contract creates the ProxyAdmin within its constructor.
   // To read more about how this proxy is implemented, you can view the source code and comments here:
@@ -58,10 +56,7 @@ export const SciModule = buildModule('SciModule', (m) => {
   // This allows us to interact with the underlying Sci contract via the proxy from within tests and scripts.
   const sci = m.contractAt('SCI', proxy);
 
-  m.call(sci, 'setRegistry', [
-    sciRegistry,
-  ]);
-
+  m.call(sci, 'setRegistry', [sciRegistry]);
 
   // Return the contract instance, along with the original proxy and proxyAdmin contracts
   // so that they can be used by other modules, or in tests and scripts.

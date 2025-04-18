@@ -39,7 +39,7 @@ const config: HardhatUserConfig = {
       url: getUrl(process.env.OPTIMISM_SEPOLIA_PROVIDER_URL),
       ledgerAccounts: [process.env.ADDRESS!],
     },
-    mainnet: {
+    ethereum: {
       chainId: 1,
       url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL),
       ledgerAccounts: [process.env.ADDRESS!],
