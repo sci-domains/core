@@ -1,5 +1,18 @@
 # @secure-ci/core
 
+## 1.0.0
+
+### Major Changes
+
+- 86064b3: Add support
+  Upgrade safe script
+  Add ENS Registry support for multichain
+  Deploy the new smart contracts
+
+### Patch Changes
+
+- 6dfd712: Improve deployments exports
+
 ## 0.0.20
 
 ### Patch Changes
