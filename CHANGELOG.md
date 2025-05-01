@@ -1,5 +1,11 @@
 # @secure-ci/core
 
+## 1.0.1
+
+### Patch Changes
+
+- 5e61bc5: Fix package index
+
 ## 1.0.0
 
 ### Major Changes
