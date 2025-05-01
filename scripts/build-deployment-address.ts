@@ -31,23 +31,9 @@ async function main() {
     }
 
     // Convert the output data into a TypeScript file
-    const tsContent = `type DeploymentKeys =
-  | 'ProxyModule#SCI'
-  | 'SciRegistry#SciRegistry'
-  | 'EnsRegistrar#EnsRegistrar'
-  | 'PublicListVerifier#PublicListVerifier'
-  | 'ProxyModule#TransparentUpgradeableProxy'
-  | 'ProxyModule#ProxyAdmin'
-  | 'SciModule#SCI'
-  | 'SciRegstrar#SciRegistrar';
-
-export const deployments: { [key: string]: { [key in DeploymentKeys]: string } } = ${JSON.stringify(
-      outputData,
-      null,
-      2,
-    )
+    const tsContent = `export const deployments = ${JSON.stringify(outputData, null, 2)
       .replace(/"/g, "'")
-      .replace(/(?<=['}\]]),?\n/g, ',\n')};\n`;
+      .replace(/(?<=['}\]]),?\n/g, ',\n')} as const;\n`;
 
     // Write the TypeScript file
     await writeFile('deployments.ts', tsContent);

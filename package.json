@@ -16,7 +16,7 @@
     "README.md",
     "LICENSE.txt"
   ],
-  "main": "dist/types/index.js",
+  "main": "dist/index.js",
   "keywords": [
     "solidity",
     "ethereum",
