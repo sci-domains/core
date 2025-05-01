@@ -13,6 +13,9 @@
     "./dist/deployments.js",
     "./dist/deployments.d.ts.map",
     "./dist/deployments.d.ts",
+    "./dist/index.js",
+    "./dist/index.d.ts.map",
+    "./dist/index.d.ts",
     "README.md",
     "LICENSE.txt"
   ],
