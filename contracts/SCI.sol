@@ -26,12 +26,10 @@ contract SCI is Initializable, Ownable2StepUpgradeable {
      * Can only be called once during contract deployment.
      *
      * @param owner The owner of this contract.
-     * @param _registry The address of the registry to be used by the contract.
      */
-    function initialize(address owner, address _registry) external initializer {
+    function initialize(address owner) external initializer {
         __Ownable2Step_init();
         __Ownable_init(owner);
-        setRegistry(_registry);
     }
 
     /**

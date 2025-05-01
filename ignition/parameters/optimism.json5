@@ -3,4 +3,7 @@
     // https://docs.optimism.io/superchain/addresses
     l2CrossDomainMessangerAddress: '0x4200000000000000000000000000000000000007',
   },
+  CleanupModule: {
+    ensRegistrarAddress: '0x7D2718082A7c67d85e2a7064f8dd00100C6aD264',
+  },
 }

@@ -5,6 +5,6 @@
     // https://docs.optimism.io/superchain/addresses
     l1CrossDomainMessangerAddress: '0x58Cc85b8D04EA49cC6DBd3CbFFd00B4B8D6cb3ef',
     // Complete once the protocol is deployed
-    superChainTargetRegistrar: '0x9a33cD737a74939830e7a0bF6B3bFd67219d61E6',
+    superChainTargetRegistrar: '0x1a5f719008b932A36d8A90bc95B3E8B8AA2248B7',
   },
 }

@@ -17,7 +17,6 @@ describe('SCI', function () {
   let verifiedAccount: HardhatEthersSigner;
   let addresses: HardhatEthersSigner[];
   let sci: SCI;
-  let proxy: Proxy;
   let sciRegistry: SciRegistry;
   let publicListVerifier: PublicListVerifier;
   let verififcationTime: number;
@@ -26,9 +25,12 @@ describe('SCI', function () {
   beforeEach(async () => {
     [owner, verifiedAccount, ...addresses] = await ethers.getSigners();
 
-    ({ publicListVerifier, sciRegistry } = await (ignition.deploy(
-      PublicListVerifierModule,
-    ) as unknown as PublicListVerifierModuleReturnType));
+    ({ publicListVerifier, sciRegistry } = await (ignition.deploy(PublicListVerifierModule, {
+      strategy: 'create2',
+      strategyConfig: {
+        salt: ethers.hexlify(ethers.randomBytes(32)),
+      },
+    }) as unknown as PublicListVerifierModuleReturnType));
 
     ({ sci } = await (ignition.deploy(SciModule) as unknown as SciModuleReturnType));
 
@@ -53,7 +55,7 @@ describe('SCI', function () {
 
   describe('Initializable', function () {
     it("Should't be able to initialize a second time", async function () {
-      await expect(sci.initialize(owner.address, sciRegistry.target)).to.revertedWithCustomError(
+      await expect(sci.initialize(owner.address)).to.revertedWithCustomError(
         sci,
         'InvalidInitialization',
       );

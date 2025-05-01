@@ -1,0 +1,10 @@
+{
+  "ProxyModule#SCI": "0xbc93b210344E13752942A1B397dB65898c50384b",
+  "SciRegistry#SciRegistry": "0xDC66a09507a7C9143069f22D7C995F295643d35A",
+  "ProxyModule#TransparentUpgradeableProxy": "0x21BD22a0c70aA0A68fb11AED9B14FA595Dd0bA4a",
+  "PublicListVerifier#PublicListVerifier": "0x690D23D178AA292c80de047bf0d0983De6a33BDc",
+  "SciRegstrar#SciRegistrar": "0x5e370939b2E899dAB2BF2bA23b3175E75187f256",
+  "SuperChainTargetRegistrar#SuperChainTargetRegistrar": "0x1a5f719008b932A36d8A90bc95B3E8B8AA2248B7",
+  "ProxyModule#ProxyAdmin": "0x7d42751a982F6D7724A1CE641354397f36615Ee2",
+  "SciModule#SCI": "0x21BD22a0c70aA0A68fb11AED9B14FA595Dd0bA4a"
+}

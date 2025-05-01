@@ -11,8 +11,6 @@ import { IgnitionModuleBuilder } from '@nomicfoundation/ignition-core';
  * proxy admin, and returns them so that they can be used by other modules.
  */
 const proxyModule = buildModule('ProxyModule', (m: IgnitionModuleBuilder) => {
-  const { sciRegistry } = m.useModule(SciRegistryModule);
-
   // This address is the owner of the ProxyAdmin contract,
   // so it will be the only account that can upgrade the proxy when needed.
   const proxyAdminOwner = m.getAccount(0);
@@ -21,10 +19,7 @@ const proxyModule = buildModule('ProxyModule', (m: IgnitionModuleBuilder) => {
   // We will upgrade this contract with a new version later.
   const sci = m.contract('SCI');
 
-  const encodedFunctionCall = m.encodeFunctionCall(sci, 'initialize', [
-    proxyAdminOwner,
-    sciRegistry,
-  ]);
+  const encodedFunctionCall = m.encodeFunctionCall(sci, 'initialize', [proxyAdminOwner]);
 
   // The TransparentUpgradeableProxy contract creates the ProxyAdmin within its constructor.
   // To read more about how this proxy is implemented, you can view the source code and comments here:
@@ -53,12 +48,15 @@ const proxyModule = buildModule('ProxyModule', (m: IgnitionModuleBuilder) => {
 export const SciModule = buildModule('SciModule', (m) => {
   // Get the proxy and proxy admin from the previous module.
   const { proxy, proxyAdmin } = m.useModule(proxyModule);
+  const { sciRegistry } = m.useModule(SciRegistryModule);
 
   // Here we're using m.contractAt(...) a bit differently than we did above.
   // While we're still using it to create a contract instance, we're now telling Hardhat Ignition
   // to treat the contract at the proxy address as an instance of the Sci contract.
   // This allows us to interact with the underlying Sci contract via the proxy from within tests and scripts.
   const sci = m.contractAt('SCI', proxy);
+
+  m.call(sci, 'setRegistry', [sciRegistry]);
 
   // Return the contract instance, along with the original proxy and proxyAdmin contracts
   // so that they can be used by other modules, or in tests and scripts.

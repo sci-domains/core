@@ -14,6 +14,7 @@ export const SuperChainTargetRegistrarModule = buildModule(
       sciRegistry,
       l2CrossDomainMessangerAddress,
       0,
+      m.getAccount(0),
     ]);
 
     m.call(sciRegistry, 'grantRole', [

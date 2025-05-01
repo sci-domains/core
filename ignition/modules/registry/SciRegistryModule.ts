@@ -3,7 +3,7 @@ import { SciRegistry } from '../../../types';
 import { IgnitionModuleBuilder } from '@nomicfoundation/ignition-core';
 
 export const SciRegistryModule = buildModule('SciRegistry', (m: IgnitionModuleBuilder) => {
-  const sciRegistry = m.contract('SciRegistry', [0]);
+  const sciRegistry = m.contract('SciRegistry', [0, m.getAccount(0)]);
 
   m.call(sciRegistry, 'grantRole', [
     m.staticCall(sciRegistry, 'REGISTRAR_MANAGER_ROLE'),

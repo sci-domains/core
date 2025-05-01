@@ -24,10 +24,10 @@ abstract contract SuperChainSourceRegistrar {
 
     /**
      * @dev Initializes the contract by setting up the Cross domain messenger and the target registrar.
-     * @param _crossDomainMessanger The address of the cross-domain messenger contract.
      * @param _targetRegistrar The address of the registrar contract on the target chain.
+     * @param _crossDomainMessanger The address of the cross-domain messenger contract.
      */
-    constructor(address _crossDomainMessanger, address _targetRegistrar) {
+    constructor(address _targetRegistrar, address _crossDomainMessanger) {
         crossDomainMessanger = ICrossDomainMessanger(_crossDomainMessanger);
         targetRegistrar = _targetRegistrar;
     }

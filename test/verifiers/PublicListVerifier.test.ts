@@ -23,9 +23,12 @@ describe('Public List Verifier', function () {
   beforeEach(async () => {
     [owner, domainOwner, ...addresses] = await ethers.getSigners();
 
-    ({ publicListVerifier, sciRegistry } = await (ignition.deploy(
-      PublicListVerifierModule,
-    ) as unknown as PublicListVerifierModuleReturnType));
+    ({ publicListVerifier, sciRegistry } = await (ignition.deploy(PublicListVerifierModule, {
+      strategy: 'create2',
+      strategyConfig: {
+        salt: ethers.hexlify(ethers.randomBytes(32)),
+      },
+    }) as unknown as PublicListVerifierModuleReturnType));
 
     sciRegistry.grantRole(await sciRegistry.REGISTRAR_ROLE(), owner.address);
     sciRegistry.grantRole(await sciRegistry.REGISTRAR_ROLE(), domainOwner.address);

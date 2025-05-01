@@ -5,6 +5,7 @@ import '@openzeppelin/hardhat-upgrades';
 import '@nomicfoundation/hardhat-ledger';
 import '@nomicfoundation/hardhat-ignition-ethers';
 import 'dotenv/config';
+import { ethers } from 'ethers';
 
 function getUrl(url: string | undefined): string {
   return url ?? '';
@@ -20,6 +21,13 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: 'types',
   },
+  ignition: {
+    strategyConfig: {
+      create2: {
+        salt: ethers.keccak256(ethers.toUtf8Bytes('SCI')),
+      },
+    },
+  },
   networks: {
     sepolia: {
       chainId: 11155111,
@@ -31,7 +39,7 @@ const config: HardhatUserConfig = {
       url: getUrl(process.env.OPTIMISM_SEPOLIA_PROVIDER_URL),
       ledgerAccounts: [process.env.ADDRESS!],
     },
-    mainnet: {
+    ethereum: {
       chainId: 1,
       url: getUrl(process.env.ETHEREUM_MAINNET_PROVIDER_URL),
       ledgerAccounts: [process.env.ADDRESS!],

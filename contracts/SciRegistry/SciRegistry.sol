@@ -42,11 +42,16 @@ contract SciRegistry is ISciRegistry, AccessControlDefaultAdminRules, DomainMana
     /**
      * @dev Constructor to initialize the Registry contract.
      * Sets the REGISTRAR_MANAGER_ROLE as the admin role of REGISTRAR_ROLE.
-     * @param initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information.
+     * @param _initialDelay The {defaultAdminDelay}. See AccessControlDefaultAdminRules for more information.
+     * @param _initialDefaultAdmin The {initialDefaultAdmin}. See AccessControlDefaultAdminRules for more information.
      */
     constructor(
-        uint48 initialDelay
-    ) AccessControlDefaultAdminRules(initialDelay, msg.sender) DomainManager(address(this)) {
+        uint48 _initialDelay,
+        address _initialDefaultAdmin
+    )
+        AccessControlDefaultAdminRules(_initialDelay, _initialDefaultAdmin)
+        DomainManager(address(this))
+    {
         _setRoleAdmin(REGISTRAR_ROLE, REGISTRAR_MANAGER_ROLE);
     }
 

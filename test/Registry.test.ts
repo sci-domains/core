@@ -19,9 +19,12 @@ describe('Registry', function () {
   beforeEach(async () => {
     [owner, registrar, ...addresses] = await ethers.getSigners();
 
-    ({ sciRegistry: registry } = await (ignition.deploy(
-      SciRegistryModule,
-    ) as unknown as SciRegistryModuleReturnType));
+    ({ sciRegistry: registry } = await (ignition.deploy(SciRegistryModule, {
+      strategy: 'create2',
+      strategyConfig: {
+        salt: ethers.hexlify(ethers.randomBytes(32)),
+      },
+    }) as unknown as SciRegistryModuleReturnType));
 
     await registry.grantRole(await registry.REGISTRAR_ROLE(), registrar.address);
     await registry.grantRole(await registry.PAUSER_ROLE(), owner.address);
