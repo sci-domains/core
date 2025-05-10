@@ -16,7 +16,6 @@ import {DomainManager} from '../DomainMangager/DomainManager.sol';
 contract PublicListVerifier is IVerifier, DomainManager {
     uint256 private constant MAX_INT = 2 ** 256 - 1;
 
-    // Domain hash -> contract address -> chain id -> true/false.
     mapping(bytes32 domainHash => mapping(address contractAddress => mapping(uint256 chainId => uint256 registerTimestamp)))
         public verifiedContracts;
 
